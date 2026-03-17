@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-01-PLAN.md
-last_updated: "2026-03-17T10:16:42Z"
-last_activity: 2026-03-17 -- Plan 01-01 complete
+stopped_at: Completed 01-02-PLAN.md (Phase 1 complete)
+last_updated: "2026-03-17T11:00:13Z"
+last_activity: 2026-03-17 -- Plan 01-02 complete, Phase 1 Foundation done
 progress:
   total_phases: 6
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 17
-  completed_plans: 1
-  percent: 6
+  completed_plans: 2
+  percent: 12
 ---
 
 # Project State
@@ -21,33 +21,33 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-17)
 
 **Core value:** Master taps "Complete" -- client gets SBP payment link -- tax receipt auto-generates. 3 steps instead of 9.
-**Current focus:** Phase 1: Foundation
+**Current focus:** Phase 1 complete, ready for Phase 2
 
 ## Current Position
 
-Phase: 1 of 6 (Foundation)
-Plan: 1 of 2 in current phase (01-01 complete)
-Status: Executing
-Last activity: 2026-03-17 -- Plan 01-01 complete
+Phase: 1 of 6 (Foundation -- COMPLETE)
+Plan: 2 of 2 in current phase (01-02 complete, phase done)
+Status: Phase 1 complete
+Last activity: 2026-03-17 -- Plan 01-02 complete, Phase 1 Foundation done
 
-Progress: [▓░░░░░░░░░] 6%
+Progress: [█░░░░░░░░░] 12%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
-- Average duration: 21min
-- Total execution time: 0.35 hours
+- Total plans completed: 2
+- Average duration: 13min
+- Total execution time: 0.43 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1. Foundation | 1/2 | 21min | 21min |
+| 1. Foundation | 2/2 | 26min | 13min |
 
 **Recent Trend:**
-- Last 5 plans: 21min
-- Trend: baseline
+- Last 5 plans: 21min, 5min
+- Trend: accelerating
 
 *Updated after each plan completion*
 
@@ -65,6 +65,10 @@ Recent decisions affecting current work:
 - Config resolves .env from project root via Path resolution, supporting both Docker and local dev
 - RLS policies use current_setting('app.current_master_id', true)::uuid with fail-closed semantics
 - Price stored in kopecks (integer) to avoid float precision issues
+- PyJWT + pwdlib (Argon2) for auth, NOT python-jose + passlib (deprecated)
+- SET LOCAL for RLS context (transaction-scoped, prevents connection pool leaks)
+- Timing attack prevention with DUMMY_HASH on failed login lookups
+- OAuth2PasswordBearer with tokenUrl=/api/v1/auth/login for Swagger UI integration
 
 ### Pending Todos
 
@@ -78,6 +82,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-17T10:16:42Z
-Stopped at: Completed 01-01-PLAN.md
-Resume file: .planning/phases/01-foundation/01-02-PLAN.md
+Last session: 2026-03-17T11:00:13Z
+Stopped at: Completed 01-02-PLAN.md (Phase 1 Foundation complete)
+Resume file: Phase 2 plans (not yet created -- needs planning phase)

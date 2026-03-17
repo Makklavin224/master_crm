@@ -64,9 +64,9 @@
 ### Infrastructure (INFR)
 
 - [x] **INFR-01**: FastAPI backend with PostgreSQL, deployed in Docker Compose on VPS
-- [ ] **INFR-02**: REST API for mini-app and web panel
+- [x] **INFR-02**: REST API for mini-app and web panel
 - [ ] **INFR-03**: Webhook handlers for TG, MAX, VK bots
-- [ ] **INFR-04**: Master authentication (registration/login via messenger)
+- [x] **INFR-04**: Master authentication (registration/login via messenger)
 - [x] **INFR-05**: Multi-tenant isolation (master_id on all tables, PostgreSQL RLS)
 
 ## v2 Requirements
@@ -114,8 +114,8 @@
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | INFR-01 | Phase 1 | Complete |
-| INFR-02 | Phase 1 | Pending |
-| INFR-04 | Phase 1 | Pending |
+| INFR-02 | Phase 1 | Complete |
+| INFR-04 | Phase 1 | Complete |
 | INFR-05 | Phase 1 | Complete |
 | CLNT-02 | Phase 1 | Complete |
 | BOOK-01 | Phase 2 | Pending |
