@@ -31,12 +31,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. A master can register and log in, receiving a JWT token that authenticates subsequent API requests
   4. Phone numbers are normalized to E.164 format at the API boundary ("+79161234567" and "89161234567" resolve to the same client record)
   5. The entire stack (FastAPI + PostgreSQL + Caddy) deploys with a single `docker compose up` command on a VPS
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
-- [ ] 01-03: TBD
+- [ ] 01-01-PLAN.md -- Scaffolding, Docker stack, domain models, Alembic migrations, phone normalization, RLS policies
+- [ ] 01-02-PLAN.md -- Auth system (register/login/me), REST API structure, integration tests, stack verification
 
 ### Phase 2: Booking Engine + Telegram
 **Goal**: Clients can discover services, view available slots, and book appointments through the Telegram mini-app; masters receive notifications and can manage bookings through the TG bot and mini-app
@@ -128,7 +127,7 @@ Note: Phase 4 (Notifications) depends on Phase 2 only. Phase 6 (Web Panel) depen
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/3 | Not started | - |
+| 1. Foundation | 0/2 | Planning complete | - |
 | 2. Booking Engine + Telegram | 0/4 | Not started | - |
 | 3. Payments + Tax Receipts | 0/3 | Not started | - |
 | 4. Notifications | 0/2 | Not started | - |
