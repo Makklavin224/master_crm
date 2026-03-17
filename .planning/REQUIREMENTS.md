@@ -18,7 +18,7 @@
 ### Clients (CLNT)
 
 - [ ] **CLNT-01**: Client database auto-populated from bookings (name, phone)
-- [ ] **CLNT-02**: Client identified by phone number (E.164 normalization)
+- [x] **CLNT-02**: Client identified by phone number (E.164 normalization)
 - [ ] **CLNT-03**: Master can view client visit history
 - [ ] **CLNT-04**: Client from different messengers recognized as one person by phone
 
@@ -63,11 +63,11 @@
 
 ### Infrastructure (INFR)
 
-- [ ] **INFR-01**: FastAPI backend with PostgreSQL, deployed in Docker Compose on VPS
+- [x] **INFR-01**: FastAPI backend with PostgreSQL, deployed in Docker Compose on VPS
 - [ ] **INFR-02**: REST API for mini-app and web panel
 - [ ] **INFR-03**: Webhook handlers for TG, MAX, VK bots
 - [ ] **INFR-04**: Master authentication (registration/login via messenger)
-- [ ] **INFR-05**: Multi-tenant isolation (master_id on all tables, PostgreSQL RLS)
+- [x] **INFR-05**: Multi-tenant isolation (master_id on all tables, PostgreSQL RLS)
 
 ## v2 Requirements
 
@@ -113,11 +113,11 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INFR-01 | Phase 1 | Pending |
+| INFR-01 | Phase 1 | Complete |
 | INFR-02 | Phase 1 | Pending |
 | INFR-04 | Phase 1 | Pending |
-| INFR-05 | Phase 1 | Pending |
-| CLNT-02 | Phase 1 | Pending |
+| INFR-05 | Phase 1 | Complete |
+| CLNT-02 | Phase 1 | Complete |
 | BOOK-01 | Phase 2 | Pending |
 | BOOK-02 | Phase 2 | Pending |
 | BOOK-03 | Phase 2 | Pending |

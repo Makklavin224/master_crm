@@ -34,7 +34,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans:** 2 plans
 
 Plans:
-- [ ] 01-01-PLAN.md -- Scaffolding, Docker stack, domain models, Alembic migrations, phone normalization, RLS policies
+- [x] 01-01-PLAN.md -- Scaffolding, Docker stack, domain models, Alembic migrations, phone normalization, RLS policies
 - [ ] 01-02-PLAN.md -- Auth system (register/login/me), REST API structure, integration tests, stack verification
 
 ### Phase 2: Booking Engine + Telegram
@@ -127,7 +127,7 @@ Note: Phase 4 (Notifications) depends on Phase 2 only. Phase 6 (Web Panel) depen
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/2 | Planning complete | - |
+| 1. Foundation | 1/2 | In progress | - |
 | 2. Booking Engine + Telegram | 0/4 | Not started | - |
 | 3. Payments + Tax Receipts | 0/3 | Not started | - |
 | 4. Notifications | 0/2 | Not started | - |
