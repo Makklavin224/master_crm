@@ -7,19 +7,19 @@
 
 ### Booking (BOOK)
 
-- [ ] **BOOK-01**: Master can create a service catalog (name, duration, price, category)
-- [ ] **BOOK-02**: Master can configure schedule (working hours per day, breaks, days off)
-- [ ] **BOOK-03**: Client can see available slots and book (select service -> date -> time)
-- [ ] **BOOK-04**: System prevents double-booking (PostgreSQL exclusion constraints)
-- [ ] **BOOK-05**: Client can cancel or reschedule a booking (with configurable deadline)
-- [ ] **BOOK-06**: Master can cancel, reschedule, or manually add a booking
+- [x] **BOOK-01**: Master can create a service catalog (name, duration, price, category)
+- [x] **BOOK-02**: Master can configure schedule (working hours per day, breaks, days off)
+- [x] **BOOK-03**: Client can see available slots and book (select service -> date -> time)
+- [x] **BOOK-04**: System prevents double-booking (PostgreSQL exclusion constraints)
+- [x] **BOOK-05**: Client can cancel or reschedule a booking (with configurable deadline)
+- [x] **BOOK-06**: Master can cancel, reschedule, or manually add a booking
 - [ ] **BOOK-07**: Master receives notification about new booking/cancellation via bot
 
 ### Clients (CLNT)
 
-- [ ] **CLNT-01**: Client database auto-populated from bookings (name, phone)
+- [x] **CLNT-01**: Client database auto-populated from bookings (name, phone)
 - [x] **CLNT-02**: Client identified by phone number (E.164 normalization)
-- [ ] **CLNT-03**: Master can view client visit history
+- [x] **CLNT-03**: Master can view client visit history
 - [ ] **CLNT-04**: Client from different messengers recognized as one person by phone
 
 ### Notifications (NOTF)
@@ -118,14 +118,14 @@
 | INFR-04 | Phase 1 | Complete |
 | INFR-05 | Phase 1 | Complete |
 | CLNT-02 | Phase 1 | Complete |
-| BOOK-01 | Phase 2 | Pending |
-| BOOK-02 | Phase 2 | Pending |
-| BOOK-03 | Phase 2 | Pending |
-| BOOK-04 | Phase 2 | Pending |
-| BOOK-05 | Phase 2 | Pending |
-| BOOK-06 | Phase 2 | Pending |
-| CLNT-01 | Phase 2 | Pending |
-| CLNT-03 | Phase 2 | Pending |
+| BOOK-01 | Phase 2 | Complete |
+| BOOK-02 | Phase 2 | Complete |
+| BOOK-03 | Phase 2 | Complete |
+| BOOK-04 | Phase 2 | Complete |
+| BOOK-05 | Phase 2 | Complete |
+| BOOK-06 | Phase 2 | Complete |
+| CLNT-01 | Phase 2 | Complete |
+| CLNT-03 | Phase 2 | Complete |
 | MSG-01 | Phase 2 | Pending |
 | MSG-02 | Phase 2 | Pending |
 | MSG-07 | Phase 2 | Pending |
