@@ -1,6 +1,5 @@
 """Tests for Telegram bot integration: webhook, adapter pattern, notifications."""
 
-import json
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -21,7 +20,7 @@ class TestWebhookEndpoint:
 
     @pytest.fixture
     def webhook_app(self):
-        """App with mocked bot/dp for webhook tests."""
+        """App for webhook tests."""
         from app.main import create_app
 
         return create_app()
@@ -49,24 +48,32 @@ class TestWebhookEndpoint:
             )
         assert resp.status_code == 403
 
-    @patch("app.main.settings")
-    async def test_webhook_valid_secret_returns_200(self, mock_settings, webhook_app):
+    async def test_webhook_valid_secret_returns_200(self):
         """POST /webhook/telegram with valid secret + update JSON returns 200."""
-        mock_settings.tg_webhook_secret = "test-secret-token"
-        mock_settings.tg_bot_token = "fake:token"
-        mock_settings.base_webhook_url = ""
-        mock_settings.allowed_origins = ["*"]
-
         mock_bot = AsyncMock()
         mock_dp = AsyncMock()
         mock_dp.feed_update = AsyncMock()
 
         with (
+            patch("app.main.settings") as mock_settings,
             patch("app.main.bot", mock_bot),
             patch("app.main.dp", mock_dp),
+            patch("app.main.Update") as mock_update_cls,
         ):
+            mock_settings.tg_webhook_secret = "test-secret-token"
+            mock_settings.tg_bot_token = "fake:token"
+            mock_settings.base_webhook_url = ""
+            mock_settings.allowed_origins = ["*"]
+
+            # Mock Update.model_validate to return a mock update
+            mock_update = MagicMock()
+            mock_update_cls.model_validate.return_value = mock_update
+
+            from app.main import create_app
+
+            test_app = create_app()
             async with AsyncClient(
-                transport=ASGITransport(app=webhook_app), base_url="http://test"
+                transport=ASGITransport(app=test_app), base_url="http://test"
             ) as ac:
                 resp = await ac.post(
                     "/webhook/telegram",
@@ -75,6 +82,7 @@ class TestWebhookEndpoint:
                         "X-Telegram-Bot-Api-Secret-Token": "test-secret-token"
                     },
                 )
+
         assert resp.status_code == 200
         data = resp.json()
         assert data["ok"] is True
