@@ -1,17 +1,197 @@
+import asyncio
+import uuid
+from typing import AsyncGenerator
+
 import pytest
 from httpx import ASGITransport, AsyncClient
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import (
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
 
+from app.core.config import settings
+from app.core.dependencies import get_db
+from app.core.security import create_access_token, hash_password
 from app.main import create_app
+from app.models import Base, Master
+
+# Test database URLs: use the owner role for DDL (create tables, RLS policies)
+# and the app role for DML (actual test queries with RLS enforced).
+# Replace the database name to use a separate test database.
+# The test database must be created beforehand:
+#   docker compose exec db psql -U mastercrm_owner -c "CREATE DATABASE mastercrm_test;"
+#   docker compose exec db psql -U mastercrm_owner -d mastercrm_test \
+#     -c "GRANT ALL ON DATABASE mastercrm_test TO app_user;"
+TEST_DATABASE_URL = settings.database_url.replace(
+    "/mastercrm", "/mastercrm_test"
+)
+TEST_APP_DATABASE_URL = settings.database_app_url.replace(
+    "/mastercrm", "/mastercrm_test"
+)
+
+# Lazy-initialized engines (only created when DB tests actually run)
+_test_engine = None
+_test_app_engine = None
+_test_session_factory = None
+
+
+def _get_test_engine():
+    global _test_engine
+    if _test_engine is None:
+        _test_engine = create_async_engine(TEST_DATABASE_URL, echo=False)
+    return _test_engine
+
+
+def _get_test_app_engine():
+    global _test_app_engine
+    if _test_app_engine is None:
+        _test_app_engine = create_async_engine(
+            TEST_APP_DATABASE_URL, echo=False
+        )
+    return _test_app_engine
+
+
+def _get_test_session_factory():
+    global _test_session_factory
+    if _test_session_factory is None:
+        _test_session_factory = async_sessionmaker(
+            _get_test_app_engine(),
+            class_=AsyncSession,
+            expire_on_commit=False,
+        )
+    return _test_session_factory
+
+
+@pytest.fixture(scope="session")
+def event_loop():
+    loop = asyncio.new_event_loop()
+    yield loop
+    loop.close()
+
+
+_db_initialized = False
+
+
+async def _ensure_test_db():
+    """Create test database tables once (idempotent)."""
+    global _db_initialized
+    if _db_initialized:
+        return
+    engine = _get_test_engine()
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.create_all)
+        # Grant permissions to app_user on test tables
+        await conn.execute(
+            text(
+                "GRANT SELECT, INSERT, UPDATE, DELETE "
+                "ON ALL TABLES IN SCHEMA public TO app_user"
+            )
+        )
+        await conn.execute(
+            text("GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO app_user")
+        )
+        # Enable RLS on tenant-scoped tables
+        rls_tables = [
+            "services",
+            "bookings",
+            "payments",
+            "master_schedules",
+            "schedule_exceptions",
+            "master_clients",
+        ]
+        for table in rls_tables:
+            await conn.execute(
+                text(f"ALTER TABLE {table} ENABLE ROW LEVEL SECURITY")
+            )
+            await conn.execute(
+                text(f"ALTER TABLE {table} FORCE ROW LEVEL SECURITY")
+            )
+            await conn.execute(
+                text(
+                    f"CREATE POLICY IF NOT EXISTS {table}_master_isolation "
+                    f"ON {table} "
+                    f"USING (master_id = current_setting("
+                    f"'app.current_master_id', true)::uuid)"
+                )
+            )
+    _db_initialized = True
+
+
+@pytest.fixture
+async def db_session() -> AsyncGenerator[AsyncSession, None]:
+    """Provide a transactional test session that rolls back after each test.
+    Automatically initializes the test database on first use."""
+    await _ensure_test_db()
+    async with _get_test_session_factory()() as session:
+        yield session
+        await session.rollback()
 
 
 @pytest.fixture
 def app():
+    """Create a fresh app instance (no DB override -- used by non-DB tests)."""
     return create_app()
 
 
 @pytest.fixture
-async def client(app):
+def app_with_db(db_session):
+    """Create app with test DB session override (used by DB-dependent tests)."""
+    application = create_app()
+
+    async def override_get_db():
+        yield db_session
+
+    application.dependency_overrides[get_db] = override_get_db
+    return application
+
+
+@pytest.fixture
+async def simple_client(app) -> AsyncGenerator[AsyncClient, None]:
+    """Lightweight async HTTP client (no DB -- for health/smoke tests)."""
     async with AsyncClient(
         transport=ASGITransport(app=app), base_url="http://test"
     ) as ac:
         yield ac
+
+
+@pytest.fixture
+async def client(app_with_db) -> AsyncGenerator[AsyncClient, None]:
+    """Async HTTP client for testing (uses DB-backed app)."""
+    async with AsyncClient(
+        transport=ASGITransport(app=app_with_db), base_url="http://test"
+    ) as ac:
+        yield ac
+
+
+@pytest.fixture
+async def master_factory(db_session):
+    """Factory to create test masters directly in the database."""
+
+    async def _create(
+        email: str | None = None,
+        name: str = "Test Master",
+        password: str = "testpass123",
+    ) -> Master:
+        if email is None:
+            email = f"test-{uuid.uuid4().hex[:8]}@example.com"
+        master = Master(
+            email=email,
+            hashed_password=hash_password(password),
+            name=name,
+        )
+        db_session.add(master)
+        await db_session.flush()
+        return master
+
+    return _create
+
+
+@pytest.fixture
+async def auth_headers(master_factory):
+    """Create a master and return auth headers with valid JWT."""
+    master = await master_factory()
+    token = create_access_token(data={"sub": str(master.id)})
+    return {"Authorization": f"Bearer {token}"}, master
