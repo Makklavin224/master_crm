@@ -34,13 +34,11 @@ Declared values (must be multiples of 4):
 | Token | Value | Usage |
 |-------|-------|-------|
 | xs | 4px | Icon-to-text gaps, inline element padding |
-| sm | 8px | Compact element spacing, input internal padding |
-| md | 12px | Card internal padding, between form fields |
-| base | 16px | Default element spacing, section content padding |
-| lg | 20px | Between cards in a list |
-| xl | 24px | Section-level vertical rhythm |
-| 2xl | 32px | Page-level top/bottom padding |
-| 3xl | 48px | Major section breaks (e.g., between booking flow steps) |
+| sm | 8px | Compact element spacing, input internal padding, gap between slot grid cells |
+| md | 16px | Card internal padding, between form fields, default element spacing, section content padding |
+| lg | 24px | Between cards in a list, section-level vertical rhythm |
+| xl | 32px | Page-level top/bottom padding |
+| 2xl | 48px | Major section breaks (e.g., between booking flow steps) |
 
 Exceptions:
 - Touch targets: minimum 44px height for all tappable elements (buttons, time slot cells, list items). This is iOS HIG minimum and critical for thumb-friendly booking flow.
@@ -81,7 +79,7 @@ Notes:
 | Border | `#E5E7EB` (gray-200) | Input borders, card borders, dividers |
 
 **Accent `#6C5CE7` reserved for:**
-1. Primary CTA buttons ("Записаться", "Далее", "Сохранить")
+1. Primary CTA buttons ("Записаться", "Далее", "Сохранить настройки")
 2. Active booking flow step indicator (current step dot/bar)
 3. Selected time slot highlight border + background tint (`#6C5CE7` at 8% opacity = `#6C5CE714`)
 4. Selected date highlight in calendar
@@ -106,6 +104,8 @@ Notes:
 | 4 | Client Info | `BookingForm` (name input + phone input with +7 mask, auto-filled if returning client) |
 | 5 | Confirmation | `BookingSummary` (service, date, time, price -- all in one card) + CTA button |
 
+**Focal point (Step 1 -- Service Selection):** The service card list is the primary visual anchor. The first visible `ServiceCard` occupies the upper third of the content area (below heading + step indicator). Each card uses md (16px) internal padding, emoji at 32px size left-aligned, service name as Title (16px semibold), and duration + price as Body (14px regular, text-secondary) on a second line. This ensures the user's eye lands on the service options immediately upon entry.
+
 **Flow navigation:**
 - Linear wizard with back button (uses Telegram back button via platform bridge)
 - Step indicator: horizontal dot/bar progress at top (5 dots, current = accent, completed = accent filled, upcoming = gray)
@@ -126,6 +126,7 @@ Notes:
 - Bottom tab bar: 5 tabs (Dashboard, Bookings, Services, Clients, Settings)
 - Tab icons from Lucide: `calendar-days`, `book-open`, `scissors` (or relevant service icon), `users`, `settings`
 - Active tab: accent color icon + label. Inactive: text-secondary icon, no label.
+- Inactive tab icons must include `aria-label` with the tab name (e.g., `aria-label="Записи"` for `book-open`, `aria-label="Услуги"` for `scissors`, `aria-label="Клиенты"` for `users`, `aria-label="Настройки"` for `settings`, `aria-label="Сегодня"` for `calendar-days`). Active tabs already have visible labels and do not need `aria-label`.
 
 ### Shared Components
 
@@ -160,7 +161,7 @@ Notes:
 | Interaction | Behavior |
 |-------------|----------|
 | Cancel booking (master) | Tap cancel icon -> confirmation bottom sheet -> confirm button (destructive red) -> API call -> success toast. |
-| Add service | Tap "+" button -> full-screen form slides up from bottom -> fill fields -> "Сохранить" -> list refreshes. |
+| Add service | Tap "+" button -> full-screen form slides up from bottom -> fill fields -> "Сохранить настройки" -> list refreshes. |
 | Delete service | Swipe left reveals red delete zone, or tap trash icon -> confirmation dialog. |
 | Tab switch | Instant, no transition animation. Active tab indicator moves to new position. |
 
@@ -228,7 +229,7 @@ All UI copy is in Russian. The tone is friendly-professional: approachable but n
 | Clients empty heading | Нет клиентов |
 | Clients empty body | Клиенты появятся автоматически после первой записи. |
 | Settings heading | Настройки |
-| Save CTA | Сохранить |
+| Save CTA (settings) | Сохранить настройки |
 | Delete service CTA | Удалить |
 | Share booking link CTA | Поделиться ссылкой |
 
@@ -260,7 +261,7 @@ All UI copy is in Russian. The tone is friendly-professional: approachable but n
 |--------|---------------|---------------|
 | Cancel booking (client) | Да, отменить | Нет, оставить |
 | Cancel booking (master) | Отменить запись | Назад |
-| Delete service | Удалить | Отмена |
+| Delete service | Удалить | Не удалять |
 
 ---
 
@@ -348,6 +349,7 @@ No component registries are used. All UI components are custom-built with Tailwi
 - Color contrast: text-primary on white = 14.5:1 (AAA), text-secondary on white = 4.6:1 (AA), white on accent = 4.7:1 (AA)
 - Form inputs: associated labels, error messages linked via `aria-describedby`
 - Calendar: keyboard navigable (react-day-picker built-in a11y)
+- Inactive tab icons: must include `aria-label` attribute with the Russian tab name (see Master navigation section for exact values)
 - Russian language throughout: no mixed-language strings in UI
 
 ---
