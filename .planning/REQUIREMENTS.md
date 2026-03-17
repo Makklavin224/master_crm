@@ -44,14 +44,14 @@
 
 ### Messengers (MSG)
 
-- [ ] **MSG-01**: Telegram Bot -- webhook processing, notifications to master and clients
+- [x] **MSG-01**: Telegram Bot -- webhook processing, notifications to master and clients
 - [ ] **MSG-02**: Telegram Mini App -- client booking, master management
 - [ ] **MSG-03**: MAX Bot -- webhook processing, notifications
 - [ ] **MSG-04**: MAX Mini App -- same functionality as TG Mini App
 - [ ] **MSG-05**: VK Bot -- webhook processing, notifications
 - [ ] **MSG-06**: VK Mini App -- same functionality as TG Mini App
 - [ ] **MSG-07**: Unified React Mini App code with platform detection (TG/MAX/VK bridge adapters)
-- [ ] **MSG-08**: Messenger Adapter pattern on backend (unified notification router)
+- [x] **MSG-08**: Messenger Adapter pattern on backend (unified notification router)
 
 ### Web Panel (WEB)
 
@@ -65,7 +65,7 @@
 
 - [x] **INFR-01**: FastAPI backend with PostgreSQL, deployed in Docker Compose on VPS
 - [x] **INFR-02**: REST API for mini-app and web panel
-- [ ] **INFR-03**: Webhook handlers for TG, MAX, VK bots
+- [x] **INFR-03**: Webhook handlers for TG, MAX, VK bots
 - [x] **INFR-04**: Master authentication (registration/login via messenger)
 - [x] **INFR-05**: Multi-tenant isolation (master_id on all tables, PostgreSQL RLS)
 
@@ -126,11 +126,11 @@
 | BOOK-06 | Phase 2 | Complete |
 | CLNT-01 | Phase 2 | Complete |
 | CLNT-03 | Phase 2 | Complete |
-| MSG-01 | Phase 2 | Pending |
+| MSG-01 | Phase 2 | Complete |
 | MSG-02 | Phase 2 | Pending |
 | MSG-07 | Phase 2 | Pending |
-| MSG-08 | Phase 2 | Pending |
-| INFR-03 | Phase 2 | Pending |
+| MSG-08 | Phase 2 | Complete |
+| INFR-03 | Phase 2 | Complete |
 | PAY-01 | Phase 3 | Pending |
 | PAY-02 | Phase 3 | Pending |
 | PAY-03 | Phase 3 | Pending |

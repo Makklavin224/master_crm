@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 02-01-PLAN.md
-last_updated: "2026-03-17T16:32:53.814Z"
-last_activity: 2026-03-17 -- Plan 02-01 complete, backend booking engine built
+stopped_at: Completed 02-02-PLAN.md
+last_updated: "2026-03-17T16:47:21.000Z"
+last_activity: 2026-03-17 -- Plan 02-02 complete, Telegram bot integration
 progress:
   total_phases: 6
   completed_phases: 1
   total_plans: 6
-  completed_plans: 3
-  percent: 18
+  completed_plans: 4
+  percent: 24
 ---
 
 # Project State
@@ -21,33 +21,33 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-17)
 
 **Core value:** Master taps "Complete" -- client gets SBP payment link -- tax receipt auto-generates. 3 steps instead of 9.
-**Current focus:** Phase 2 -- Booking Engine + Telegram (Plan 02-01 complete)
+**Current focus:** Phase 2 -- Booking Engine + Telegram (Plan 02-02 complete)
 
 ## Current Position
 
 Phase: 2 of 6 (Booking Engine + Telegram)
-Plan: 1 of 4 in current phase (02-01 complete)
+Plan: 2 of 4 in current phase (02-02 complete)
 Status: In progress
-Last activity: 2026-03-17 -- Plan 02-01 complete, backend booking engine built
+Last activity: 2026-03-17 -- Plan 02-02 complete, Telegram bot integration
 
-Progress: [██░░░░░░░░] 18%
+Progress: [██▒░░░░░░░] 24%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
-- Average duration: 13min
-- Total execution time: 0.65 hours
+- Total plans completed: 4
+- Average duration: 12min
+- Total execution time: 0.83 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1. Foundation | 2/2 | 26min | 13min |
-| 2. Booking Engine | 1/4 | 13min | 13min |
+| 2. Booking Engine | 2/4 | 24min | 12min |
 
 **Recent Trend:**
-- Last 5 plans: 21min, 5min, 13min
+- Last 5 plans: 21min, 5min, 13min, 11min
 - Trend: consistent
 
 *Updated after each plan completion*
@@ -74,6 +74,10 @@ Recent decisions affecting current work:
 - Dual-auth pattern (get_optional_master) for cancel/reschedule: JWT present = master, absent = client
 - Slot calculation in master's local timezone using zoneinfo.ZoneInfo
 - Booking exclusion constraint on all rows; cancelled bookings filtered at application level via SELECT FOR UPDATE
+- Bot/Dispatcher as module-level singletons guarded by token presence (None when TG_BOT_TOKEN not set)
+- MessengerAdapter ABC pattern for multi-messenger extensibility (TelegramAdapter first, MAX/VK future)
+- Fire-and-forget notifications in booking_service: try/except wrapping, logged but never propagated
+- DatabaseMiddleware for aiogram handlers: separate from FastAPI DI, injects async DB session with commit/rollback
 
 ### Pending Todos
 
@@ -87,6 +91,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-17T16:32:53.813Z
-Stopped at: Completed 02-01-PLAN.md
+Last session: 2026-03-17T16:47:21.000Z
+Stopped at: Completed 02-02-PLAN.md
 Resume file: None
