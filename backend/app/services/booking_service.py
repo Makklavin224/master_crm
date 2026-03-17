@@ -1,5 +1,6 @@
 """Booking service: create, cancel, reschedule with double-booking prevention."""
 
+import logging
 import uuid
 from datetime import datetime, timedelta, timezone
 
@@ -9,12 +10,81 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.models.booking import Booking
+from app.models.master import Master
 from app.models.service import Service
 from app.services.client_service import (
     find_or_create_client,
     get_or_create_master_client,
     update_visit_stats,
 )
+
+logger = logging.getLogger(__name__)
+
+
+async def _notify_master(
+    db: AsyncSession,
+    booking: Booking,
+    notification_type: str,
+) -> None:
+    """Send a booking notification to the master via their registered platform.
+
+    Fire-and-forget: logs errors but never raises.
+    """
+    try:
+        from app.bots.common.adapter import BookingNotification
+        from app.bots.common.notification import notification_service
+
+        # Load master to get tg_user_id
+        result = await db.execute(
+            select(Master).where(Master.id == booking.master_id)
+        )
+        master = result.scalar_one_or_none()
+        if not master or not master.tg_user_id:
+            return
+
+        # Load related objects if not already loaded
+        if not booking.service:
+            svc_result = await db.execute(
+                select(Service).where(Service.id == booking.service_id)
+            )
+            service = svc_result.scalar_one_or_none()
+        else:
+            service = booking.service
+
+        from app.models.client import Client
+
+        if not booking.client:
+            client_result = await db.execute(
+                select(Client).where(Client.id == booking.client_id)
+            )
+            client = client_result.scalar_one_or_none()
+        else:
+            client = booking.client
+
+        client_name = client.name if client else "Client"
+        service_name = service.name if service else "Service"
+        service_price = service.price if service else None
+
+        notif = BookingNotification(
+            master_platform_id=master.tg_user_id,
+            client_name=client_name,
+            service_name=service_name,
+            booking_time=booking.starts_at.strftime("%H:%M"),
+            booking_date=booking.starts_at.strftime("%d.%m.%Y"),
+            booking_id=str(booking.id),
+            notification_type=notification_type,
+            price=service_price,
+        )
+
+        await notification_service.send_booking_notification(
+            "telegram", notif
+        )
+    except Exception:
+        logger.exception(
+            "Failed to send %s notification for booking %s",
+            notification_type,
+            booking.id,
+        )
 
 
 async def create_booking(
@@ -35,6 +105,7 @@ async def create_booking(
     3. SELECT FOR UPDATE to check for overlapping bookings
     4. Find or create client
     5. Create booking + update visit stats
+    6. Send notification to master
     """
     # 1. Load service
     svc_result = await db.execute(
@@ -105,6 +176,9 @@ async def create_booking(
     await db.flush()
     await db.refresh(booking)
 
+    # 6. Send notification to master (fire-and-forget)
+    await _notify_master(db, booking, "new")
+
     return booking
 
 
@@ -145,6 +219,10 @@ async def cancel_booking(
     )
     await db.flush()
     await db.refresh(booking)
+
+    # Send cancellation notification to master (fire-and-forget)
+    await _notify_master(db, booking, "cancelled")
+
     return booking
 
 
@@ -213,6 +291,10 @@ async def reschedule_booking(
     booking.ends_at = new_ends_at
     await db.flush()
     await db.refresh(booking)
+
+    # Send reschedule notification to master (fire-and-forget)
+    await _notify_master(db, booking, "rescheduled")
+
     return booking
 
 

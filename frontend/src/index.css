@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@theme {
+  --color-accent: #6C5CE7;
+  --color-accent-light: #6C5CE714;
+  --color-destructive: #EF4444;
+  --color-success: #10B981;
+  --color-surface: #F4F5F7;
+  --color-text-primary: #1A1A2E;
+  --color-text-secondary: #6B7280;
+  --color-border: #E5E7EB;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #FFFFFF;
+  color: #1A1A2E;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Prevent overscroll bounce in Telegram WebView */
+body {
+  overscroll-behavior: none;
+}
+
+/* Custom scrollbar (minimal) */
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* Step indicator animation */
+@keyframes scale-in {
+  from { transform: scale(0); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.animate-scale-in {
+  animation: scale-in 400ms ease-out forwards;
+}
