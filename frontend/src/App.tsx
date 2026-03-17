@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { PlatformProvider } from "./platform/context.tsx";
 import { ToastContainer } from "./components/ui/Toast.tsx";
@@ -9,6 +9,17 @@ import { BookingForm } from "./pages/client/BookingForm.tsx";
 import { Confirmation } from "./pages/client/Confirmation.tsx";
 import { MyBookings } from "./pages/client/MyBookings.tsx";
 
+// Master panel
+import { BottomTabBar } from "./components/BottomTabBar.tsx";
+import { Dashboard } from "./pages/master/Dashboard.tsx";
+import { Services } from "./pages/master/Services.tsx";
+import { ServiceForm } from "./pages/master/ServiceForm.tsx";
+import { Schedule } from "./pages/master/Schedule.tsx";
+import { Bookings } from "./pages/master/Bookings.tsx";
+import { Clients } from "./pages/master/Clients.tsx";
+import { ClientDetail } from "./pages/master/ClientDetail.tsx";
+import { Settings } from "./pages/master/Settings.tsx";
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -17,6 +28,15 @@ const queryClient = new QueryClient({
     },
   },
 });
+
+function MasterLayout() {
+  return (
+    <div className="min-h-full flex flex-col bg-white pb-[calc(56px+16px+env(safe-area-inset-bottom,0px))]">
+      <Outlet />
+      <BottomTabBar />
+    </div>
+  );
+}
 
 export default function App() {
   return (
@@ -35,8 +55,19 @@ export default function App() {
               {/* Client bookings */}
               <Route path="/my-bookings" element={<MyBookings />} />
 
-              {/* Master panel routes (Plan 04) */}
-              {/* <Route path="/master/*" element={<MasterPanel />} /> */}
+              {/* Master panel with bottom tab bar */}
+              <Route path="/master" element={<MasterLayout />}>
+                <Route index element={<Navigate to="/master/dashboard" replace />} />
+                <Route path="dashboard" element={<Dashboard />} />
+                <Route path="bookings" element={<Bookings />} />
+                <Route path="services" element={<Services />} />
+                <Route path="services/new" element={<ServiceForm />} />
+                <Route path="services/:id" element={<ServiceForm />} />
+                <Route path="schedule" element={<Schedule />} />
+                <Route path="clients" element={<Clients />} />
+                <Route path="clients/:id" element={<ClientDetail />} />
+                <Route path="settings" element={<Settings />} />
+              </Route>
 
               {/* Default redirect */}
               <Route path="*" element={<Navigate to="/my-bookings" replace />} />

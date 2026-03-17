@@ -7,7 +7,7 @@ export const ROUTES = {
   BOOK_CONFIRM: "/book/:masterId/confirm",
   MY_BOOKINGS: "/my-bookings",
   // Master panel (Plan 04)
-  MASTER_DASHBOARD: "/master",
+  MASTER_DASHBOARD: "/master/dashboard",
   MASTER_BOOKINGS: "/master/bookings",
   MASTER_SERVICES: "/master/services",
   MASTER_CLIENTS: "/master/clients",
