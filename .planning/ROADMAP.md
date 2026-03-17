@@ -47,13 +47,13 @@ Plans:
   3. Two clients attempting to book the same slot simultaneously results in one success and one rejection (no double-booking)
   4. Client can cancel or reschedule a booking (respecting the master's configurable deadline); master can cancel, reschedule, or manually add a booking
   5. Master receives a Telegram bot notification when a new booking is created or cancelled; client data (name, phone) is auto-captured into the client database with visit history visible
-**Plans**: TBD
+**Plans:** 4 plans
 
 Plans:
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
-- [ ] 02-03: TBD
-- [ ] 02-04: TBD
+- [ ] 02-01-PLAN.md -- Backend booking engine: service CRUD, schedule management, slot calculation, booking CRUD with double-booking prevention, client auto-population
+- [ ] 02-02-PLAN.md -- Telegram bot: aiogram webhook integration, command handlers (/start, /today, /link, /settings), MessengerAdapter notification pattern
+- [ ] 02-03-PLAN.md -- React mini-app: platform detection shell, UI components per design contract, 5-step client booking flow
+- [ ] 02-04-PLAN.md -- Master management panel: dashboard, service CRUD, schedule editor, booking management, client list with history, settings
 
 ### Phase 3: Payments + Tax Receipts
 **Goal**: Masters can complete a visit and collect payment; when Robokassa is connected, the client receives an SBP payment link and a tax receipt is automatically generated in "Moy Nalog"
@@ -128,7 +128,7 @@ Note: Phase 4 (Notifications) depends on Phase 2 only. Phase 6 (Web Panel) depen
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/2 | Complete   | 2026-03-17 |
-| 2. Booking Engine + Telegram | 0/4 | Not started | - |
+| 2. Booking Engine + Telegram | 0/4 | Planning complete | - |
 | 3. Payments + Tax Receipts | 0/3 | Not started | - |
 | 4. Notifications | 0/2 | Not started | - |
 | 5. Multi-Messenger Expansion | 0/3 | Not started | - |
