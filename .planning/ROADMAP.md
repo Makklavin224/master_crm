@@ -51,8 +51,8 @@ Plans:
 
 Plans:
 - [x] 02-01-PLAN.md -- Backend booking engine: service CRUD, schedule management, slot calculation, booking CRUD with double-booking prevention, client auto-population
-- [ ] 02-02-PLAN.md -- Telegram bot: aiogram webhook integration, command handlers (/start, /today, /link, /settings), MessengerAdapter notification pattern
-- [ ] 02-03-PLAN.md -- React mini-app: platform detection shell, UI components per design contract, 5-step client booking flow
+- [x] 02-02-PLAN.md -- Telegram bot: aiogram webhook integration, command handlers (/start, /today, /link, /settings), MessengerAdapter notification pattern
+- [x] 02-03-PLAN.md -- React mini-app: platform detection shell, UI components per design contract, 5-step client booking flow
 - [ ] 02-04-PLAN.md -- Master management panel: dashboard, service CRUD, schedule editor, booking management, client list with history, settings
 
 ### Phase 3: Payments + Tax Receipts
@@ -128,7 +128,7 @@ Note: Phase 4 (Notifications) depends on Phase 2 only. Phase 6 (Web Panel) depen
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/2 | Complete   | 2026-03-17 |
-| 2. Booking Engine + Telegram | 1/4 | In Progress | - |
+| 2. Booking Engine + Telegram | 3/4 | In Progress | - |
 | 3. Payments + Tax Receipts | 0/3 | Not started | - |
 | 4. Notifications | 0/2 | Not started | - |
 | 5. Multi-Messenger Expansion | 0/3 | Not started | - |

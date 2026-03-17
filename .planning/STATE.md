@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 02-02-PLAN.md
-last_updated: "2026-03-17T16:47:21.000Z"
-last_activity: 2026-03-17 -- Plan 02-02 complete, Telegram bot integration
+stopped_at: Completed 02-03-PLAN.md
+last_updated: "2026-03-17T17:05:00.000Z"
+last_activity: 2026-03-17 -- Plan 02-03 complete, React mini-app with client booking flow
 progress:
   total_phases: 6
   completed_phases: 1
   total_plans: 6
-  completed_plans: 4
-  percent: 24
+  completed_plans: 5
+  percent: 83
 ---
 
 # Project State
@@ -21,33 +21,33 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-17)
 
 **Core value:** Master taps "Complete" -- client gets SBP payment link -- tax receipt auto-generates. 3 steps instead of 9.
-**Current focus:** Phase 2 -- Booking Engine + Telegram (Plan 02-02 complete)
+**Current focus:** Phase 2 -- Booking Engine + Telegram (Plan 02-03 complete)
 
 ## Current Position
 
 Phase: 2 of 6 (Booking Engine + Telegram)
-Plan: 2 of 4 in current phase (02-02 complete)
+Plan: 3 of 4 in current phase (02-03 complete)
 Status: In progress
-Last activity: 2026-03-17 -- Plan 02-02 complete, Telegram bot integration
+Last activity: 2026-03-17 -- Plan 02-03 complete, React mini-app with client booking flow
 
-Progress: [██▒░░░░░░░] 24%
+Progress: [████████░░] 83%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 4
-- Average duration: 12min
-- Total execution time: 0.83 hours
+- Total plans completed: 5
+- Average duration: 14min
+- Total execution time: 1.17 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1. Foundation | 2/2 | 26min | 13min |
-| 2. Booking Engine | 2/4 | 24min | 12min |
+| 2. Booking Engine | 3/4 | 49min | 16min |
 
 **Recent Trend:**
-- Last 5 plans: 21min, 5min, 13min, 11min
+- Last 5 plans: 21min, 5min, 13min, 11min, 25min
 - Trend: consistent
 
 *Updated after each plan completion*
@@ -78,6 +78,11 @@ Recent decisions affecting current work:
 - MessengerAdapter ABC pattern for multi-messenger extensibility (TelegramAdapter first, MAX/VK future)
 - Fire-and-forget notifications in booking_service: try/except wrapping, logged but never propagated
 - DatabaseMiddleware for aiogram handlers: separate from FastAPI DI, injects async DB session with commit/rollback
+- PlatformBridge adapter pattern for multi-messenger mini-app: TG adapter wraps @telegram-apps/sdk-react, stub for web/dev
+- Zustand for booking flow state (lightweight wizard state, no Redux boilerplate)
+- TanStack Query with staleTime:0 on slot queries (always refetch, prevent stale slot display)
+- Tailwind CSS 4.2 with @theme design tokens matching UI-SPEC (#6C5CE7 accent, Inter font)
+- 409 conflict handling on booking: redirect to time picker with toast, preserving flow continuity
 
 ### Pending Todos
 
@@ -91,6 +96,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-17T16:47:21.000Z
-Stopped at: Completed 02-02-PLAN.md
+Last session: 2026-03-17T17:05:00.000Z
+Stopped at: Completed 02-03-PLAN.md
 Resume file: None

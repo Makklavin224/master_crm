@@ -45,12 +45,12 @@
 ### Messengers (MSG)
 
 - [x] **MSG-01**: Telegram Bot -- webhook processing, notifications to master and clients
-- [ ] **MSG-02**: Telegram Mini App -- client booking, master management
+- [x] **MSG-02**: Telegram Mini App -- client booking, master management
 - [ ] **MSG-03**: MAX Bot -- webhook processing, notifications
 - [ ] **MSG-04**: MAX Mini App -- same functionality as TG Mini App
 - [ ] **MSG-05**: VK Bot -- webhook processing, notifications
 - [ ] **MSG-06**: VK Mini App -- same functionality as TG Mini App
-- [ ] **MSG-07**: Unified React Mini App code with platform detection (TG/MAX/VK bridge adapters)
+- [x] **MSG-07**: Unified React Mini App code with platform detection (TG/MAX/VK bridge adapters)
 - [x] **MSG-08**: Messenger Adapter pattern on backend (unified notification router)
 
 ### Web Panel (WEB)
@@ -127,8 +127,8 @@
 | CLNT-01 | Phase 2 | Complete |
 | CLNT-03 | Phase 2 | Complete |
 | MSG-01 | Phase 2 | Complete |
-| MSG-02 | Phase 2 | Pending |
-| MSG-07 | Phase 2 | Pending |
+| MSG-02 | Phase 2 | Complete |
+| MSG-07 | Phase 2 | Complete |
 | MSG-08 | Phase 2 | Complete |
 | INFR-03 | Phase 2 | Complete |
 | PAY-01 | Phase 3 | Pending |
