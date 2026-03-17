@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, String, text
+from sqlalchemy import Boolean, DateTime, Integer, String, text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -27,6 +27,19 @@ class Master(Base):
         String(50), default="Europe/Moscow"
     )
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+
+    # Telegram integration
+    tg_user_id: Mapped[str | None] = mapped_column(
+        String(100), unique=True, index=True
+    )
+
+    # Booking settings
+    buffer_minutes: Mapped[int] = mapped_column(Integer, default=0)
+    cancellation_deadline_hours: Mapped[int] = mapped_column(
+        Integer, default=24
+    )
+    slot_interval_minutes: Mapped[int] = mapped_column(Integer, default=30)
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=text("now()")
     )

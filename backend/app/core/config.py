@@ -31,6 +31,12 @@ class Settings(BaseSettings):
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
 
+    # Telegram
+    tg_bot_token: str = ""
+    tg_webhook_secret: str = ""
+    mini_app_url: str = ""
+    base_webhook_url: str = ""
+
     # CORS
     allowed_origins: list[str] = ["http://localhost:3000"]
 
