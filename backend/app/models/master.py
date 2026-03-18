@@ -33,6 +33,14 @@ class Master(Base):
         String(100), unique=True, index=True
     )
 
+    # Phase 5: Multi-messenger integration
+    max_user_id: Mapped[str | None] = mapped_column(
+        String(100), unique=True, index=True
+    )
+    vk_user_id: Mapped[str | None] = mapped_column(
+        String(100), unique=True, index=True
+    )
+
     # Booking settings
     buffer_minutes: Mapped[int] = mapped_column(Integer, default=0)
     cancellation_deadline_hours: Mapped[int] = mapped_column(

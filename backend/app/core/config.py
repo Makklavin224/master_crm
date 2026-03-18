@@ -37,6 +37,18 @@ class Settings(BaseSettings):
     mini_app_url: str = ""
     base_webhook_url: str = ""
 
+    # MAX (VK Teams)
+    max_bot_token: str = ""
+    max_webhook_secret: str = ""  # X-Max-Bot-Api-Secret header value
+    max_bot_username: str = ""  # For deep link generation
+
+    # VK
+    vk_group_token: str = ""  # Community bot access token
+    vk_app_id: str = ""  # VK Mini App application ID
+    vk_app_secret: str = ""  # VK Mini App secret key (for sign validation)
+    vk_confirmation_token: str = ""  # VK Callback API confirmation string
+    vk_secret_key: str = ""  # VK Callback API secret key
+
     # CORS
     allowed_origins: list[str] = ["http://localhost:3000"]
 

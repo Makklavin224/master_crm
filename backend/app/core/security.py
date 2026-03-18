@@ -1,7 +1,9 @@
+import base64
 import hashlib
 import hmac
 import json
 import urllib.parse
+from collections import OrderedDict
 from datetime import datetime, timedelta, timezone
 
 import jwt
@@ -106,4 +108,71 @@ def validate_tg_init_data(
 
         return None
     except (ValueError, KeyError, json.JSONDecodeError):
+        return None
+
+
+def validate_max_init_data(
+    init_data_raw: str, bot_token: str, max_age_seconds: int = 86400
+) -> dict | None:
+    """Validate MAX Mini App initData. Algorithm identical to Telegram."""
+    return validate_tg_init_data(init_data_raw, bot_token, max_age_seconds)
+
+
+def validate_vk_launch_params(
+    query_string: str, app_secret: str
+) -> dict | None:
+    """
+    Validate VK Mini App launch parameters.
+
+    Verifies HMAC-SHA256 signature on vk_* params using the app secret.
+    Returns flattened dict of all params on success, None on failure.
+    """
+    if not query_string or not app_secret:
+        return None
+
+    try:
+        parsed = urllib.parse.parse_qs(query_string, keep_blank_values=True)
+
+        # Extract sign
+        sign_values = parsed.get("sign")
+        if not sign_values:
+            return None
+        received_sign = sign_values[0]
+
+        # Filter params starting with "vk_", sort alphabetically
+        vk_params = OrderedDict(
+            sorted(
+                (k, v[0])
+                for k, v in parsed.items()
+                if k.startswith("vk_")
+            )
+        )
+
+        # URL-encode sorted vk_* params
+        encoded_string = urllib.parse.urlencode(vk_params)
+
+        # HMAC-SHA256 with app_secret
+        hash_bytes = hmac.new(
+            app_secret.encode("utf-8"),
+            encoded_string.encode("utf-8"),
+            hashlib.sha256,
+        ).digest()
+
+        # base64-encode, strip trailing "=", URL-safe replacements
+        computed_sign = (
+            base64.b64encode(hash_bytes)
+            .decode("utf-8")
+            .rstrip("=")
+            .replace("+", "-")
+            .replace("/", "_")
+        )
+
+        # Timing-safe comparison
+        if not hmac.compare_digest(computed_sign, received_sign):
+            return None
+
+        # Return all params as flat dict
+        return {k: v[0] for k, v in parsed.items()}
+
+    except (ValueError, KeyError):
         return None
