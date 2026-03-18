@@ -112,12 +112,12 @@ Plans:
   2. Master can search clients by name or phone and view each client's full visit history
   3. Master can create, edit, and delete services with categories; changes are immediately reflected in the mini-app
   4. Master can view payment history with statuses and receipt statuses; can configure schedule settings (working hours, breaks, days off) and profile information
-**Plans**: TBD
+**Plans:** 3 plans
 
 Plans:
-- [ ] 06-01: TBD
-- [ ] 06-02: TBD
-- [ ] 06-03: TBD
+- [ ] 06-01-PLAN.md -- Project scaffolding, auth (email + QR + magic link), sidebar layout, theme toggle, Docker/Caddy integration
+- [ ] 06-02-PLAN.md -- Calendar page (FullCalendar day/week/month views) + Services page (CRUD table with modal)
+- [ ] 06-03-PLAN.md -- Clients page (search + detail), Payments page (history + filters), Settings page (schedule/notifications/payment/profile)
 
 ## Progress
 
