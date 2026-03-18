@@ -131,6 +131,112 @@ class TelegramAdapter(MessengerAdapter):
             )
             return False
 
+    async def send_reminder(
+        self,
+        platform_user_id: str,
+        service_name: str,
+        booking_date: str,
+        booking_time: str,
+        master_name: str,
+        address_note: str | None,
+        booking_id: str,
+        reminder_type: str,
+    ) -> bool:
+        """Send a booking reminder to a client via Telegram."""
+        if reminder_type == "reminder_1":
+            text = (
+                f"\u23f0 <b>\u041d\u0430\u043f\u043e\u043c\u0438\u043d\u0430\u043d\u0438\u0435</b>\n\n"
+                f"\u041d\u0430\u043f\u043e\u043c\u0438\u043d\u0430\u0435\u043c: <b>{service_name}</b> "
+                f"\u0437\u0430\u0432\u0442\u0440\u0430 \u0432 {booking_time} "
+                f"\u0443 \u043c\u0430\u0441\u0442\u0435\u0440\u0430 {master_name}."
+            )
+        else:
+            text = (
+                f"\u23f0 <b>\u041d\u0430\u043f\u043e\u043c\u0438\u043d\u0430\u043d\u0438\u0435</b>\n\n"
+                f"\u0427\u0435\u0440\u0435\u0437 {reminder_type}: <b>{service_name}</b> "
+                f"\u0432 {booking_time} "
+                f"\u0443 \u043c\u0430\u0441\u0442\u0435\u0440\u0430 {master_name}."
+            )
+
+        if address_note:
+            text += f"\n\U0001f4cd \u0410\u0434\u0440\u0435\u0441: {address_note}"
+
+        keyboard = InlineKeyboardMarkup(
+            inline_keyboard=[
+                [
+                    InlineKeyboardButton(
+                        text="\u274c \u041e\u0442\u043c\u0435\u043d\u0438\u0442\u044c \u0437\u0430\u043f\u0438\u0441\u044c",
+                        callback_data=f"cancel_client:{booking_id}",
+                    )
+                ]
+            ]
+        )
+
+        try:
+            await self._bot.send_message(
+                chat_id=platform_user_id,
+                text=text,
+                parse_mode="HTML",
+                reply_markup=keyboard,
+            )
+            return True
+        except Exception:
+            logger.exception(
+                "Failed to send reminder to %s", platform_user_id
+            )
+            return False
+
+    async def send_booking_confirmation(
+        self,
+        platform_user_id: str,
+        service_name: str,
+        booking_date: str,
+        booking_time: str,
+        master_name: str,
+        address_note: str | None,
+        booking_id: str,
+        master_id: str,
+    ) -> bool:
+        """Send a booking confirmation to a client via Telegram."""
+        text = (
+            f"\u2705 <b>\u0412\u044b \u0437\u0430\u043f\u0438\u0441\u0430\u043d\u044b!</b>\n\n"
+            f"\U0001f487 <b>{service_name}</b>\n"
+            f"\U0001f4c5 {booking_date} \u0432 {booking_time}\n"
+            f"\U0001f464 \u041c\u0430\u0441\u0442\u0435\u0440: {master_name}"
+        )
+
+        if address_note:
+            text += f"\n\U0001f4cd \u0410\u0434\u0440\u0435\u0441: {address_note}"
+
+        keyboard = InlineKeyboardMarkup(
+            inline_keyboard=[
+                [
+                    InlineKeyboardButton(
+                        text="\u274c \u041e\u0442\u043c\u0435\u043d\u0438\u0442\u044c \u0437\u0430\u043f\u0438\u0441\u044c",
+                        callback_data=f"cancel_client:{booking_id}",
+                    ),
+                    InlineKeyboardButton(
+                        text="\U0001f4cb \u041c\u043e\u0438 \u0437\u0430\u043f\u0438\u0441\u0438",
+                        callback_data=f"my_bookings:{master_id}",
+                    ),
+                ]
+            ]
+        )
+
+        try:
+            await self._bot.send_message(
+                chat_id=platform_user_id,
+                text=text,
+                parse_mode="HTML",
+                reply_markup=keyboard,
+            )
+            return True
+        except Exception:
+            logger.exception(
+                "Failed to send booking confirmation to %s", platform_user_id
+            )
+            return False
+
     @staticmethod
     def _format_notification(notif: BookingNotification) -> str:
         """Build HTML notification text based on notification type (Russian)."""

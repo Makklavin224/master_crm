@@ -54,6 +54,46 @@ class PaymentSettingsUpdate(BaseModel):
     has_seen_grey_warning: bool | None = None
 
 
+# --- Notification settings ---
+
+
+class NotificationSettings(BaseModel):
+    """Read-only view of master's notification configuration."""
+
+    reminders_enabled: bool
+    reminder_1_hours: int
+    reminder_2_hours: int | None
+    address_note: str | None
+
+    model_config = {"from_attributes": True}
+
+
+class NotificationSettingsUpdate(BaseModel):
+    """Update master's notification preferences."""
+
+    reminders_enabled: bool | None = None
+    reminder_1_hours: int | None = None
+    reminder_2_hours: int | None = Field(default=None)
+    address_note: str | None = None
+
+    @field_validator("reminder_1_hours")
+    @classmethod
+    def validate_reminder_1(cls, v: int | None) -> int | None:
+        if v is not None and v not in (1, 2, 6, 12, 24):
+            raise ValueError("Interval must be 1, 2, 6, 12, or 24 hours")
+        return v
+
+    @field_validator("reminder_2_hours")
+    @classmethod
+    def validate_reminder_2(cls, v: int | None) -> int | None:
+        if v is not None and v not in (1, 2, 6, 12, 24):
+            raise ValueError("Interval must be 1, 2, 6, 12, or 24 hours")
+        return v
+
+
+# --- Robokassa ---
+
+
 class RobokassaSetup(BaseModel):
     """Connect Robokassa credentials."""
 

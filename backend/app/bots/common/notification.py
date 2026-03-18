@@ -46,6 +46,30 @@ class NotificationService:
             )
             return False
 
+    async def send_message(
+        self,
+        platform: str,
+        platform_user_id: str,
+        text: str,
+    ) -> bool:
+        """Send a plain text message via the appropriate platform adapter."""
+        adapter = self._adapters.get(platform)
+        if not adapter:
+            logger.warning(
+                "No adapter registered for platform '%s'", platform
+            )
+            return False
+        try:
+            return await adapter.send_message(
+                platform_user_id=platform_user_id,
+                text=text,
+            )
+        except Exception:
+            logger.exception(
+                "Failed to send message via %s", platform
+            )
+            return False
+
     async def send_payment_link(
         self,
         platform: str,
@@ -103,6 +127,78 @@ class NotificationService:
         except Exception:
             logger.exception(
                 "Failed to send payment requisites via %s", platform
+            )
+            return False
+
+    async def send_reminder(
+        self,
+        platform: str,
+        platform_user_id: str,
+        service_name: str,
+        booking_date: str,
+        booking_time: str,
+        master_name: str,
+        address_note: str | None,
+        booking_id: str,
+        reminder_type: str,
+    ) -> bool:
+        """Send a booking reminder to a client via the appropriate platform adapter."""
+        adapter = self._adapters.get(platform)
+        if not adapter:
+            logger.warning(
+                "No adapter registered for platform '%s'", platform
+            )
+            return False
+        try:
+            return await adapter.send_reminder(
+                platform_user_id=platform_user_id,
+                service_name=service_name,
+                booking_date=booking_date,
+                booking_time=booking_time,
+                master_name=master_name,
+                address_note=address_note,
+                booking_id=booking_id,
+                reminder_type=reminder_type,
+            )
+        except Exception:
+            logger.exception(
+                "Failed to send reminder via %s", platform
+            )
+            return False
+
+    async def send_booking_confirmation(
+        self,
+        platform: str,
+        platform_user_id: str,
+        service_name: str,
+        booking_date: str,
+        booking_time: str,
+        master_name: str,
+        address_note: str | None,
+        booking_id: str,
+        master_id: str,
+    ) -> bool:
+        """Send a booking confirmation to a client via the appropriate platform adapter."""
+        adapter = self._adapters.get(platform)
+        if not adapter:
+            logger.warning(
+                "No adapter registered for platform '%s'", platform
+            )
+            return False
+        try:
+            return await adapter.send_booking_confirmation(
+                platform_user_id=platform_user_id,
+                service_name=service_name,
+                booking_date=booking_date,
+                booking_time=booking_time,
+                master_name=master_name,
+                address_note=address_note,
+                booking_id=booking_id,
+                master_id=master_id,
+            )
+        except Exception:
+            logger.exception(
+                "Failed to send booking confirmation via %s", platform
             )
             return False
 

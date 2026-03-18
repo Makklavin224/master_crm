@@ -4,6 +4,7 @@ from app.models.client import Client, ClientPlatform, MasterClient
 from app.models.master import Master
 from app.models.payment import Payment
 from app.models.schedule import MasterSchedule, ScheduleException
+from app.models.scheduled_reminder import ScheduledReminder
 from app.models.service import Service
 
 __all__ = [
@@ -16,5 +17,6 @@ __all__ = [
     "MasterSchedule",
     "Payment",
     "ScheduleException",
+    "ScheduledReminder",
     "Service",
 ]

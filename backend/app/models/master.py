@@ -77,6 +77,18 @@ class Master(Base):
         String(30), default="patent", server_default=text("'patent'")
     )
 
+    # Phase 4: Notification settings
+    reminders_enabled: Mapped[bool] = mapped_column(
+        Boolean, default=True, server_default=text("true")
+    )
+    reminder_1_hours: Mapped[int] = mapped_column(
+        Integer, default=24, server_default=text("24")
+    )
+    reminder_2_hours: Mapped[int | None] = mapped_column(
+        Integer, nullable=True, default=2, server_default=text("2")
+    )
+    address_note: Mapped[str | None] = mapped_column(Text, nullable=True)
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=text("now()")
     )

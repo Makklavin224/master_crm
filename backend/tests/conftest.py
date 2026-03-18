@@ -18,7 +18,7 @@ from app.core.dependencies import get_db
 from app.core.security import create_access_token, hash_password
 from app.main import create_app
 from app.models import Base, Booking, Master, MasterSchedule, Service
-from app.models.client import Client, MasterClient
+from app.models.client import Client, ClientPlatform, MasterClient
 
 # Test database URLs: use the owner role for DDL (create tables, RLS policies)
 # and the app role for DML (actual test queries with RLS enforced).
@@ -104,6 +104,7 @@ async def _ensure_test_db():
             "master_schedules",
             "schedule_exceptions",
             "master_clients",
+            "scheduled_reminders",
         ]
         for table in rls_tables:
             await conn.execute(
@@ -308,5 +309,28 @@ async def client_factory(db_session):
         db_session.add(client)
         await db_session.flush()
         return client
+
+    return _create
+
+
+@pytest.fixture
+async def client_platform_factory(db_session):
+    """Factory to create test client platforms directly in the database."""
+
+    async def _create(
+        client_id: uuid.UUID,
+        platform: str = "telegram",
+        platform_user_id: str | None = None,
+    ) -> ClientPlatform:
+        if platform_user_id is None:
+            platform_user_id = f"tg_{uuid.uuid4().hex[:8]}"
+        cp = ClientPlatform(
+            client_id=client_id,
+            platform=platform,
+            platform_user_id=platform_user_id,
+        )
+        db_session.add(cp)
+        await db_session.flush()
+        return cp
 
     return _create

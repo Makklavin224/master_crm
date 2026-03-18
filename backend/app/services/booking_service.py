@@ -3,6 +3,7 @@
 import logging
 import uuid
 from datetime import datetime, timedelta, timezone
+from zoneinfo import ZoneInfo
 
 from fastapi import HTTPException, status
 from sqlalchemy import and_, select
@@ -10,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.models.booking import Booking
+from app.models.client import Client, ClientPlatform
 from app.models.master import Master
 from app.models.service import Service
 from app.services.client_service import (
@@ -83,6 +85,154 @@ async def _notify_master(
         logger.exception(
             "Failed to send %s notification for booking %s",
             notification_type,
+            booking.id,
+        )
+
+
+async def _notify_client_confirmation(
+    db: AsyncSession,
+    booking: Booking,
+) -> None:
+    """Send a booking confirmation to the client via their platform.
+
+    Fire-and-forget: logs errors but never raises.
+    """
+    try:
+        from app.bots.common.notification import notification_service
+
+        # Load client + platforms
+        result = await db.execute(
+            select(Client)
+            .where(Client.id == booking.client_id)
+            .options(selectinload(Client.platforms))
+        )
+        client = result.scalar_one_or_none()
+        if not client:
+            return
+
+        # Find platform matching source_platform
+        platform_record = None
+        for p in client.platforms:
+            if p.platform == booking.source_platform:
+                platform_record = p
+                break
+
+        if not platform_record:
+            return
+
+        # Load master for name + address_note
+        master_result = await db.execute(
+            select(Master).where(Master.id == booking.master_id)
+        )
+        master = master_result.scalar_one_or_none()
+        if not master:
+            return
+
+        # Load service for name
+        svc_result = await db.execute(
+            select(Service).where(Service.id == booking.service_id)
+        )
+        service = svc_result.scalar_one_or_none()
+
+        # Convert to master's local timezone for display
+        tz = ZoneInfo(master.timezone)
+        local_start = booking.starts_at.astimezone(tz)
+
+        await notification_service.send_booking_confirmation(
+            platform=booking.source_platform,
+            platform_user_id=platform_record.platform_user_id,
+            service_name=service.name if service else "Service",
+            booking_date=local_start.strftime("%d.%m.%Y"),
+            booking_time=local_start.strftime("%H:%M"),
+            master_name=master.name,
+            address_note=master.address_note,
+            booking_id=str(booking.id),
+            master_id=str(master.id),
+        )
+    except Exception:
+        logger.exception(
+            "Failed to send confirmation for booking %s", booking.id
+        )
+
+
+async def _notify_client_change(
+    db: AsyncSession,
+    booking: Booking,
+    change_type: str,
+) -> None:
+    """Notify client about booking cancellation or reschedule.
+
+    Fire-and-forget: logs errors but never raises.
+    change_type: "cancelled" or "rescheduled"
+    """
+    try:
+        from app.bots.common.notification import notification_service
+
+        # Load client + platforms
+        result = await db.execute(
+            select(Client)
+            .where(Client.id == booking.client_id)
+            .options(selectinload(Client.platforms))
+        )
+        client = result.scalar_one_or_none()
+        if not client:
+            return
+
+        # Find platform matching source_platform
+        platform_record = None
+        source = booking.source_platform or "telegram"
+        for p in client.platforms:
+            if p.platform == source:
+                platform_record = p
+                break
+
+        if not platform_record:
+            return
+
+        # Load master for name + timezone
+        master_result = await db.execute(
+            select(Master).where(Master.id == booking.master_id)
+        )
+        master = master_result.scalar_one_or_none()
+        if not master:
+            return
+
+        # Load service for name
+        svc_result = await db.execute(
+            select(Service).where(Service.id == booking.service_id)
+        )
+        service = svc_result.scalar_one_or_none()
+
+        tz = ZoneInfo(master.timezone)
+        local_start = booking.starts_at.astimezone(tz)
+        service_name = service.name if service else "Service"
+        date_str = local_start.strftime("%d.%m.%Y")
+        time_str = local_start.strftime("%H:%M")
+
+        if change_type == "cancelled":
+            text = (
+                f"\u274c <b>\u0417\u0430\u043f\u0438\u0441\u044c \u043e\u0442\u043c\u0435\u043d\u0435\u043d\u0430</b>\n\n"
+                f"\U0001f487 {service_name}\n"
+                f"\U0001f4c5 {date_str} \u0432 {time_str}\n"
+                f"\u0443 \u043c\u0430\u0441\u0442\u0435\u0440\u0430 {master.name}"
+            )
+        else:  # rescheduled
+            text = (
+                f"\U0001f504 <b>\u0417\u0430\u043f\u0438\u0441\u044c \u043f\u0435\u0440\u0435\u043d\u0435\u0441\u0435\u043d\u0430</b>\n\n"
+                f"\U0001f487 {service_name}\n"
+                f"\U0001f4c5 \u041d\u043e\u0432\u043e\u0435 \u0432\u0440\u0435\u043c\u044f: {date_str} \u0432 {time_str}\n"
+                f"\u0443 \u043c\u0430\u0441\u0442\u0435\u0440\u0430 {master.name}"
+            )
+
+        await notification_service.send_message(
+            platform=source,
+            platform_user_id=platform_record.platform_user_id,
+            text=text,
+        )
+    except Exception:
+        logger.exception(
+            "Failed to send %s notification to client for booking %s",
+            change_type,
             booking.id,
         )
 
@@ -179,6 +329,9 @@ async def create_booking(
     # 6. Send notification to master (fire-and-forget)
     await _notify_master(db, booking, "new")
 
+    # 7. Send booking confirmation to client (fire-and-forget)
+    await _notify_client_confirmation(db, booking)
+
     return booking
 
 
@@ -222,6 +375,9 @@ async def cancel_booking(
 
     # Send cancellation notification to master (fire-and-forget)
     await _notify_master(db, booking, "cancelled")
+
+    # Notify client about cancellation (fire-and-forget)
+    await _notify_client_change(db, booking, "cancelled")
 
     return booking
 
@@ -294,6 +450,9 @@ async def reschedule_booking(
 
     # Send reschedule notification to master (fire-and-forget)
     await _notify_master(db, booking, "rescheduled")
+
+    # Notify client about reschedule (fire-and-forget)
+    await _notify_client_change(db, booking, "rescheduled")
 
     return booking
 

@@ -10,6 +10,8 @@ from app.models.master import Master
 from app.schemas.settings import (
     MasterSettings,
     MasterSettingsUpdate,
+    NotificationSettings,
+    NotificationSettingsUpdate,
     PaymentSettings,
     PaymentSettingsUpdate,
     RobokassaSetup,
@@ -51,6 +53,44 @@ async def update_settings(
         buffer_minutes=master.buffer_minutes,
         cancellation_deadline_hours=master.cancellation_deadline_hours,
         slot_interval_minutes=master.slot_interval_minutes,
+    )
+
+
+# --- Notification settings ---
+
+
+@router.get("/notifications", response_model=NotificationSettings)
+async def get_notification_settings(
+    master: Annotated[Master, Depends(get_current_master)],
+):
+    """Read master's notification settings."""
+    return NotificationSettings(
+        reminders_enabled=master.reminders_enabled,
+        reminder_1_hours=master.reminder_1_hours,
+        reminder_2_hours=master.reminder_2_hours,
+        address_note=master.address_note,
+    )
+
+
+@router.put("/notifications", response_model=NotificationSettings)
+async def update_notification_settings(
+    data: NotificationSettingsUpdate,
+    master: Annotated[Master, Depends(get_current_master)],
+    db: Annotated[AsyncSession, Depends(get_db_with_rls)],
+):
+    """Update master's notification settings (partial update)."""
+    update_data = data.model_dump(exclude_unset=True)
+    for field, value in update_data.items():
+        setattr(master, field, value)
+
+    await db.flush()
+    await db.refresh(master)
+
+    return NotificationSettings(
+        reminders_enabled=master.reminders_enabled,
+        reminder_1_hours=master.reminder_1_hours,
+        reminder_2_hours=master.reminder_2_hours,
+        address_note=master.address_note,
     )
 
 

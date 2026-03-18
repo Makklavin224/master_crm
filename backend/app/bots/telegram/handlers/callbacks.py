@@ -18,8 +18,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.models.booking import Booking
+from app.models.client import ClientPlatform
 from app.models.master import Master
 from app.services.booking_service import cancel_booking
+
+from fastapi import HTTPException
 
 logger = logging.getLogger(__name__)
 
@@ -245,4 +248,100 @@ async def cb_cancel_booking(
                     ]
                 ]
             ),
+        )
+
+
+@router.callback_query(F.data.startswith("cancel_client:"))
+async def cb_cancel_client(
+    callback: CallbackQuery, db: AsyncSession
+) -> None:
+    """Cancel a booking by client (with deadline enforcement).
+
+    Security: verifies that the callback sender matches the booking's
+    client's telegram platform_user_id.
+    """
+    await callback.answer()
+
+    booking_id_str = callback.data.split(":", 1)[1]
+    try:
+        booking_id = uuid.UUID(booking_id_str)
+    except ValueError:
+        await callback.message.edit_text(
+            "\u0417\u0430\u043f\u0438\u0441\u044c \u043d\u0435 "
+            "\u043d\u0430\u0439\u0434\u0435\u043d\u0430."
+        )
+        return
+
+    # Load booking with client
+    result = await db.execute(
+        select(Booking)
+        .where(Booking.id == booking_id)
+        .options(
+            selectinload(Booking.client),
+            selectinload(Booking.service),
+        )
+    )
+    booking = result.scalar_one_or_none()
+    if not booking:
+        await callback.message.edit_text(
+            "\u0417\u0430\u043f\u0438\u0441\u044c \u043d\u0435 "
+            "\u043d\u0430\u0439\u0434\u0435\u043d\u0430."
+        )
+        return
+
+    # Security: verify the callback sender is the booking's client
+    sender_tg_id = str(callback.from_user.id)
+    client_platform_result = await db.execute(
+        select(ClientPlatform).where(
+            ClientPlatform.client_id == booking.client_id,
+            ClientPlatform.platform == "telegram",
+        )
+    )
+    client_platform = client_platform_result.scalar_one_or_none()
+    if not client_platform or client_platform.platform_user_id != sender_tg_id:
+        await callback.message.edit_text(
+            "\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c "
+            "\u043e\u0442\u043c\u0435\u043d\u0438\u0442\u044c "
+            "\u0437\u0430\u043f\u0438\u0441\u044c."
+        )
+        return
+
+    # Load master for cancellation_deadline_hours
+    master_result = await db.execute(
+        select(Master).where(Master.id == booking.master_id)
+    )
+    master = master_result.scalar_one_or_none()
+    deadline_hours = master.cancellation_deadline_hours if master else 24
+
+    try:
+        await cancel_booking(
+            db=db,
+            booking_id=booking_id,
+            cancelled_by="client",
+            cancellation_deadline_hours=deadline_hours,
+        )
+        await callback.message.edit_text(
+            "\u2705 \u0417\u0430\u043f\u0438\u0441\u044c "
+            "\u043e\u0442\u043c\u0435\u043d\u0435\u043d\u0430."
+        )
+    except HTTPException as exc:
+        if exc.status_code == 400:
+            await callback.message.edit_text(
+                "\u041e\u0442\u043c\u0435\u043d\u0430 "
+                "\u043d\u0435\u0432\u043e\u0437\u043c\u043e\u0436\u043d\u0430. "
+                "\u0421\u0440\u043e\u043a \u043e\u0442\u043c\u0435\u043d\u044b "
+                "\u0438\u0441\u0442\u0451\u043a."
+            )
+        else:
+            await callback.message.edit_text(
+                "\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c "
+                "\u043e\u0442\u043c\u0435\u043d\u0438\u0442\u044c "
+                "\u0437\u0430\u043f\u0438\u0441\u044c."
+            )
+    except Exception:
+        logger.exception("Failed to cancel booking %s via client callback", booking_id)
+        await callback.message.edit_text(
+            "\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c "
+            "\u043e\u0442\u043c\u0435\u043d\u0438\u0442\u044c "
+            "\u0437\u0430\u043f\u0438\u0441\u044c."
         )

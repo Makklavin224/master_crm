@@ -62,3 +62,33 @@ class MessengerAdapter(ABC):
     ) -> bool:
         """Send payment requisites to a client. Returns True on success."""
         ...
+
+    @abstractmethod
+    async def send_reminder(
+        self,
+        platform_user_id: str,
+        service_name: str,
+        booking_date: str,
+        booking_time: str,
+        master_name: str,
+        address_note: str | None,
+        booking_id: str,
+        reminder_type: str,
+    ) -> bool:
+        """Send a booking reminder to a client. Returns True on success."""
+        ...
+
+    @abstractmethod
+    async def send_booking_confirmation(
+        self,
+        platform_user_id: str,
+        service_name: str,
+        booking_date: str,
+        booking_time: str,
+        master_name: str,
+        address_note: str | None,
+        booking_id: str,
+        master_id: str,
+    ) -> bool:
+        """Send a booking confirmation to a client. Returns True on success."""
+        ...
