@@ -7,6 +7,9 @@ import { useThemeStore } from "./stores/theme";
 import { lightTheme, darkTheme } from "./theme";
 import { AdminLayout } from "./layouts/AdminLayout";
 import { LoginPage } from "./pages/LoginPage";
+import { ClientsPage } from "./pages/ClientsPage";
+import { ClientDetailPage } from "./pages/ClientDetailPage";
+import { PaymentsPage } from "./pages/PaymentsPage";
 
 const queryClient = new QueryClient();
 
@@ -71,10 +74,10 @@ export default function App() {
               <Route element={<AdminLayout />}>
                 <Route index element={<Navigate to="/calendar" replace />} />
                 <Route path="/calendar" element={<PlaceholderPage title="\u041a\u0430\u043b\u0435\u043d\u0434\u0430\u0440\u044c" />} />
-                <Route path="/clients" element={<PlaceholderPage title="\u041a\u043b\u0438\u0435\u043d\u0442\u044b" />} />
-                <Route path="/clients/:id" element={<PlaceholderPage title="\u041a\u043b\u0438\u0435\u043d\u0442" />} />
+                <Route path="/clients" element={<ClientsPage />} />
+                <Route path="/clients/:id" element={<ClientDetailPage />} />
                 <Route path="/services" element={<PlaceholderPage title="\u0423\u0441\u043b\u0443\u0433\u0438" />} />
-                <Route path="/payments" element={<PlaceholderPage title="\u041f\u043b\u0430\u0442\u0435\u0436\u0438" />} />
+                <Route path="/payments" element={<PaymentsPage />} />
                 <Route path="/settings" element={<PlaceholderPage title="\u041d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438" />} />
               </Route>
             </Route>
