@@ -24,8 +24,8 @@
 
 ### Notifications (NOTF)
 
-- [ ] **NOTF-01**: Automated reminder to client 24h before visit via bot
-- [ ] **NOTF-02**: Automated reminder to client 2h before visit via bot
+- [x] **NOTF-01**: Automated reminder to client 24h before visit via bot
+- [x] **NOTF-02**: Automated reminder to client 2h before visit via bot
 - [x] **NOTF-03**: Booking confirmation to client immediately after booking
 
 ### Payments (PAY)
@@ -139,8 +139,8 @@
 | TAX-02 | Phase 3 | Complete |
 | TAX-03 | Phase 3 | Complete |
 | TAX-04 | Phase 3 | Complete |
-| NOTF-01 | Phase 4 | Pending |
-| NOTF-02 | Phase 4 | Pending |
+| NOTF-01 | Phase 4 | Complete |
+| NOTF-02 | Phase 4 | Complete |
 | NOTF-03 | Phase 4 | Complete |
 | BOOK-07 | Phase 4 | Complete |
 | MSG-03 | Phase 5 | Pending |

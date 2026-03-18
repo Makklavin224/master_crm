@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Foundation** - Project scaffolding, data model, auth, Docker deployment (completed 2026-03-17)
 - [ ] **Phase 2: Booking Engine + Telegram** - Service catalog, schedule, booking flow, TG bot + mini-app
 - [x] **Phase 3: Payments + Tax Receipts** - Robokassa SBP payments, three-tier fiscalization, auto-receipts (completed 2026-03-18)
-- [ ] **Phase 4: Notifications** - Automated reminders (24h/2h), booking confirmations, master alerts
+- [x] **Phase 4: Notifications** - Automated reminders (24h/2h), booking confirmations, master alerts (completed 2026-03-18)
 - [ ] **Phase 5: Multi-Messenger Expansion** - MAX bot + mini-app, VK bot + mini-app, cross-messenger client identity
 - [ ] **Phase 6: Web Admin Panel** - Desktop management panel with Ant Design (calendar, clients, services, payments)
 
@@ -81,11 +81,11 @@ Plans:
   2. Client receives automated reminder messages 24 hours and 2 hours before their appointment (timezone-aware, via the messenger they booked through)
   3. Master receives bot notifications for new bookings, cancellations, and reschedules
   4. Reminders are processed idempotently (server restart does not cause duplicate reminders; past-due reminders are skipped, not queued)
-**Plans:** 2 plans
+**Plans:** 2/2 plans complete
 
 Plans:
-- [ ] 04-01-PLAN.md -- Backend notification infrastructure: models, migration, adapter extensions, booking confirmation, master alerts, notification settings API, client cancel callback, test suite
-- [ ] 04-02-PLAN.md -- APScheduler reminder service with polling and idempotency, frontend notification settings UI
+- [x] 04-01-PLAN.md -- Backend notification infrastructure: models, migration, adapter extensions, booking confirmation, master alerts, notification settings API, client cancel callback, test suite
+- [x] 04-02-PLAN.md -- APScheduler reminder service with polling and idempotency, frontend notification settings UI
 
 ### Phase 5: Multi-Messenger Expansion
 **Goal**: The same booking, payment, and notification experience works in MAX and VK messengers; clients from different messengers are recognized as the same person by phone number
@@ -130,6 +130,6 @@ Note: Phase 4 (Notifications) depends on Phase 2 only. Phase 6 (Web Panel) depen
 | 1. Foundation | 2/2 | Complete   | 2026-03-17 |
 | 2. Booking Engine + Telegram | 3/4 | In Progress | - |
 | 3. Payments + Tax Receipts | 3/3 | Complete | 2026-03-18 |
-| 4. Notifications | 0/2 | Not started | - |
+| 4. Notifications | 2/2 | Complete | 2026-03-18 |
 | 5. Multi-Messenger Expansion | 0/3 | Not started | - |
 | 6. Web Admin Panel | 0/3 | Not started | - |
