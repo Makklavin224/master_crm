@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 2: Booking Engine + Telegram** - Service catalog, schedule, booking flow, TG bot + mini-app
 - [x] **Phase 3: Payments + Tax Receipts** - Robokassa SBP payments, three-tier fiscalization, auto-receipts (completed 2026-03-18)
 - [x] **Phase 4: Notifications** - Automated reminders (24h/2h), booking confirmations, master alerts (completed 2026-03-18)
-- [ ] **Phase 5: Multi-Messenger Expansion** - MAX bot + mini-app, VK bot + mini-app, cross-messenger client identity
+- [x] **Phase 5: Multi-Messenger Expansion** - MAX bot + mini-app, VK bot + mini-app, cross-messenger client identity (completed 2026-03-18)
 - [ ] **Phase 6: Web Admin Panel** - Desktop management panel with Ant Design (calendar, clients, services, payments)
 
 ## Phase Details
@@ -96,7 +96,7 @@ Plans:
   2. Client can open the mini-app in VK, see the master's services, and complete a booking (same experience as TG)
   3. MAX and VK bots send booking confirmations, reminders, and master alerts (same notification behavior as TG)
   4. A client who books via TG and later opens the VK mini-app sees their existing booking history (cross-messenger identity via phone number)
-**Plans:** 3 plans
+**Plans:** 3/3 plans complete
 
 Plans:
 - [x] 05-01-PLAN.md -- Shared backend infrastructure: config settings, MAX/VK validation functions, Master model columns (max_user_id, vk_user_id), Alembic migration, auth endpoints
@@ -131,5 +131,5 @@ Note: Phase 4 (Notifications) depends on Phase 2 only. Phase 6 (Web Panel) depen
 | 2. Booking Engine + Telegram | 3/4 | In Progress | - |
 | 3. Payments + Tax Receipts | 3/3 | Complete | 2026-03-18 |
 | 4. Notifications | 2/2 | Complete | 2026-03-18 |
-| 5. Multi-Messenger Expansion | 1/3 | In Progress | - |
+| 5. Multi-Messenger Expansion | 3/3 | Complete   | 2026-03-18 |
 | 6. Web Admin Panel | 0/3 | Not started | - |

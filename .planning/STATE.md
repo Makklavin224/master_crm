@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-stopped_at: Completed 05-03-PLAN.md
-last_updated: "2026-03-18T12:45:00Z"
-last_activity: 2026-03-18 -- Plan 05-03 complete, VK bot module + webhook + frontend bridge
+stopped_at: Completed 05-02-PLAN.md
+last_updated: "2026-03-18T12:48:39Z"
+last_activity: 2026-03-18 -- Plan 05-02 complete, MAX bot module + webhook + frontend bridge + booking generalization (CLNT-04)
 progress:
   total_phases: 6
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 14
-  completed_plans: 13
-  percent: 93
+  completed_plans: 14
+  percent: 100
 ---
 
 # Project State
@@ -25,19 +25,19 @@ See: .planning/PROJECT.md (updated 2026-03-17)
 
 ## Current Position
 
-Phase: 5 of 6 (Multi-Messenger Expansion)
-Plan: 3 of 3 in current phase (05-03 complete)
-Status: In progress
-Last activity: 2026-03-18 -- Plan 05-03 complete, VK bot module + webhook + frontend bridge
+Phase: 5 of 6 (Multi-Messenger Expansion) -- COMPLETE
+Plan: 3 of 3 in current phase (all plans complete)
+Status: Phase 5 complete
+Last activity: 2026-03-18 -- Plan 05-02 complete, MAX bot + booking generalization (CLNT-04)
 
-Progress: [█████████░] 93%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 13
+- Total plans completed: 14
 - Average duration: 9min
-- Total execution time: 1.95 hours
+- Total execution time: 2.13 hours
 
 **By Phase:**
 
@@ -47,10 +47,10 @@ Progress: [█████████░] 93%
 | 2. Booking Engine | 4/4 | 55min | 14min |
 | 3. Payments + Tax | 3/3 | 19min | 6min |
 | 4. Notifications | 2/2 | 12min | 6min |
-| 5. Multi-Messenger | 2/3 | 9min | 4.5min |
+| 5. Multi-Messenger | 3/3 | 20min | 7min |
 
 **Recent Trend:**
-- Last 5 plans: 5min, 7min, 5min, 3min, 6min
+- Last 5 plans: 7min, 5min, 3min, 6min, 11min
 - Trend: consistent
 
 *Updated after each plan completion*
@@ -60,6 +60,7 @@ Progress: [█████████░] 93%
 | Phase 04 P01 | 7min | 2 tasks | 13 files |
 | Phase 04 P02 | 5min | 2 tasks | 8 files |
 | Phase 05 P01 | 3min | 2 tasks | 6 files |
+| Phase 05 P02 | 11min | 3 tasks | 19 files |
 | Phase 05 P03 | 6min | 2 tasks | 14 files |
 
 ## Accumulated Context
@@ -123,6 +124,10 @@ Recent decisions affecting current work:
 - [Phase 05]: VK plain text messages (messages.send does not support HTML), Unicode emojis only
 - [Phase 05]: VK Callback API confirmation handshake returns PlainTextResponse (VK rejects JSON)
 - [Phase 05]: VK deep links use https://vk.com/app{APP_ID}#master={MASTER_ID} format
+- [Phase 05]: httpx.AsyncClient for MAX API calls (no maxapi Dispatcher, avoids FastAPI server conflict)
+- [Phase 05]: Generic platform_user_id replaces tg_user_id in BookingCreate for multi-platform booking support
+- [Phase 05]: _notify_master fans out to all registered platforms (TG+MAX+VK) instead of hardcoded Telegram
+- [Phase 05]: MAX expand() is no-op in bridge adapter (MAX Bridge has no expand API)
 
 ### Pending Todos
 
@@ -136,6 +141,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-18T12:45:00Z
-Stopped at: Completed 05-03-PLAN.md
-Resume file: .planning/phases/05-multi-messenger-expansion/05-03-SUMMARY.md
+Last session: 2026-03-18T12:48:39Z
+Stopped at: Completed 05-02-PLAN.md
+Resume file: .planning/phases/05-multi-messenger-expansion/05-02-SUMMARY.md
