@@ -3,9 +3,12 @@ import { BookOpen } from "lucide-react";
 import {
   useMasterBookings,
   useCancelBookingMaster,
+  type MasterBookingRead,
 } from "../../api/master-bookings.ts";
+import { usePaymentSettings } from "../../api/master-settings.ts";
 import { BookingCard } from "../../components/BookingCard.tsx";
 import { ConfirmDialog } from "../../components/ConfirmDialog.tsx";
+import { PaymentSheet } from "../../components/PaymentSheet.tsx";
 import { EmptyState } from "../../components/ui/EmptyState.tsx";
 import { Skeleton } from "../../components/ui/Skeleton.tsx";
 import { Button } from "../../components/ui/Button.tsx";
@@ -30,6 +33,8 @@ export function Bookings() {
     clientName: string;
     time: string;
   } | null>(null);
+  const [paymentBooking, setPaymentBooking] =
+    useState<MasterBookingRead | null>(null);
 
   const { data, isLoading } = useMasterBookings({
     date_from: dateFrom || undefined,
@@ -37,8 +42,17 @@ export function Bookings() {
     status: statusFilter === "all" ? undefined : statusFilter,
   });
   const cancelBooking = useCancelBookingMaster();
+  const { data: paymentSettings } = usePaymentSettings();
 
   const bookings = data?.items ?? [];
+
+  const hasRobokassa = paymentSettings?.has_robokassa ?? false;
+  const hasRequisites = !!(
+    paymentSettings?.card_number || paymentSettings?.sbp_phone
+  );
+  const hasSeenGreyWarning = paymentSettings?.has_seen_grey_warning ?? false;
+  const defaultFiscalization =
+    paymentSettings?.fiscalization_level ?? "none";
 
   const handleCancel = () => {
     if (!cancelTarget) return;
@@ -52,6 +66,11 @@ export function Bookings() {
         setCancelTarget(null);
       },
     });
+  };
+
+  const handlePaymentComplete = () => {
+    setPaymentBooking(null);
+    toast.success("Оплата зафиксирована");
   };
 
   return (
@@ -73,7 +92,7 @@ export function Bookings() {
             placeholder="От"
             className="h-[44px] rounded-[10px] border border-border px-3 text-[14px] text-text-primary flex-1 outline-none focus:ring-2 focus:ring-accent/30"
           />
-          <span className="text-text-secondary text-[14px]">—</span>
+          <span className="text-text-secondary text-[14px]">&mdash;</span>
           <input
             type="date"
             value={dateTo}
@@ -131,20 +150,30 @@ export function Bookings() {
                   status={booking.status}
                   action={
                     booking.status === "confirmed" ? (
-                      <Button
-                        variant="destructive"
-                        fullWidth={false}
-                        className="text-[12px] h-[36px] px-4"
-                        onClick={() =>
-                          setCancelTarget({
-                            id: booking.id,
-                            clientName: booking.client_name,
-                            time,
-                          })
-                        }
-                      >
-                        Отменить
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="primary"
+                          fullWidth={false}
+                          className="text-[12px] h-[36px] px-4"
+                          onClick={() => setPaymentBooking(booking)}
+                        >
+                          Завершить
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          fullWidth={false}
+                          className="text-[12px] h-[36px] px-4"
+                          onClick={() =>
+                            setCancelTarget({
+                              id: booking.id,
+                              clientName: booking.client_name,
+                              time,
+                            })
+                          }
+                        >
+                          Отменить
+                        </Button>
+                      </div>
                     ) : undefined
                   }
                 />
@@ -163,6 +192,17 @@ export function Bookings() {
         variant="destructive"
         onConfirm={handleCancel}
         onCancel={() => setCancelTarget(null)}
+      />
+
+      <PaymentSheet
+        open={!!paymentBooking}
+        booking={paymentBooking}
+        hasRobokassa={hasRobokassa}
+        hasRequisites={hasRequisites}
+        hasSeenGreyWarning={hasSeenGreyWarning}
+        defaultFiscalization={defaultFiscalization}
+        onClose={() => setPaymentBooking(null)}
+        onPaymentComplete={handlePaymentComplete}
       />
     </div>
   );

@@ -19,6 +19,7 @@ import { Bookings } from "./pages/master/Bookings.tsx";
 import { Clients } from "./pages/master/Clients.tsx";
 import { ClientDetail } from "./pages/master/ClientDetail.tsx";
 import { Settings } from "./pages/master/Settings.tsx";
+import { PaymentHistory } from "./pages/master/PaymentHistory.tsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -67,6 +68,7 @@ export default function App() {
                 <Route path="clients" element={<Clients />} />
                 <Route path="clients/:id" element={<ClientDetail />} />
                 <Route path="settings" element={<Settings />} />
+                <Route path="payments" element={<PaymentHistory />} />
               </Route>
 
               {/* Default redirect */}
