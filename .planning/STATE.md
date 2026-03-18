@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 3 context gathered
-last_updated: "2026-03-18T03:07:46.044Z"
-last_activity: 2026-03-17 -- Plan 02-03 complete, React mini-app with client booking flow
+stopped_at: Plan 03-01 complete
+last_updated: "2026-03-18T03:50:36Z"
+last_activity: 2026-03-18 -- Plan 03-01 complete, payment infrastructure (models, services, schemas)
 progress:
   total_phases: 6
   completed_phases: 2
-  total_plans: 6
-  completed_plans: 6
-  percent: 83
+  total_plans: 9
+  completed_plans: 7
+  percent: 78
 ---
 
 # Project State
@@ -21,37 +21,38 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-17)
 
 **Core value:** Master taps "Complete" -- client gets SBP payment link -- tax receipt auto-generates. 3 steps instead of 9.
-**Current focus:** Phase 2 -- Booking Engine + Telegram (Plan 02-03 complete)
+**Current focus:** Phase 3 -- Payments + Tax Receipts (Plan 03-01 complete)
 
 ## Current Position
 
-Phase: 2 of 6 (Booking Engine + Telegram)
-Plan: 3 of 4 in current phase (02-03 complete)
+Phase: 3 of 6 (Payments + Tax Receipts)
+Plan: 1 of 3 in current phase (03-01 complete)
 Status: In progress
-Last activity: 2026-03-17 -- Plan 02-03 complete, React mini-app with client booking flow
+Last activity: 2026-03-18 -- Plan 03-01 complete, payment infrastructure (models, services, schemas)
 
-Progress: [████████░░] 83%
+Progress: [███████░░░] 78%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
-- Average duration: 14min
-- Total execution time: 1.17 hours
+- Total plans completed: 7
+- Average duration: 13min
+- Total execution time: 1.40 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1. Foundation | 2/2 | 26min | 13min |
-| 2. Booking Engine | 3/4 | 49min | 16min |
+| 2. Booking Engine | 4/4 | 55min | 14min |
+| 3. Payments + Tax | 1/3 | 7min | 7min |
 
 **Recent Trend:**
-- Last 5 plans: 21min, 5min, 13min, 11min, 25min
+- Last 5 plans: 5min, 13min, 11min, 25min, 7min
 - Trend: consistent
 
 *Updated after each plan completion*
-| Phase 02 P04 | 6 | 1 tasks | 19 files |
+| Phase 03 P01 | 7min | 2 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -86,6 +87,12 @@ Recent decisions affecting current work:
 - 409 conflict handling on booking: redirect to time picker with toast, preserving flow continuity
 - [Phase 02]: masterApiRequest as standalone helper for Bearer auth separation from client apiRequest
 - [Phase 02]: Nested master routes with MasterLayout Outlet pattern for persistent BottomTabBar
+- [Phase 03]: Fernet symmetric encryption for Robokassa passwords (ENCRYPTION_KEY env var)
+- [Phase 03]: Per-master Robokassa credentials stored encrypted in DB, not platform-level
+- [Phase 03]: Payment URL includes Shp_master_id and Shp_booking_id for callback routing
+- [Phase 03]: Idempotent Robokassa callback handler (already-paid returns True)
+- [Phase 03]: Per-payment fiscalization override with fallback to master default
+- [Phase 03]: SELECT FOR UPDATE on payment mutations to prevent race conditions
 
 ### Pending Todos
 
@@ -94,11 +101,11 @@ None yet.
 ### Blockers/Concerns
 
 - MAX Mini App bridge API documentation is sparse -- needs investigation before Phase 5
-- Robochecks receipt annulment/cancellation flow poorly documented -- needs testing before Phase 3
-- Robokassa merchant model (per-master accounts vs platform account) needs business decision before Phase 3
+- Robochecks receipt annulment/cancellation flow poorly documented -- receipt cancellation is reminder-only in v1
+- Robokassa merchant model resolved: per-master accounts (credentials stored encrypted per master)
 
 ## Session Continuity
 
-Last session: 2026-03-18T03:07:46.038Z
-Stopped at: Phase 3 context gathered
-Resume file: .planning/phases/03-payments-tax-receipts/03-CONTEXT.md
+Last session: 2026-03-18T03:50:36Z
+Stopped at: Completed 03-01-PLAN.md
+Resume file: .planning/phases/03-payments-tax-receipts/03-01-SUMMARY.md

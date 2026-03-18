@@ -30,17 +30,17 @@
 
 ### Payments (PAY)
 
-- [ ] **PAY-01**: Master can complete a visit and mark "Paid" (simple mode, cash/card-to-card)
-- [ ] **PAY-02**: Master can optionally connect their own Robokassa for automatic SBP link
-- [ ] **PAY-03**: With Robokassa connected: master taps "Complete" -> client gets SBP payment link
-- [ ] **PAY-04**: Payment history with statuses (pending, paid, cancelled)
+- [x] **PAY-01**: Master can complete a visit and mark "Paid" (simple mode, cash/card-to-card)
+- [x] **PAY-02**: Master can optionally connect their own Robokassa for automatic SBP link
+- [x] **PAY-03**: With Robokassa connected: master taps "Complete" -> client gets SBP payment link
+- [x] **PAY-04**: Payment history with statuses (pending, paid, cancelled)
 
 ### Tax Receipts (TAX)
 
-- [ ] **TAX-01**: Three fiscalization levels: no receipts / manual / automatic
+- [x] **TAX-01**: Three fiscalization levels: no receipts / manual / automatic
 - [ ] **TAX-02**: No receipts: master sees warning but can continue
 - [ ] **TAX-03**: Manual: after payment, CRM shows ready data for "Moy Nalog" (amount, service, client)
-- [ ] **TAX-04**: Automatic: with Robokassa connected, receipt auto-generated via Robochecks -> FNS
+- [x] **TAX-04**: Automatic: with Robokassa connected, receipt auto-generated via Robochecks -> FNS
 
 ### Messengers (MSG)
 
@@ -131,14 +131,14 @@
 | MSG-07 | Phase 2 | Complete |
 | MSG-08 | Phase 2 | Complete |
 | INFR-03 | Phase 2 | Complete |
-| PAY-01 | Phase 3 | Pending |
-| PAY-02 | Phase 3 | Pending |
-| PAY-03 | Phase 3 | Pending |
-| PAY-04 | Phase 3 | Pending |
-| TAX-01 | Phase 3 | Pending |
+| PAY-01 | Phase 3 | Complete |
+| PAY-02 | Phase 3 | Complete |
+| PAY-03 | Phase 3 | Complete |
+| PAY-04 | Phase 3 | Complete |
+| TAX-01 | Phase 3 | Complete |
 | TAX-02 | Phase 3 | Pending |
 | TAX-03 | Phase 3 | Pending |
-| TAX-04 | Phase 3 | Pending |
+| TAX-04 | Phase 3 | Complete |
 | NOTF-01 | Phase 4 | Pending |
 | NOTF-02 | Phase 4 | Pending |
 | NOTF-03 | Phase 4 | Pending |

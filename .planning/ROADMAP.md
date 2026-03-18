@@ -68,7 +68,7 @@ Plans:
 **Plans:** 3 plans
 
 Plans:
-- [ ] 03-01-PLAN.md -- Backend payment infrastructure: Alembic migration, model extensions, encryption/QR/Robokassa services, PaymentService orchestration
+- [x] 03-01-PLAN.md -- Backend payment infrastructure: Alembic migration, model extensions, encryption/QR/Robokassa services, PaymentService orchestration
 - [ ] 03-02-PLAN.md -- Payment API endpoints, Robokassa webhook, notification extensions, comprehensive test suite
 - [ ] 03-03-PLAN.md -- Frontend payment UI: PaymentSheet (3 options), PaymentHistory, ReceiptDataCard, RobokassaWizard, Settings payment sections
 
@@ -129,7 +129,7 @@ Note: Phase 4 (Notifications) depends on Phase 2 only. Phase 6 (Web Panel) depen
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/2 | Complete   | 2026-03-17 |
 | 2. Booking Engine + Telegram | 3/4 | In Progress | - |
-| 3. Payments + Tax Receipts | 0/3 | Not started | - |
+| 3. Payments + Tax Receipts | 1/3 | In Progress | - |
 | 4. Notifications | 0/2 | Not started | - |
 | 5. Multi-Messenger Expansion | 0/3 | Not started | - |
 | 6. Web Admin Panel | 0/3 | Not started | - |
