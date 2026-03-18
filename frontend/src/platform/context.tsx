@@ -2,6 +2,8 @@ import { createContext, useContext, useEffect, useMemo, type ReactNode } from "r
 import type { PlatformBridge } from "./types.ts";
 import { detectPlatform } from "./detect.ts";
 import { createTelegramBridge } from "./adapters/telegram.ts";
+import { createMaxBridge } from "./adapters/max.ts";
+import { createVkBridge } from "./adapters/vk.ts";
 import { createStubBridge } from "./adapters/stub.ts";
 
 const PlatformContext = createContext<PlatformBridge | null>(null);
@@ -16,6 +18,10 @@ export function PlatformProvider({ children }: PlatformProviderProps) {
     switch (platform) {
       case "telegram":
         return createTelegramBridge();
+      case "max":
+        return createMaxBridge();
+      case "vk":
+        return createVkBridge();
       default:
         return createStubBridge();
     }

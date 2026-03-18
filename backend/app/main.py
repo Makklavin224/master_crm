@@ -8,7 +8,9 @@ from fastapi.responses import PlainTextResponse
 from sqlalchemy import text
 
 from app.api.v1.router import api_v1_router
+from app.bots.max.bot import bot_token as max_bot_token
 from app.bots.telegram.bot import bot, dp
+from app.bots.vk.bot import vk_token
 from app.core.config import settings
 from app.core.database import async_session_factory, engine
 from app.services.reminder_service import scheduler
@@ -32,6 +34,32 @@ async def lifespan(app: FastAPI):
             allowed_updates=["message", "callback_query"],
         )
         logger.info("Telegram webhook registered: %s", webhook_url)
+
+    # Register MAX webhook
+    if max_bot_token and settings.base_webhook_url:
+        import httpx
+
+        max_webhook_url = f"{settings.base_webhook_url}/webhook/max"
+        async with httpx.AsyncClient() as client:
+            resp = await client.post(
+                "https://platform-api.max.ru/subscriptions",
+                headers={"Authorization": f"access_token={max_bot_token}"},
+                json={
+                    "url": max_webhook_url,
+                    "update_types": [
+                        "bot_started",
+                        "message_created",
+                        "message_callback",
+                    ],
+                },
+                timeout=10.0,
+            )
+            if resp.status_code in (200, 201):
+                logger.info("MAX webhook registered: %s", max_webhook_url)
+            else:
+                logger.warning(
+                    "Failed to register MAX webhook: %s", resp.text
+                )
 
     # Start reminder scheduler
     scheduler.start()
@@ -149,6 +177,65 @@ def create_app() -> FastAPI:
             return PlainTextResponse(
                 "signature verification failed", status_code=403
             )
+
+    # MAX webhook endpoint
+    @application.post("/webhook/max")
+    async def max_webhook(
+        request: Request,
+        x_max_bot_api_secret: str | None = Header(None),
+    ):
+        """Process incoming MAX bot updates via webhook."""
+        if x_max_bot_api_secret != settings.max_webhook_secret:
+            raise HTTPException(status_code=403, detail="Invalid secret")
+        if not max_bot_token:
+            raise HTTPException(
+                status_code=503, detail="MAX bot not configured"
+            )
+
+        body = await request.json()
+
+        from app.bots.max.bot import process_max_update
+
+        async with async_session_factory() as session:
+            try:
+                await process_max_update(body, session)
+                await session.commit()
+            except Exception:
+                await session.rollback()
+                logger.exception("MAX webhook processing error")
+
+        return {"ok": True}
+
+    # VK Callback API webhook endpoint
+    @application.post("/webhook/vk")
+    async def vk_webhook(request: Request):
+        """Process incoming VK Callback API events."""
+        body = await request.json()
+
+        # VK confirmation handshake -- MUST return plain text token
+        if body.get("type") == "confirmation":
+            return PlainTextResponse(settings.vk_confirmation_token)
+
+        # Verify secret key
+        if body.get("secret") != settings.vk_secret_key:
+            raise HTTPException(status_code=403, detail="Invalid secret")
+
+        if not vk_token:
+            return PlainTextResponse("ok")  # Accept but don't process
+
+        # Process event with DB session
+        from app.bots.vk.bot import process_vk_event
+
+        async with async_session_factory() as session:
+            try:
+                await process_vk_event(body, session)
+                await session.commit()
+            except Exception:
+                await session.rollback()
+                logger.exception("VK webhook processing error")
+
+        # VK requires "ok" as plain text response for all events
+        return PlainTextResponse("ok")
 
     return application
 
