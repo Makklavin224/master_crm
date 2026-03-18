@@ -96,12 +96,12 @@ Plans:
   2. Client can open the mini-app in VK, see the master's services, and complete a booking (same experience as TG)
   3. MAX and VK bots send booking confirmations, reminders, and master alerts (same notification behavior as TG)
   4. A client who books via TG and later opens the VK mini-app sees their existing booking history (cross-messenger identity via phone number)
-**Plans**: TBD
+**Plans:** 3 plans
 
 Plans:
-- [ ] 05-01: TBD
-- [ ] 05-02: TBD
-- [ ] 05-03: TBD
+- [ ] 05-01-PLAN.md -- Shared backend infrastructure: config settings, MAX/VK validation functions, Master model columns (max_user_id, vk_user_id), Alembic migration, auth endpoints
+- [ ] 05-02-PLAN.md -- MAX full stack: bot adapter + handlers, webhook route, frontend MaxBridge adapter, platform detection
+- [ ] 05-03-PLAN.md -- VK full stack: bot adapter + handlers, webhook route with confirmation handshake, frontend VkBridge adapter, vk-bridge package
 
 ### Phase 6: Web Admin Panel
 **Goal**: Masters can manage their entire business from a desktop web panel -- schedule, clients, services, payments, and settings
