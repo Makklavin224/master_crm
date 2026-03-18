@@ -27,8 +27,20 @@ function safeRemoveItem(key: string): void {
   }
 }
 
+export interface MasterProfile {
+  id: string;
+  email: string | null;
+  phone: string | null;
+  name: string;
+  business_name: string | null;
+  timezone: string;
+  is_active: boolean;
+  created_at: string;
+}
+
 interface AuthState {
   token: string | null;
+  profile: MasterProfile | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
@@ -36,13 +48,31 @@ interface AuthState {
   setToken: (token: string) => void;
   logout: () => void;
   hydrate: () => void;
+  fetchProfile: () => Promise<void>;
 }
 
-export const useAuth = create<AuthState>((set) => ({
+export const useAuth = create<AuthState>((set, get) => ({
   token: null,
+  profile: null,
   isAuthenticated: false,
   isLoading: false,
   error: null,
+
+  fetchProfile: async () => {
+    const { token } = get();
+    if (!token) return;
+    try {
+      const res = await fetch(`${API_BASE}/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const profile: MasterProfile = await res.json();
+        set({ profile });
+      }
+    } catch {
+      // Silent fail -- profile is non-critical
+    }
+  },
 
   loginEmail: async (email, password) => {
     set({ isLoading: true, error: null });
@@ -60,6 +90,8 @@ export const useAuth = create<AuthState>((set) => ({
       const { access_token } = await res.json();
       safeSetItem(TOKEN_KEY, access_token);
       set({ token: access_token, isAuthenticated: true, isLoading: false });
+      // Fetch profile after login
+      get().fetchProfile();
       return true;
     } catch {
       set({ isLoading: false, error: "Network error" });
@@ -70,15 +102,21 @@ export const useAuth = create<AuthState>((set) => ({
   setToken: (token) => {
     safeSetItem(TOKEN_KEY, token);
     set({ token, isAuthenticated: true, error: null });
+    // Fetch profile after setting token (magic link flow)
+    get().fetchProfile();
   },
 
   logout: () => {
     safeRemoveItem(TOKEN_KEY);
-    set({ token: null, isAuthenticated: false });
+    set({ token: null, profile: null, isAuthenticated: false });
   },
 
   hydrate: () => {
     const token = safeGetItem(TOKEN_KEY);
-    if (token) set({ token, isAuthenticated: true });
+    if (token) {
+      set({ token, isAuthenticated: true });
+      // Fetch profile on hydrate
+      get().fetchProfile();
+    }
   },
 }));
