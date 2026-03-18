@@ -41,6 +41,17 @@ services:
       timeout: 5s
       retries: 5
 
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    volumes:
+      - ./web:/app
+      - /app/node_modules
+    ports:
+      - "3001:3001"
+    command: pnpm dev --host 0.0.0.0 --port 3001
+
   caddy:
     image: caddy:2-alpine
     ports:
@@ -52,6 +63,7 @@ services:
     depends_on:
       - api
       - frontend
+      - web
 
 volumes:
   pgdata:
