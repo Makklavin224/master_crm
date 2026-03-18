@@ -81,11 +81,11 @@ Plans:
   2. Client receives automated reminder messages 24 hours and 2 hours before their appointment (timezone-aware, via the messenger they booked through)
   3. Master receives bot notifications for new bookings, cancellations, and reschedules
   4. Reminders are processed idempotently (server restart does not cause duplicate reminders; past-due reminders are skipped, not queued)
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 04-01: TBD
-- [ ] 04-02: TBD
+- [ ] 04-01-PLAN.md -- Backend notification infrastructure: models, migration, adapter extensions, booking confirmation, master alerts, notification settings API, client cancel callback, test suite
+- [ ] 04-02-PLAN.md -- APScheduler reminder service with polling and idempotency, frontend notification settings UI
 
 ### Phase 5: Multi-Messenger Expansion
 **Goal**: The same booking, payment, and notification experience works in MAX and VK messengers; clients from different messengers are recognized as the same person by phone number
