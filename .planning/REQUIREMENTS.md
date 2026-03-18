@@ -38,8 +38,8 @@
 ### Tax Receipts (TAX)
 
 - [x] **TAX-01**: Three fiscalization levels: no receipts / manual / automatic
-- [ ] **TAX-02**: No receipts: master sees warning but can continue
-- [ ] **TAX-03**: Manual: after payment, CRM shows ready data for "Moy Nalog" (amount, service, client)
+- [x] **TAX-02**: No receipts: master sees warning but can continue
+- [x] **TAX-03**: Manual: after payment, CRM shows ready data for "Moy Nalog" (amount, service, client)
 - [x] **TAX-04**: Automatic: with Robokassa connected, receipt auto-generated via Robochecks -> FNS
 
 ### Messengers (MSG)
@@ -136,8 +136,8 @@
 | PAY-03 | Phase 3 | Complete |
 | PAY-04 | Phase 3 | Complete |
 | TAX-01 | Phase 3 | Complete |
-| TAX-02 | Phase 3 | Pending |
-| TAX-03 | Phase 3 | Pending |
+| TAX-02 | Phase 3 | Complete |
+| TAX-03 | Phase 3 | Complete |
 | TAX-04 | Phase 3 | Complete |
 | NOTF-01 | Phase 4 | Pending |
 | NOTF-02 | Phase 4 | Pending |

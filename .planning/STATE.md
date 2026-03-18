@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Plan 03-01 complete
-last_updated: "2026-03-18T03:50:36Z"
-last_activity: 2026-03-18 -- Plan 03-01 complete, payment infrastructure (models, services, schemas)
+stopped_at: Plan 03-02 complete
+last_updated: "2026-03-18T04:01:47Z"
+last_activity: 2026-03-18 -- Plan 03-02 complete, payment API endpoints, webhook, tests
 progress:
   total_phases: 6
   completed_phases: 2
   total_plans: 9
-  completed_plans: 7
-  percent: 78
+  completed_plans: 8
+  percent: 89
 ---
 
 # Project State
@@ -21,23 +21,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-17)
 
 **Core value:** Master taps "Complete" -- client gets SBP payment link -- tax receipt auto-generates. 3 steps instead of 9.
-**Current focus:** Phase 3 -- Payments + Tax Receipts (Plan 03-01 complete)
+**Current focus:** Phase 3 -- Payments + Tax Receipts (Plan 03-02 complete)
 
 ## Current Position
 
 Phase: 3 of 6 (Payments + Tax Receipts)
-Plan: 1 of 3 in current phase (03-01 complete)
+Plan: 2 of 3 in current phase (03-02 complete)
 Status: In progress
-Last activity: 2026-03-18 -- Plan 03-01 complete, payment infrastructure (models, services, schemas)
+Last activity: 2026-03-18 -- Plan 03-02 complete, payment API endpoints, webhook, tests
 
-Progress: [███████░░░] 78%
+Progress: [████████░░] 89%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 7
-- Average duration: 13min
-- Total execution time: 1.40 hours
+- Total plans completed: 8
+- Average duration: 12min
+- Total execution time: 1.52 hours
 
 **By Phase:**
 
@@ -45,14 +45,15 @@ Progress: [███████░░░] 78%
 |-------|-------|-------|----------|
 | 1. Foundation | 2/2 | 26min | 13min |
 | 2. Booking Engine | 4/4 | 55min | 14min |
-| 3. Payments + Tax | 1/3 | 7min | 7min |
+| 3. Payments + Tax | 2/3 | 14min | 7min |
 
 **Recent Trend:**
-- Last 5 plans: 5min, 13min, 11min, 25min, 7min
+- Last 5 plans: 13min, 11min, 25min, 7min, 7min
 - Trend: consistent
 
 *Updated after each plan completion*
 | Phase 03 P01 | 7min | 2 tasks | 11 files |
+| Phase 03 P02 | 7min | 2 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -93,6 +94,10 @@ Recent decisions affecting current work:
 - [Phase 03]: Idempotent Robokassa callback handler (already-paid returns True)
 - [Phase 03]: Per-payment fiscalization override with fallback to master default
 - [Phase 03]: SELECT FOR UPDATE on payment mutations to prevent race conditions
+- [Phase 03]: Robokassa webhook uses async_session_factory directly (not DI), registered at app level
+- [Phase 03]: Fire-and-forget payment link notification in Robokassa endpoint (try/except, never blocks response)
+- [Phase 03]: Payment settings nested under /settings/payment, maintaining settings router ownership
+- [Phase 03]: TelegramAdapter payment link uses InlineKeyboardButton(url=) for external browser redirect
 
 ### Pending Todos
 
@@ -106,6 +111,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-18T03:50:36Z
-Stopped at: Completed 03-01-PLAN.md
-Resume file: .planning/phases/03-payments-tax-receipts/03-01-SUMMARY.md
+Last session: 2026-03-18T04:01:47Z
+Stopped at: Completed 03-02-PLAN.md
+Resume file: .planning/phases/03-payments-tax-receipts/03-02-SUMMARY.md
