@@ -2,6 +2,31 @@ import { create } from "zustand";
 import { ApiError } from "../api/client.ts";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "/api/v1";
+const TOKEN_KEY = "master_token";
+
+function safeGetItem(key: string): string | null {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function safeSetItem(key: string, value: string): void {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    // Ignore storage errors
+  }
+}
+
+function safeRemoveItem(key: string): void {
+  try {
+    localStorage.removeItem(key);
+  } catch {
+    // Ignore storage errors
+  }
+}
 
 interface MasterAuthState {
   token: string | null;
@@ -12,6 +37,7 @@ interface MasterAuthState {
   login: (initDataRaw: string) => Promise<boolean>;
   setToken: (token: string | null) => void;
   logout: () => void;
+  hydrate: () => void;
 }
 
 export const useMasterAuth = create<MasterAuthState>((set) => ({
@@ -39,6 +65,7 @@ export const useMasterAuth = create<MasterAuthState>((set) => ({
       }
 
       const data = await response.json();
+      safeSetItem(TOKEN_KEY, data.access_token);
       set({
         token: data.access_token,
         isAuthenticated: true,
@@ -53,11 +80,26 @@ export const useMasterAuth = create<MasterAuthState>((set) => ({
     }
   },
 
-  setToken: (token) =>
-    set({ token, isAuthenticated: !!token }),
+  setToken: (token) => {
+    if (token) {
+      safeSetItem(TOKEN_KEY, token);
+    } else {
+      safeRemoveItem(TOKEN_KEY);
+    }
+    set({ token, isAuthenticated: !!token });
+  },
 
-  logout: () =>
-    set({ token: null, isAuthenticated: false, error: null }),
+  logout: () => {
+    safeRemoveItem(TOKEN_KEY);
+    set({ token: null, isAuthenticated: false, error: null });
+  },
+
+  hydrate: () => {
+    const token = safeGetItem(TOKEN_KEY);
+    if (token) {
+      set({ token, isAuthenticated: true });
+    }
+  },
 }));
 
 /**

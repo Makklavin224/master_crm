@@ -22,6 +22,9 @@ function formatPhone(value: string): string {
     phone = "7" + phone;
   }
 
+  // Cap at 11 digits (7 + 10 digits)
+  phone = phone.slice(0, 11);
+
   // Format as +7 (XXX) XXX-XX-XX
   let formatted = "+7";
   if (phone.length > 1) formatted += " (" + phone.slice(1, 4);
@@ -98,7 +101,7 @@ export function BookingForm() {
     }
 
     const cleanedPhone = cleanPhone(phone);
-    if (cleanedPhone.length < 12) {
+    if (cleanedPhone.length !== 12) {
       setPhoneError("Введите корректный номер телефона");
       valid = false;
     } else {
