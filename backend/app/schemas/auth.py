@@ -19,3 +19,11 @@ class TokenResponse(BaseModel):
 
 class TgAuthRequest(BaseModel):
     init_data: str
+
+
+class MaxAuthRequest(BaseModel):
+    init_data: str  # MAX initData (same format as TG)
+
+
+class VkAuthRequest(BaseModel):
+    launch_params: str  # VK launch params query string (contains vk_user_id, sign, etc.)
