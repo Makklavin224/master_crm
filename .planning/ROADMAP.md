@@ -99,7 +99,7 @@ Plans:
 **Plans:** 3 plans
 
 Plans:
-- [ ] 05-01-PLAN.md -- Shared backend infrastructure: config settings, MAX/VK validation functions, Master model columns (max_user_id, vk_user_id), Alembic migration, auth endpoints
+- [x] 05-01-PLAN.md -- Shared backend infrastructure: config settings, MAX/VK validation functions, Master model columns (max_user_id, vk_user_id), Alembic migration, auth endpoints
 - [ ] 05-02-PLAN.md -- MAX full stack: bot adapter + handlers, webhook route, frontend MaxBridge adapter, platform detection
 - [ ] 05-03-PLAN.md -- VK full stack: bot adapter + handlers, webhook route with confirmation handshake, frontend VkBridge adapter, vk-bridge package
 
@@ -131,5 +131,5 @@ Note: Phase 4 (Notifications) depends on Phase 2 only. Phase 6 (Web Panel) depen
 | 2. Booking Engine + Telegram | 3/4 | In Progress | - |
 | 3. Payments + Tax Receipts | 3/3 | Complete | 2026-03-18 |
 | 4. Notifications | 2/2 | Complete | 2026-03-18 |
-| 5. Multi-Messenger Expansion | 0/3 | Not started | - |
+| 5. Multi-Messenger Expansion | 1/3 | In Progress | - |
 | 6. Web Admin Panel | 0/3 | Not started | - |

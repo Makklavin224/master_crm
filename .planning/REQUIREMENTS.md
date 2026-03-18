@@ -46,10 +46,10 @@
 
 - [x] **MSG-01**: Telegram Bot -- webhook processing, notifications to master and clients
 - [x] **MSG-02**: Telegram Mini App -- client booking, master management
-- [ ] **MSG-03**: MAX Bot -- webhook processing, notifications
-- [ ] **MSG-04**: MAX Mini App -- same functionality as TG Mini App
-- [ ] **MSG-05**: VK Bot -- webhook processing, notifications
-- [ ] **MSG-06**: VK Mini App -- same functionality as TG Mini App
+- [x] **MSG-03**: MAX Bot -- webhook processing, notifications
+- [x] **MSG-04**: MAX Mini App -- same functionality as TG Mini App
+- [x] **MSG-05**: VK Bot -- webhook processing, notifications
+- [x] **MSG-06**: VK Mini App -- same functionality as TG Mini App
 - [x] **MSG-07**: Unified React Mini App code with platform detection (TG/MAX/VK bridge adapters)
 - [x] **MSG-08**: Messenger Adapter pattern on backend (unified notification router)
 
@@ -143,10 +143,10 @@
 | NOTF-02 | Phase 4 | Complete |
 | NOTF-03 | Phase 4 | Complete |
 | BOOK-07 | Phase 4 | Complete |
-| MSG-03 | Phase 5 | Pending |
-| MSG-04 | Phase 5 | Pending |
-| MSG-05 | Phase 5 | Pending |
-| MSG-06 | Phase 5 | Pending |
+| MSG-03 | Phase 5 | Complete |
+| MSG-04 | Phase 5 | Complete |
+| MSG-05 | Phase 5 | Complete |
+| MSG-06 | Phase 5 | Complete |
 | CLNT-04 | Phase 5 | Pending |
 | WEB-01 | Phase 6 | Pending |
 | WEB-02 | Phase 6 | Pending |

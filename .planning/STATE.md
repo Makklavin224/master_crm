@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: completed
-stopped_at: Phase 5 context gathered
-last_updated: "2026-03-18T11:10:37.578Z"
-last_activity: 2026-03-18 -- Plan 04-02 complete, APScheduler reminder service + frontend notification settings UI
+status: in_progress
+stopped_at: Completed 05-01-PLAN.md
+last_updated: "2026-03-18T12:34:18Z"
+last_activity: 2026-03-18 -- Plan 05-01 complete, MAX/VK shared backend infrastructure (config, validation, model, auth endpoints)
 progress:
   total_phases: 6
   completed_phases: 4
-  total_plans: 11
-  completed_plans: 11
-  percent: 100
+  total_plans: 14
+  completed_plans: 12
+  percent: 86
 ---
 
 # Project State
@@ -21,23 +21,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-17)
 
 **Core value:** Master taps "Complete" -- client gets SBP payment link -- tax receipt auto-generates. 3 steps instead of 9.
-**Current focus:** Phase 4 complete -- all 11 plans done (100%)
+**Current focus:** Phase 5 in progress -- multi-messenger expansion (MAX + VK)
 
 ## Current Position
 
-Phase: 4 of 6 (Notifications) -- COMPLETE
-Plan: 2 of 2 in current phase (04-02 complete)
-Status: All plans complete
-Last activity: 2026-03-18 -- Plan 04-02 complete, APScheduler reminder service + frontend notification settings UI
+Phase: 5 of 6 (Multi-Messenger Expansion)
+Plan: 1 of 3 in current phase (05-01 complete)
+Status: In progress
+Last activity: 2026-03-18 -- Plan 05-01 complete, MAX/VK shared backend infrastructure (config, validation, model, auth endpoints)
 
-Progress: [██████████] 100%
+Progress: [████████░░] 86%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 11
-- Average duration: 10min
-- Total execution time: 1.80 hours
+- Total plans completed: 12
+- Average duration: 9min
+- Total execution time: 1.85 hours
 
 **By Phase:**
 
@@ -47,9 +47,10 @@ Progress: [██████████] 100%
 | 2. Booking Engine | 4/4 | 55min | 14min |
 | 3. Payments + Tax | 3/3 | 19min | 6min |
 | 4. Notifications | 2/2 | 12min | 6min |
+| 5. Multi-Messenger | 1/3 | 3min | 3min |
 
 **Recent Trend:**
-- Last 5 plans: 7min, 7min, 5min, 7min, 5min
+- Last 5 plans: 7min, 5min, 7min, 5min, 3min
 - Trend: consistent
 
 *Updated after each plan completion*
@@ -58,6 +59,7 @@ Progress: [██████████] 100%
 | Phase 03 P03 | 5min | 3 tasks | 9 files |
 | Phase 04 P01 | 7min | 2 tasks | 13 files |
 | Phase 04 P02 | 5min | 2 tasks | 8 files |
+| Phase 05 P01 | 3min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -112,6 +114,10 @@ Recent decisions affecting current work:
 - [Phase 04]: cancel_client: callback prefix for client-initiated cancellation (vs cancel: for master)
 - [Phase 04]: APScheduler 3.11.x (not 4.x alpha) as module-level singleton for stable async scheduler
 - [Phase 04]: Fire-and-forget cleanup_reminders_for_booking in cancel/reschedule (consistent with notification patterns)
+- [Phase 05]: validate_max_init_data delegates to validate_tg_init_data (identical HMAC-SHA256 algorithm, zero code duplication)
+- [Phase 05]: VK validation uses OrderedDict for deterministic param sorting and URL-safe base64 encoding
+- [Phase 05]: All MAX/VK config fields default to empty string (app starts without them, same pattern as TG)
+- [Phase 05]: Messenger auth endpoint pattern: validate -> extract platform user_id -> lookup Master -> JWT
 
 ### Pending Todos
 
@@ -125,6 +131,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-18T11:10:37.572Z
-Stopped at: Phase 5 context gathered
-Resume file: .planning/phases/05-multi-messenger-expansion/05-CONTEXT.md
+Last session: 2026-03-18T12:34:18Z
+Stopped at: Completed 05-01-PLAN.md
+Resume file: .planning/phases/05-multi-messenger-expansion/05-01-SUMMARY.md
