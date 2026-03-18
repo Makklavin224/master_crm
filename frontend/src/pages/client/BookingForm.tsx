@@ -116,7 +116,7 @@ export function BookingForm() {
 
     const startsAt = `${selectedDate}T${selectedTime}:00`;
     const initDataRaw = platform.getInitDataRaw();
-    const tgUserId = platform.getUserId();
+    const userId = platform.getUserId();
 
     try {
       const booking = await createBooking.mutateAsync({
@@ -126,8 +126,8 @@ export function BookingForm() {
           starts_at: startsAt,
           client_name: name.trim(),
           client_phone: cleanPhone(phone),
-          source_platform: platform.platform === "telegram" ? "telegram" : "web",
-          ...(tgUserId ? { tg_user_id: tgUserId } : {}),
+          source_platform: platform.platform,
+          ...(userId ? { platform_user_id: userId } : {}),
         },
         initDataRaw,
       });

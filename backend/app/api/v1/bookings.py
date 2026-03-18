@@ -61,7 +61,7 @@ async def create_booking_endpoint(
         client_name=data.client_name,
         client_phone=data.client_phone,
         source_platform=data.source_platform,
-        tg_user_id=data.tg_user_id,
+        platform_user_id=data.platform_user_id,
     )
     return _booking_to_read(booking)
 

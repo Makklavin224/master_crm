@@ -36,12 +36,24 @@ async def _notify_master(
         from app.bots.common.adapter import BookingNotification
         from app.bots.common.notification import notification_service
 
-        # Load master to get tg_user_id
+        # Load master to get platform user IDs
         result = await db.execute(
             select(Master).where(Master.id == booking.master_id)
         )
         master = result.scalar_one_or_none()
-        if not master or not master.tg_user_id:
+        if not master:
+            return
+
+        # Collect all platforms master is registered on
+        platform_ids: list[tuple[str, str]] = []
+        if master.tg_user_id:
+            platform_ids.append(("telegram", master.tg_user_id))
+        if master.max_user_id:
+            platform_ids.append(("max", master.max_user_id))
+        if master.vk_user_id:
+            platform_ids.append(("vk", master.vk_user_id))
+
+        if not platform_ids:
             return
 
         # Load related objects if not already loaded
@@ -67,20 +79,22 @@ async def _notify_master(
         service_name = service.name if service else "Service"
         service_price = service.price if service else None
 
-        notif = BookingNotification(
-            master_platform_id=master.tg_user_id,
-            client_name=client_name,
-            service_name=service_name,
-            booking_time=booking.starts_at.strftime("%H:%M"),
-            booking_date=booking.starts_at.strftime("%d.%m.%Y"),
-            booking_id=str(booking.id),
-            notification_type=notification_type,
-            price=service_price,
-        )
+        # Send notification to all registered platforms
+        for platform, platform_id in platform_ids:
+            notif = BookingNotification(
+                master_platform_id=platform_id,
+                client_name=client_name,
+                service_name=service_name,
+                booking_time=booking.starts_at.strftime("%H:%M"),
+                booking_date=booking.starts_at.strftime("%d.%m.%Y"),
+                booking_id=str(booking.id),
+                notification_type=notification_type,
+                price=service_price,
+            )
 
-        await notification_service.send_booking_notification(
-            "telegram", notif
-        )
+            await notification_service.send_booking_notification(
+                platform, notif
+            )
     except Exception:
         logger.exception(
             "Failed to send %s notification for booking %s",
@@ -245,7 +259,7 @@ async def create_booking(
     client_name: str,
     client_phone: str,
     source_platform: str = "telegram",
-    tg_user_id: str | None = None,
+    platform_user_id: str | None = None,
 ) -> Booking:
     """
     Create a booking with double-booking prevention.
@@ -303,7 +317,7 @@ async def create_booking(
         name=client_name,
         phone=client_phone,
         platform=source_platform,
-        platform_user_id=tg_user_id,
+        platform_user_id=platform_user_id,
     )
 
     # 5. Create MasterClient link + update visit stats

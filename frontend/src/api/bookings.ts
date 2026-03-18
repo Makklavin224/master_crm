@@ -9,7 +9,7 @@ export interface BookingCreate {
   client_name: string;
   client_phone: string;
   source_platform: string;
-  tg_user_id?: string;
+  platform_user_id?: string;  // Platform-specific user ID (TG, MAX, VK)
 }
 
 export interface BookingRead {
@@ -47,16 +47,16 @@ export function useCreateBooking() {
   });
 }
 
-export function useMyBookings(tgUserId: string | null, initDataRaw: string | null) {
+export function useMyBookings(userId: string | null, initDataRaw: string | null) {
   return useQuery<BookingRead[]>({
-    queryKey: ["bookings", "my", tgUserId],
+    queryKey: ["bookings", "my", userId],
     queryFn: () =>
       apiRequest<BookingRead[]>(
-        `${API.BOOKINGS}?tg_user_id=${tgUserId}`,
+        `${API.BOOKINGS}?platform_user_id=${userId}`,
         {},
         initDataRaw,
       ),
-    enabled: !!tgUserId && !!initDataRaw,
+    enabled: !!userId && !!initDataRaw,
     staleTime: 30_000,
   });
 }

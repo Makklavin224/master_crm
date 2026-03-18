@@ -12,9 +12,9 @@ import { CalendarDays } from "lucide-react";
 export function MyBookings() {
   const platform = usePlatform();
   const toast = useToast();
-  const tgUserId = platform.getUserId();
+  const userId = platform.getUserId();
   const initDataRaw = platform.getInitDataRaw();
-  const { data: bookings, isLoading, error } = useMyBookings(tgUserId, initDataRaw);
+  const { data: bookings, isLoading, error } = useMyBookings(userId, initDataRaw);
   const cancelBooking = useCancelBooking();
 
   const [confirmCancelId, setConfirmCancelId] = useState<string | null>(null);

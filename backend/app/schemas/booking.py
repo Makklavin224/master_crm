@@ -11,7 +11,7 @@ class BookingCreate(BaseModel):
     client_name: str = Field(min_length=1)
     client_phone: str = Field(min_length=10)
     source_platform: str = "telegram"
-    tg_user_id: str | None = None
+    platform_user_id: str | None = None  # Platform-specific user ID (TG, MAX, VK)
 
 
 class ManualBookingCreate(BaseModel):
