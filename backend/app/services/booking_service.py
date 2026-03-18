@@ -373,6 +373,13 @@ async def cancel_booking(
     await db.flush()
     await db.refresh(booking)
 
+    # Clean up pending reminders (fire-and-forget)
+    try:
+        from app.services.reminder_service import cleanup_reminders_for_booking
+        await cleanup_reminders_for_booking(db, booking_id)
+    except Exception:
+        logger.exception("Failed to cleanup reminders for booking %s", booking_id)
+
     # Send cancellation notification to master (fire-and-forget)
     await _notify_master(db, booking, "cancelled")
 
@@ -447,6 +454,13 @@ async def reschedule_booking(
     booking.ends_at = new_ends_at
     await db.flush()
     await db.refresh(booking)
+
+    # Clean up pending reminders so fresh ones get sent for the new time
+    try:
+        from app.services.reminder_service import cleanup_reminders_for_booking
+        await cleanup_reminders_for_booking(db, booking_id)
+    except Exception:
+        logger.exception("Failed to cleanup reminders for booking %s", booking_id)
 
     # Send reschedule notification to master (fire-and-forget)
     await _notify_master(db, booking, "rescheduled")

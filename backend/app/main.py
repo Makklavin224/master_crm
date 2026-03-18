@@ -11,6 +11,7 @@ from app.api.v1.router import api_v1_router
 from app.bots.telegram.bot import bot, dp
 from app.core.config import settings
 from app.core.database import async_session_factory, engine
+from app.services.reminder_service import scheduler
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +33,15 @@ async def lifespan(app: FastAPI):
         )
         logger.info("Telegram webhook registered: %s", webhook_url)
 
+    # Start reminder scheduler
+    scheduler.start()
+    logger.info("Reminder scheduler started")
+
     yield
+
+    # Stop reminder scheduler
+    scheduler.shutdown(wait=False)
+    logger.info("Reminder scheduler stopped")
 
     # Shutdown: clean up bot and engine
     if bot:
