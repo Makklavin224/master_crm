@@ -1,7 +1,9 @@
+import { useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { PlatformProvider } from "./platform/context.tsx";
 import { ToastContainer } from "./components/ui/Toast.tsx";
+import { useMasterAuth } from "./stores/master-auth.ts";
 import { ServiceSelection } from "./pages/client/ServiceSelection.tsx";
 import { DatePicker } from "./pages/client/DatePicker.tsx";
 import { TimePicker } from "./pages/client/TimePicker.tsx";
@@ -40,6 +42,10 @@ function MasterLayout() {
 }
 
 export default function App() {
+  useEffect(() => {
+    useMasterAuth.getState().hydrate();
+  }, []);
+
   return (
     <PlatformProvider>
       <QueryClientProvider client={queryClient}>

@@ -14,8 +14,6 @@ RUN printf 'server {\n\
     listen 3001;\n\
     root /usr/share/nginx/html;\n\
     index index.html;\n\
-    gzip on;\n\
-    gzip_types text/plain text/css application/json application/javascript text/xml;\n\
     location / {\n\
         try_files $uri $uri/ /index.html;\n\
     }\n\
