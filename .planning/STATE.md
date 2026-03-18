@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: completed
-stopped_at: Phase 4 context gathered
-last_updated: "2026-03-18T07:00:27.906Z"
-last_activity: 2026-03-18 -- Plan 03-03 complete, payment frontend UI (PaymentSheet, RobokassaWizard, PaymentHistory, Settings)
+status: in_progress
+stopped_at: Plan 04-01 complete
+last_updated: "2026-03-18T07:32:40Z"
+last_activity: 2026-03-18 -- Plan 04-01 complete, notification infrastructure (models, adapter extensions, booking confirmations, settings API, cancel callback)
 progress:
   total_phases: 6
   completed_phases: 3
-  total_plans: 9
-  completed_plans: 9
-  percent: 100
+  total_plans: 11
+  completed_plans: 10
+  percent: 91
 ---
 
 # Project State
@@ -21,23 +21,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-17)
 
 **Core value:** Master taps "Complete" -- client gets SBP payment link -- tax receipt auto-generates. 3 steps instead of 9.
-**Current focus:** Phase 3 complete. Next: Phase 4 -- Notifications
+**Current focus:** Phase 4 -- Notifications (plan 01 complete, plan 02 next: scheduler)
 
 ## Current Position
 
-Phase: 3 of 6 (Payments + Tax Receipts -- COMPLETE)
-Plan: 3 of 3 in current phase (03-03 complete, phase done)
-Status: Phase 3 complete
-Last activity: 2026-03-18 -- Plan 03-03 complete, payment frontend UI (PaymentSheet, RobokassaWizard, PaymentHistory, Settings)
+Phase: 4 of 6 (Notifications)
+Plan: 1 of 2 in current phase (04-01 complete)
+Status: In progress
+Last activity: 2026-03-18 -- Plan 04-01 complete, notification infrastructure (models, adapter extensions, booking confirmations, settings API, cancel callback)
 
-Progress: [██████████] 100%
+Progress: [█████████░] 91%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 9
-- Average duration: 11min
-- Total execution time: 1.60 hours
+- Total plans completed: 10
+- Average duration: 10min
+- Total execution time: 1.72 hours
 
 **By Phase:**
 
@@ -46,15 +46,17 @@ Progress: [██████████] 100%
 | 1. Foundation | 2/2 | 26min | 13min |
 | 2. Booking Engine | 4/4 | 55min | 14min |
 | 3. Payments + Tax | 3/3 | 19min | 6min |
+| 4. Notifications | 1/2 | 7min | 7min |
 
 **Recent Trend:**
-- Last 5 plans: 11min, 25min, 7min, 7min, 5min
-- Trend: consistent/improving
+- Last 5 plans: 25min, 7min, 7min, 5min, 7min
+- Trend: consistent
 
 *Updated after each plan completion*
 | Phase 03 P01 | 7min | 2 tasks | 11 files |
 | Phase 03 P02 | 7min | 2 tasks | 10 files |
 | Phase 03 P03 | 5min | 3 tasks | 9 files |
+| Phase 04 P01 | 7min | 2 tasks | 13 files |
 
 ## Accumulated Context
 
@@ -103,6 +105,10 @@ Recent decisions affecting current work:
 - [Phase 03]: RobokassaWizard rendered inline in Settings (not modal) for step-by-step flow
 - [Phase 03]: Per-payment fiscalization override in PaymentSheet with pill selector matching backend cascade
 - [Phase 03]: Payment history link in Settings for discoverability (not in bottom tab bar)
+- [Phase 04]: NotificationService.send_message routing for plain text client change notifications
+- [Phase 04]: Client cancel callback verifies identity via ClientPlatform.platform_user_id match
+- [Phase 04]: Notification settings nested under /settings/notifications, maintaining settings router ownership
+- [Phase 04]: cancel_client: callback prefix for client-initiated cancellation (vs cancel: for master)
 
 ### Pending Todos
 
@@ -116,6 +122,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-18T07:00:27.899Z
-Stopped at: Phase 4 context gathered
-Resume file: .planning/phases/04-notifications/04-CONTEXT.md
+Last session: 2026-03-18T07:32:40Z
+Stopped at: Completed 04-01-PLAN.md
+Resume file: .planning/phases/04-notifications/04-01-SUMMARY.md

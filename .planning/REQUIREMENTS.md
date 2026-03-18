@@ -13,7 +13,7 @@
 - [x] **BOOK-04**: System prevents double-booking (PostgreSQL exclusion constraints)
 - [x] **BOOK-05**: Client can cancel or reschedule a booking (with configurable deadline)
 - [x] **BOOK-06**: Master can cancel, reschedule, or manually add a booking
-- [ ] **BOOK-07**: Master receives notification about new booking/cancellation via bot
+- [x] **BOOK-07**: Master receives notification about new booking/cancellation via bot
 
 ### Clients (CLNT)
 
@@ -26,7 +26,7 @@
 
 - [ ] **NOTF-01**: Automated reminder to client 24h before visit via bot
 - [ ] **NOTF-02**: Automated reminder to client 2h before visit via bot
-- [ ] **NOTF-03**: Booking confirmation to client immediately after booking
+- [x] **NOTF-03**: Booking confirmation to client immediately after booking
 
 ### Payments (PAY)
 
@@ -141,8 +141,8 @@
 | TAX-04 | Phase 3 | Complete |
 | NOTF-01 | Phase 4 | Pending |
 | NOTF-02 | Phase 4 | Pending |
-| NOTF-03 | Phase 4 | Pending |
-| BOOK-07 | Phase 4 | Pending |
+| NOTF-03 | Phase 4 | Complete |
+| BOOK-07 | Phase 4 | Complete |
 | MSG-03 | Phase 5 | Pending |
 | MSG-04 | Phase 5 | Pending |
 | MSG-05 | Phase 5 | Pending |
