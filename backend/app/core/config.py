@@ -49,6 +49,9 @@ class Settings(BaseSettings):
     vk_confirmation_token: str = ""  # VK Callback API confirmation string
     vk_secret_key: str = ""  # VK Callback API secret key
 
+    # Web admin panel
+    web_admin_url: str = "http://localhost:3001/admin"  # Base URL for magic link generation
+
     # CORS
     allowed_origins: list[str] = ["http://localhost:3000"]
 

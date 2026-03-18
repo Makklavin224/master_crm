@@ -3,6 +3,7 @@ from app.models.booking import Booking
 from app.models.client import Client, ClientPlatform, MasterClient
 from app.models.master import Master
 from app.models.payment import Payment
+from app.models.qr_session import QrSession
 from app.models.schedule import MasterSchedule, ScheduleException
 from app.models.scheduled_reminder import ScheduledReminder
 from app.models.service import Service
@@ -16,6 +17,7 @@ __all__ = [
     "MasterClient",
     "MasterSchedule",
     "Payment",
+    "QrSession",
     "ScheduleException",
     "ScheduledReminder",
     "Service",

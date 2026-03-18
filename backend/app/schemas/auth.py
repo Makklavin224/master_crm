@@ -27,3 +27,22 @@ class MaxAuthRequest(BaseModel):
 
 class VkAuthRequest(BaseModel):
     launch_params: str  # VK launch params query string (contains vk_user_id, sign, etc.)
+
+
+class QrInitResponse(BaseModel):
+    session_id: str
+    qr_payload: str
+
+
+class QrStatusResponse(BaseModel):
+    status: str
+    access_token: str | None = None
+
+
+class QrConfirmRequest(BaseModel):
+    session_id: str
+    tg_user_id: str
+
+
+class MagicLinkVerifyRequest(BaseModel):
+    token: str

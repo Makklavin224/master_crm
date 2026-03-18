@@ -24,12 +24,14 @@ if settings.tg_bot_token:
     # Register handler routers
     from app.bots.telegram.handlers.callbacks import router as callbacks_router
     from app.bots.telegram.handlers.link import router as link_router
+    from app.bots.telegram.handlers.login import router as login_router
     from app.bots.telegram.handlers.settings import router as settings_router
     from app.bots.telegram.handlers.start import router as start_router
     from app.bots.telegram.handlers.today import router as today_router
 
     dp.include_routers(
         start_router,
+        login_router,
         today_router,
         link_router,
         settings_router,

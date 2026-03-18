@@ -1,12 +1,14 @@
 """Handler for /start command.
 
-Two paths:
+Three paths:
 - /start (no args): Master registration or welcome back
+- /start qr_{session_id} (QR deep link): Confirm QR login session
 - /start MASTER_ID (deep link): Client booking entry point
 """
 
 import logging
 import uuid
+from datetime import datetime, timezone
 
 from aiogram import Router
 from aiogram.filters import CommandObject, CommandStart
@@ -20,7 +22,9 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
+from app.core.security import create_access_token
 from app.models.master import Master
+from app.models.qr_session import QrSession
 
 logger = logging.getLogger(__name__)
 
@@ -85,9 +89,9 @@ async def start_no_link(message: Message, db: AsyncSession) -> None:
 async def start_with_deep_link(
     message: Message, command: CommandObject, db: AsyncSession
 ) -> None:
-    """Client deep link: /start MASTER_ID -- show booking mini-app button."""
-    master_id_str = command.args
-    if not master_id_str:
+    """Handle deep links: /start qr_{session_id} or /start MASTER_ID."""
+    args = command.args
+    if not args:
         await message.answer(
             "\u041c\u0430\u0441\u0442\u0435\u0440 \u043d\u0435 "
             "\u043d\u0430\u0439\u0434\u0435\u043d. "
@@ -96,9 +100,15 @@ async def start_with_deep_link(
         )
         return
 
+    # --- QR Code Login Deep Link ---
+    if args.startswith("qr_"):
+        await _handle_qr_login(message, args[3:], db)
+        return
+
+    # --- Client Booking Deep Link ---
     # Validate UUID format
     try:
-        master_id = uuid.UUID(master_id_str)
+        master_id = uuid.UUID(args)
     except ValueError:
         await message.answer(
             "\u041c\u0430\u0441\u0442\u0435\u0440 \u043d\u0435 "
@@ -143,6 +153,79 @@ async def start_with_deep_link(
         f"\u043a <b>{master.name}</b>:",
         parse_mode="HTML",
         reply_markup=keyboard,
+    )
+
+
+async def _handle_qr_login(
+    message: Message, session_id_str: str, db: AsyncSession
+) -> None:
+    """Confirm a QR login session (called from /start qr_{session_id} deep link)."""
+    tg_user_id = str(message.from_user.id)
+
+    # Validate session UUID
+    try:
+        sid = uuid.UUID(session_id_str)
+    except ValueError:
+        await message.answer(
+            "\u041d\u0435\u0432\u0435\u0440\u043d\u044b\u0439 QR-\u043a\u043e\u0434. "
+            "\u041f\u043e\u043f\u0440\u043e\u0431\u0443\u0439\u0442\u0435 \u0435\u0449\u0451 \u0440\u0430\u0437."
+        )
+        return
+
+    # Look up QR session
+    result = await db.execute(
+        select(QrSession).where(QrSession.id == sid)
+    )
+    session = result.scalar_one_or_none()
+    if session is None:
+        await message.answer(
+            "QR-\u0441\u0435\u0441\u0441\u0438\u044f \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u0430."
+        )
+        return
+
+    # Check session validity
+    now = datetime.now(timezone.utc)
+    if session.status != "pending" or now > session.expires_at:
+        await message.answer(
+            "QR-\u043a\u043e\u0434 \u0438\u0441\u0442\u0451\u043a. "
+            "\u0421\u0433\u0435\u043d\u0435\u0440\u0438\u0440\u0443\u0439\u0442\u0435 \u043d\u043e\u0432\u044b\u0439 "
+            "\u0432 \u043f\u0430\u043d\u0435\u043b\u0438 \u0443\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u044f."
+        )
+        return
+
+    # Look up master by tg_user_id
+    master_result = await db.execute(
+        select(Master).where(
+            Master.tg_user_id == tg_user_id,
+            Master.is_active.is_(True),
+        )
+    )
+    master = master_result.scalar_one_or_none()
+    if master is None:
+        await message.answer(
+            "\u0410\u043a\u043a\u0430\u0443\u043d\u0442 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d. "
+            "\u0421\u043d\u0430\u0447\u0430\u043b\u0430 "
+            "\u043e\u0442\u043f\u0440\u0430\u0432\u044c\u0442\u0435 /start "
+            "\u0434\u043b\u044f \u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u0438."
+        )
+        return
+
+    # Create JWT and confirm session
+    jwt_token = create_access_token(data={"sub": str(master.id)})
+    session.access_token = jwt_token
+    session.status = "confirmed"
+    session.master_id = master.id
+    await db.flush()
+
+    await message.answer(
+        "\u2705 \u0412\u0445\u043e\u0434 \u043f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0451\u043d! "
+        "\u0412\u0435\u0440\u043d\u0438\u0442\u0435\u0441\u044c "
+        "\u0432 \u043f\u0430\u043d\u0435\u043b\u044c \u0443\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u044f."
+    )
+    logger.info(
+        "QR login confirmed: master=%s, session=%s",
+        master.id,
+        session_id_str,
     )
 
 

@@ -1,3 +1,5 @@
+import uuid
+from datetime import datetime, timedelta, timezone
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -13,9 +15,14 @@ from app.core.security import (
     validate_vk_launch_params,
 )
 from app.models.master import Master
+from app.models.qr_session import QrSession
 from app.schemas.auth import (
     LoginRequest,
+    MagicLinkVerifyRequest,
     MaxAuthRequest,
+    QrConfirmRequest,
+    QrInitResponse,
+    QrStatusResponse,
     RegisterRequest,
     TgAuthRequest,
     TokenResponse,
@@ -176,3 +183,205 @@ async def vk_auth(
 
     token = create_access_token(data={"sub": str(master.id)})
     return TokenResponse(access_token=token)
+
+
+# --- QR Code Login Flow ---
+
+
+@router.post("/qr/init", response_model=QrInitResponse)
+async def qr_init(
+    db: Annotated[AsyncSession, Depends(get_db)],
+):
+    """
+    Create a QR login session. No auth required.
+
+    Returns session_id and qr_payload (deep link to TG bot).
+    Frontend renders qr_payload as QR code and polls /qr/status.
+    """
+    session_id = str(uuid.uuid4())
+    expires_at = datetime.now(timezone.utc) + timedelta(minutes=5)
+
+    # Bot username for deep link
+    bot_username = "MasterCRMBot"
+    if settings.tg_bot_token:
+        # Will be resolved at runtime; for now use a sensible default
+        bot_username = "MasterCRMBot"
+
+    qr_payload = f"https://t.me/{bot_username}?start=qr_{session_id}"
+
+    session = QrSession(
+        id=uuid.UUID(session_id),
+        session_type="qr",
+        token=session_id,
+        status="pending",
+        expires_at=expires_at,
+    )
+    db.add(session)
+    await db.flush()
+
+    return QrInitResponse(session_id=session_id, qr_payload=qr_payload)
+
+
+@router.get("/qr/status/{session_id}", response_model=QrStatusResponse)
+async def qr_status(
+    session_id: str,
+    db: Annotated[AsyncSession, Depends(get_db)],
+):
+    """
+    Check QR session status. No auth required.
+
+    Polled by the frontend every 3 seconds.
+    Returns 'pending', 'confirmed' (with access_token), or 'expired'.
+    """
+    try:
+        sid = uuid.UUID(session_id)
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid session ID",
+        )
+
+    result = await db.execute(
+        select(QrSession).where(QrSession.id == sid)
+    )
+    session = result.scalar_one_or_none()
+    if session is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Session not found",
+        )
+
+    now = datetime.now(timezone.utc)
+    if session.status == "pending" and now > session.expires_at:
+        session.status = "expired"
+        await db.flush()
+        return QrStatusResponse(status="expired")
+
+    if session.status == "confirmed":
+        return QrStatusResponse(
+            status="confirmed", access_token=session.access_token
+        )
+
+    return QrStatusResponse(status=session.status)
+
+
+@router.post("/qr/confirm")
+async def qr_confirm(
+    data: QrConfirmRequest,
+    db: Annotated[AsyncSession, Depends(get_db)],
+):
+    """
+    Confirm a QR login session. Called by the bot (not the web panel).
+
+    The bot calls this when a user sends /start qr_{session_id}.
+    Looks up the master by tg_user_id, creates a JWT, marks session confirmed.
+    """
+    try:
+        sid = uuid.UUID(data.session_id)
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid session ID",
+        )
+
+    result = await db.execute(
+        select(QrSession).where(QrSession.id == sid)
+    )
+    session = result.scalar_one_or_none()
+    if session is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Session not found",
+        )
+
+    now = datetime.now(timezone.utc)
+    if session.status != "pending" or now > session.expires_at:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Session expired or already used",
+        )
+
+    # Look up master by tg_user_id
+    master_result = await db.execute(
+        select(Master).where(
+            Master.tg_user_id == data.tg_user_id,
+            Master.is_active.is_(True),
+        )
+    )
+    master = master_result.scalar_one_or_none()
+    if master is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Master account not found for this Telegram user",
+        )
+
+    # Create JWT and confirm session
+    jwt_token = create_access_token(data={"sub": str(master.id)})
+    session.access_token = jwt_token
+    session.status = "confirmed"
+    session.master_id = master.id
+    await db.flush()
+
+    return {"ok": True}
+
+
+# --- Magic Link Login Flow ---
+
+
+@router.post("/magic/verify", response_model=TokenResponse)
+async def magic_link_verify(
+    data: MagicLinkVerifyRequest,
+    db: Annotated[AsyncSession, Depends(get_db)],
+):
+    """
+    Verify a magic link token and return a JWT. No auth required.
+
+    Called when user clicks the magic link sent by the bot.
+    Validates token exists, not expired, not used.
+    """
+    result = await db.execute(
+        select(QrSession).where(
+            QrSession.token == data.token,
+            QrSession.session_type == "magic_link",
+        )
+    )
+    session = result.scalar_one_or_none()
+    if session is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Invalid magic link",
+        )
+
+    now = datetime.now(timezone.utc)
+    if session.status != "pending" or now > session.expires_at:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Magic link expired or already used",
+        )
+
+    if session.master_id is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid magic link",
+        )
+
+    # Look up master
+    master_result = await db.execute(
+        select(Master).where(
+            Master.id == session.master_id,
+            Master.is_active.is_(True),
+        )
+    )
+    master = master_result.scalar_one_or_none()
+    if master is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Master account not found",
+        )
+
+    # Create JWT and mark session as used
+    jwt_token = create_access_token(data={"sub": str(master.id)})
+    session.status = "used"
+    await db.flush()
+
+    return TokenResponse(access_token=jwt_token)
