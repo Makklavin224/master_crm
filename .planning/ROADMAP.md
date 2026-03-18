@@ -13,7 +13,7 @@ Master-CRM delivers a multi-messenger CRM for self-employed professionals in Rus
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Project scaffolding, data model, auth, Docker deployment (completed 2026-03-17)
-- [ ] **Phase 2: Booking Engine + Telegram** - Service catalog, schedule, booking flow, TG bot + mini-app
+- [x] **Phase 2: Booking Engine + Telegram** - Service catalog, schedule, booking flow, TG bot + mini-app (completed 2026-03-17)
 - [x] **Phase 3: Payments + Tax Receipts** - Robokassa SBP payments, three-tier fiscalization, auto-receipts (completed 2026-03-18)
 - [x] **Phase 4: Notifications** - Automated reminders (24h/2h), booking confirmations, master alerts (completed 2026-03-18)
 - [x] **Phase 5: Multi-Messenger Expansion** - MAX bot + mini-app, VK bot + mini-app, cross-messenger client identity (completed 2026-03-18)
@@ -47,13 +47,13 @@ Plans:
   3. Two clients attempting to book the same slot simultaneously results in one success and one rejection (no double-booking)
   4. Client can cancel or reschedule a booking (respecting the master's configurable deadline); master can cancel, reschedule, or manually add a booking
   5. Master receives a Telegram bot notification when a new booking is created or cancelled; client data (name, phone) is auto-captured into the client database with visit history visible
-**Plans:** 4 plans
+**Plans:** 4/4 plans complete
 
 Plans:
 - [x] 02-01-PLAN.md -- Backend booking engine: service CRUD, schedule management, slot calculation, booking CRUD with double-booking prevention, client auto-population
 - [x] 02-02-PLAN.md -- Telegram bot: aiogram webhook integration, command handlers (/start, /today, /link, /settings), MessengerAdapter notification pattern
 - [x] 02-03-PLAN.md -- React mini-app: platform detection shell, UI components per design contract, 5-step client booking flow
-- [ ] 02-04-PLAN.md -- Master management panel: dashboard, service CRUD, schedule editor, booking management, client list with history, settings
+- [x] 02-04-PLAN.md -- Master management panel: dashboard, service CRUD, schedule editor, booking management, client list with history, settings
 
 ### Phase 3: Payments + Tax Receipts
 **Goal**: Masters can complete a visit and collect payment; when Robokassa is connected, the client receives an SBP payment link and a tax receipt is automatically generated in "Moy Nalog"
@@ -100,8 +100,8 @@ Plans:
 
 Plans:
 - [x] 05-01-PLAN.md -- Shared backend infrastructure: config settings, MAX/VK validation functions, Master model columns (max_user_id, vk_user_id), Alembic migration, auth endpoints
-- [ ] 05-02-PLAN.md -- MAX full stack: bot adapter + handlers, webhook route, frontend MaxBridge adapter, platform detection
-- [ ] 05-03-PLAN.md -- VK full stack: bot adapter + handlers, webhook route with confirmation handshake, frontend VkBridge adapter, vk-bridge package
+- [x] 05-02-PLAN.md -- MAX full stack: bot adapter + handlers, webhook route, frontend MaxBridge adapter, platform detection
+- [x] 05-03-PLAN.md -- VK full stack: bot adapter + handlers, webhook route with confirmation handshake, frontend VkBridge adapter, vk-bridge package
 
 ### Phase 6: Web Admin Panel
 **Goal**: Masters can manage their entire business from a desktop web panel -- schedule, clients, services, payments, and settings
@@ -128,7 +128,7 @@ Note: Phase 4 (Notifications) depends on Phase 2 only. Phase 6 (Web Panel) depen
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/2 | Complete   | 2026-03-17 |
-| 2. Booking Engine + Telegram | 3/4 | In Progress | - |
+| 2. Booking Engine + Telegram | 4/4 | Complete | 2026-03-17 |
 | 3. Payments + Tax Receipts | 3/3 | Complete | 2026-03-18 |
 | 4. Notifications | 2/2 | Complete | 2026-03-18 |
 | 5. Multi-Messenger Expansion | 3/3 | Complete   | 2026-03-18 |

@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: completed
-stopped_at: Phase 6 context gathered
-last_updated: "2026-03-18T15:13:23.369Z"
-last_activity: 2026-03-18 -- Plan 05-02 complete, MAX bot + booking generalization (CLNT-04)
+status: in_progress
+stopped_at: Completed 06-01-PLAN.md
+last_updated: "2026-03-18T16:18:42.617Z"
+last_activity: 2026-03-18 -- Plan 06-01 complete, web admin panel foundation + auth
 progress:
   total_phases: 6
   completed_phases: 5
-  total_plans: 14
-  completed_plans: 14
-  percent: 100
+  total_plans: 17
+  completed_plans: 15
+  percent: 88
 ---
 
 # Project State
@@ -21,23 +21,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-17)
 
 **Core value:** Master taps "Complete" -- client gets SBP payment link -- tax receipt auto-generates. 3 steps instead of 9.
-**Current focus:** Phase 5 in progress -- multi-messenger expansion (MAX + VK)
+**Current focus:** Phase 6 in progress -- web admin panel
 
 ## Current Position
 
-Phase: 5 of 6 (Multi-Messenger Expansion) -- COMPLETE
-Plan: 3 of 3 in current phase (all plans complete)
-Status: Phase 5 complete
-Last activity: 2026-03-18 -- Plan 05-02 complete, MAX bot + booking generalization (CLNT-04)
+Phase: 6 of 6 (Web Admin Panel)
+Plan: 2 of 3 in current phase
+Status: Plan 06-01 complete, Plan 06-02 next
+Last activity: 2026-03-18 -- Plan 06-01 complete, web admin panel foundation + auth
 
-Progress: [██████████] 100%
+Progress: [█████████░] 88%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 14
+- Total plans completed: 15
 - Average duration: 9min
-- Total execution time: 2.13 hours
+- Total execution time: 2.21 hours
 
 **By Phase:**
 
@@ -48,9 +48,10 @@ Progress: [██████████] 100%
 | 3. Payments + Tax | 3/3 | 19min | 6min |
 | 4. Notifications | 2/2 | 12min | 6min |
 | 5. Multi-Messenger | 3/3 | 20min | 7min |
+| 6. Web Admin Panel | 1/3 | 5min | 5min |
 
 **Recent Trend:**
-- Last 5 plans: 7min, 5min, 3min, 6min, 11min
+- Last 5 plans: 5min, 3min, 6min, 11min, 5min
 - Trend: consistent
 
 *Updated after each plan completion*
@@ -62,6 +63,7 @@ Progress: [██████████] 100%
 | Phase 05 P01 | 3min | 2 tasks | 6 files |
 | Phase 05 P02 | 11min | 3 tasks | 19 files |
 | Phase 05 P03 | 6min | 2 tasks | 14 files |
+| Phase 06 P01 | 5min | 2 tasks | 37 files |
 
 ## Accumulated Context
 
@@ -128,6 +130,13 @@ Recent decisions affecting current work:
 - [Phase 05]: Generic platform_user_id replaces tg_user_id in BookingCreate for multi-platform booking support
 - [Phase 05]: _notify_master fans out to all registered platforms (TG+MAX+VK) instead of hardcoded Telegram
 - [Phase 05]: MAX expand() is no-op in bridge adapter (MAX Bridge has no expand API)
+- [Phase 06]: antd 5.29.3 (not v6) for ecosystem stability with ProComponents compatibility
+- [Phase 06]: Layout.Sider + Menu instead of ProLayout (avoids umi dependency)
+- [Phase 06]: QR login via TG bot deep link (/start qr_{session_id}) with 3s polling and 5min expiry
+- [Phase 06]: Magic link via /login bot command, 10min expiry, inline keyboard button
+- [Phase 06]: web_admin_url config setting for magic link URL generation
+- [Phase 06]: Bot QR confirmation via direct DB call (not HTTP to self), consistent with existing patterns
+- [Phase 06]: SafeStorage wrappers for localStorage (test environment compatibility)
 
 ### Pending Todos
 
@@ -141,6 +150,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-18T15:13:23.366Z
-Stopped at: Phase 6 context gathered
-Resume file: .planning/phases/06-web-admin-panel/06-CONTEXT.md
+Last session: 2026-03-18T16:18:00.000Z
+Stopped at: Completed 06-01-PLAN.md
+Resume file: .planning/phases/06-web-admin-panel/06-01-SUMMARY.md

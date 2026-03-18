@@ -55,11 +55,11 @@
 
 ### Web Panel (WEB)
 
-- [ ] **WEB-01**: Web panel -- calendar and booking list (day/week view)
-- [ ] **WEB-02**: Web panel -- client management (list, visit history)
-- [ ] **WEB-03**: Web panel -- service CRUD (create, edit, delete, categories)
-- [ ] **WEB-04**: Web panel -- payment history and receipt statuses
-- [ ] **WEB-05**: Web panel -- schedule settings and master profile
+- [x] **WEB-01**: Web panel -- calendar and booking list (day/week view)
+- [x] **WEB-02**: Web panel -- client management (list, visit history)
+- [x] **WEB-03**: Web panel -- service CRUD (create, edit, delete, categories)
+- [x] **WEB-04**: Web panel -- payment history and receipt statuses
+- [x] **WEB-05**: Web panel -- schedule settings and master profile
 
 ### Infrastructure (INFR)
 
@@ -148,11 +148,11 @@
 | MSG-05 | Phase 5 | Complete |
 | MSG-06 | Phase 5 | Complete |
 | CLNT-04 | Phase 5 | Complete |
-| WEB-01 | Phase 6 | Pending |
-| WEB-02 | Phase 6 | Pending |
-| WEB-03 | Phase 6 | Pending |
-| WEB-04 | Phase 6 | Pending |
-| WEB-05 | Phase 6 | Pending |
+| WEB-01 | Phase 6 | Complete |
+| WEB-02 | Phase 6 | Complete |
+| WEB-03 | Phase 6 | Complete |
+| WEB-04 | Phase 6 | Complete |
+| WEB-05 | Phase 6 | Complete |
 
 **Coverage:**
 - v1 requirements: 40 total
