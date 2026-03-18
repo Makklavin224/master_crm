@@ -38,3 +38,27 @@ class MessengerAdapter(ABC):
     ) -> bool:
         """Send a plain text message to a user. Returns True on success."""
         ...
+
+    @abstractmethod
+    async def send_payment_link(
+        self,
+        platform_user_id: str,
+        payment_url: str,
+        service_name: str,
+        amount_display: str,
+    ) -> bool:
+        """Send a payment link to a client. Returns True on success."""
+        ...
+
+    @abstractmethod
+    async def send_payment_requisites(
+        self,
+        platform_user_id: str,
+        card_number: str | None,
+        sbp_phone: str | None,
+        bank_name: str | None,
+        service_name: str,
+        amount_display: str,
+    ) -> bool:
+        """Send payment requisites to a client. Returns True on success."""
+        ...

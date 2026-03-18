@@ -58,6 +58,79 @@ class TelegramAdapter(MessengerAdapter):
             )
             return False
 
+    async def send_payment_link(
+        self,
+        platform_user_id: str,
+        payment_url: str,
+        service_name: str,
+        amount_display: str,
+    ) -> bool:
+        """Send a payment link to a client via Telegram with inline button."""
+        text = (
+            f"\u041e\u043f\u043b\u0430\u0442\u0430 \u0437\u0430 \u0443\u0441\u043b\u0443\u0433\u0443 <b>{service_name}</b>\n"
+            f"\u0421\u0443\u043c\u043c\u0430: <b>{amount_display}</b>\n\n"
+            f"\u041d\u0430\u0436\u043c\u0438\u0442\u0435 \u043a\u043d\u043e\u043f\u043a\u0443 \u043d\u0438\u0436\u0435 \u0434\u043b\u044f \u043e\u043f\u043b\u0430\u0442\u044b \u0447\u0435\u0440\u0435\u0437 \u0421\u0411\u041f:"
+        )
+        keyboard = InlineKeyboardMarkup(
+            inline_keyboard=[
+                [
+                    InlineKeyboardButton(
+                        text="\u041e\u043f\u043b\u0430\u0442\u0438\u0442\u044c",
+                        url=payment_url,
+                    )
+                ]
+            ]
+        )
+        try:
+            await self._bot.send_message(
+                chat_id=platform_user_id,
+                text=text,
+                parse_mode="HTML",
+                reply_markup=keyboard,
+            )
+            return True
+        except Exception:
+            logger.exception(
+                "Failed to send payment link to %s", platform_user_id
+            )
+            return False
+
+    async def send_payment_requisites(
+        self,
+        platform_user_id: str,
+        card_number: str | None,
+        sbp_phone: str | None,
+        bank_name: str | None,
+        service_name: str,
+        amount_display: str,
+    ) -> bool:
+        """Send payment requisites to a client via Telegram."""
+        text = (
+            f"\u0420\u0435\u043a\u0432\u0438\u0437\u0438\u0442\u044b \u0434\u043b\u044f \u043e\u043f\u043b\u0430\u0442\u044b:\n\n"
+            f"\u0423\u0441\u043b\u0443\u0433\u0430: <b>{service_name}</b>\n"
+            f"\u0421\u0443\u043c\u043c\u0430: <b>{amount_display}</b>\n\n"
+        )
+        if card_number:
+            text += f"\u041a\u0430\u0440\u0442\u0430: <code>{card_number}</code>\n"
+        if sbp_phone:
+            text += f"\u0422\u0435\u043b\u0435\u0444\u043e\u043d \u0434\u043b\u044f \u0421\u0411\u041f: <code>{sbp_phone}</code>\n"
+        if bank_name:
+            text += f"\u0411\u0430\u043d\u043a: {bank_name}\n"
+        text += f"\n\u041f\u0435\u0440\u0435\u0432\u0435\u0434\u0438\u0442\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043d\u0443\u044e \u0441\u0443\u043c\u043c\u0443 \u0438 \u0441\u043e\u043e\u0431\u0449\u0438\u0442\u0435 \u043c\u0430\u0441\u0442\u0435\u0440\u0443."
+
+        try:
+            await self._bot.send_message(
+                chat_id=platform_user_id,
+                text=text,
+                parse_mode="HTML",
+            )
+            return True
+        except Exception:
+            logger.exception(
+                "Failed to send payment requisites to %s", platform_user_id
+            )
+            return False
+
     @staticmethod
     def _format_notification(notif: BookingNotification) -> str:
         """Build HTML notification text based on notification type (Russian)."""
