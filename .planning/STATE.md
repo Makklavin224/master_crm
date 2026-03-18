@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-stopped_at: Completed 06-01-PLAN.md
-last_updated: "2026-03-18T16:18:42.617Z"
-last_activity: 2026-03-18 -- Plan 06-01 complete, web admin panel foundation + auth
+stopped_at: Completed 06-02-PLAN.md
+last_updated: "2026-03-18T16:27:00.000Z"
+last_activity: 2026-03-18 -- Plan 06-02 complete, calendar + services pages
 progress:
   total_phases: 6
   completed_phases: 5
   total_plans: 17
-  completed_plans: 15
-  percent: 88
+  completed_plans: 16
+  percent: 94
 ---
 
 # Project State
@@ -26,18 +26,18 @@ See: .planning/PROJECT.md (updated 2026-03-17)
 ## Current Position
 
 Phase: 6 of 6 (Web Admin Panel)
-Plan: 2 of 3 in current phase
-Status: Plan 06-01 complete, Plan 06-02 next
-Last activity: 2026-03-18 -- Plan 06-01 complete, web admin panel foundation + auth
+Plan: 3 of 3 in current phase
+Status: Plan 06-02 complete, Plan 06-03 next
+Last activity: 2026-03-18 -- Plan 06-02 complete, calendar + services pages
 
-Progress: [█████████░] 88%
+Progress: [█████████░] 94%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 15
+- Total plans completed: 16
 - Average duration: 9min
-- Total execution time: 2.21 hours
+- Total execution time: 2.30 hours
 
 **By Phase:**
 
@@ -48,10 +48,10 @@ Progress: [█████████░] 88%
 | 3. Payments + Tax | 3/3 | 19min | 6min |
 | 4. Notifications | 2/2 | 12min | 6min |
 | 5. Multi-Messenger | 3/3 | 20min | 7min |
-| 6. Web Admin Panel | 1/3 | 5min | 5min |
+| 6. Web Admin Panel | 2/3 | 10min | 5min |
 
 **Recent Trend:**
-- Last 5 plans: 5min, 3min, 6min, 11min, 5min
+- Last 5 plans: 3min, 6min, 11min, 5min, 5min
 - Trend: consistent
 
 *Updated after each plan completion*
@@ -64,6 +64,7 @@ Progress: [█████████░] 88%
 | Phase 05 P02 | 11min | 3 tasks | 19 files |
 | Phase 05 P03 | 6min | 2 tasks | 14 files |
 | Phase 06 P01 | 5min | 2 tasks | 37 files |
+| Phase 06 P02 | 5min | 2 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -137,6 +138,10 @@ Recent decisions affecting current work:
 - [Phase 06]: web_admin_url config setting for magic link URL generation
 - [Phase 06]: Bot QR confirmation via direct DB call (not HTTP to self), consistent with existing patterns
 - [Phase 06]: SafeStorage wrappers for localStorage (test environment compatibility)
+- [Phase 06]: @fullcalendar/core as explicit dependency (pnpm strict mode requires it for type resolution)
+- [Phase 06]: AntApp wrapper in App.tsx for App.useApp() message API in drawers/modals
+- [Phase 06]: Booking calendar staleTime:0, services staleTime:60s (consistent with mini-app patterns)
+- [Phase 06]: Price conversion at form boundary (display rubles, store kopecks via multiply/divide by 100)
 
 ### Pending Todos
 
@@ -150,6 +155,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-18T16:18:00.000Z
-Stopped at: Completed 06-01-PLAN.md
-Resume file: .planning/phases/06-web-admin-panel/06-01-SUMMARY.md
+Last session: 2026-03-18T16:27:00.000Z
+Stopped at: Completed 06-02-PLAN.md
+Resume file: .planning/phases/06-web-admin-panel/06-02-SUMMARY.md
