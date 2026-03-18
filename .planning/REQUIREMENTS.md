@@ -20,7 +20,7 @@
 - [x] **CLNT-01**: Client database auto-populated from bookings (name, phone)
 - [x] **CLNT-02**: Client identified by phone number (E.164 normalization)
 - [x] **CLNT-03**: Master can view client visit history
-- [ ] **CLNT-04**: Client from different messengers recognized as one person by phone
+- [x] **CLNT-04**: Client from different messengers recognized as one person by phone
 
 ### Notifications (NOTF)
 
@@ -147,7 +147,7 @@
 | MSG-04 | Phase 5 | Complete |
 | MSG-05 | Phase 5 | Complete |
 | MSG-06 | Phase 5 | Complete |
-| CLNT-04 | Phase 5 | Pending |
+| CLNT-04 | Phase 5 | Complete |
 | WEB-01 | Phase 6 | Pending |
 | WEB-02 | Phase 6 | Pending |
 | WEB-03 | Phase 6 | Pending |

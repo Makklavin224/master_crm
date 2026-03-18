@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-stopped_at: Completed 05-01-PLAN.md
-last_updated: "2026-03-18T12:34:18Z"
-last_activity: 2026-03-18 -- Plan 05-01 complete, MAX/VK shared backend infrastructure (config, validation, model, auth endpoints)
+stopped_at: Completed 05-03-PLAN.md
+last_updated: "2026-03-18T12:45:00Z"
+last_activity: 2026-03-18 -- Plan 05-03 complete, VK bot module + webhook + frontend bridge
 progress:
   total_phases: 6
   completed_phases: 4
   total_plans: 14
-  completed_plans: 12
-  percent: 86
+  completed_plans: 13
+  percent: 93
 ---
 
 # Project State
@@ -26,18 +26,18 @@ See: .planning/PROJECT.md (updated 2026-03-17)
 ## Current Position
 
 Phase: 5 of 6 (Multi-Messenger Expansion)
-Plan: 1 of 3 in current phase (05-01 complete)
+Plan: 3 of 3 in current phase (05-03 complete)
 Status: In progress
-Last activity: 2026-03-18 -- Plan 05-01 complete, MAX/VK shared backend infrastructure (config, validation, model, auth endpoints)
+Last activity: 2026-03-18 -- Plan 05-03 complete, VK bot module + webhook + frontend bridge
 
-Progress: [████████░░] 86%
+Progress: [█████████░] 93%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 12
+- Total plans completed: 13
 - Average duration: 9min
-- Total execution time: 1.85 hours
+- Total execution time: 1.95 hours
 
 **By Phase:**
 
@@ -47,10 +47,10 @@ Progress: [████████░░] 86%
 | 2. Booking Engine | 4/4 | 55min | 14min |
 | 3. Payments + Tax | 3/3 | 19min | 6min |
 | 4. Notifications | 2/2 | 12min | 6min |
-| 5. Multi-Messenger | 1/3 | 3min | 3min |
+| 5. Multi-Messenger | 2/3 | 9min | 4.5min |
 
 **Recent Trend:**
-- Last 5 plans: 7min, 5min, 7min, 5min, 3min
+- Last 5 plans: 5min, 7min, 5min, 3min, 6min
 - Trend: consistent
 
 *Updated after each plan completion*
@@ -60,6 +60,7 @@ Progress: [████████░░] 86%
 | Phase 04 P01 | 7min | 2 tasks | 13 files |
 | Phase 04 P02 | 5min | 2 tasks | 8 files |
 | Phase 05 P01 | 3min | 2 tasks | 6 files |
+| Phase 05 P03 | 6min | 2 tasks | 14 files |
 
 ## Accumulated Context
 
@@ -118,6 +119,10 @@ Recent decisions affecting current work:
 - [Phase 05]: VK validation uses OrderedDict for deterministic param sorting and URL-safe base64 encoding
 - [Phase 05]: All MAX/VK config fields default to empty string (app starts without them, same pattern as TG)
 - [Phase 05]: Messenger auth endpoint pattern: validate -> extract platform user_id -> lookup Master -> JWT
+- [Phase 05]: httpx for VK API calls (consistent with MAX adapter, async-native, already a dependency)
+- [Phase 05]: VK plain text messages (messages.send does not support HTML), Unicode emojis only
+- [Phase 05]: VK Callback API confirmation handshake returns PlainTextResponse (VK rejects JSON)
+- [Phase 05]: VK deep links use https://vk.com/app{APP_ID}#master={MASTER_ID} format
 
 ### Pending Todos
 
@@ -131,6 +136,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-18T12:34:18Z
-Stopped at: Completed 05-01-PLAN.md
-Resume file: .planning/phases/05-multi-messenger-expansion/05-01-SUMMARY.md
+Last session: 2026-03-18T12:45:00Z
+Stopped at: Completed 05-03-PLAN.md
+Resume file: .planning/phases/05-multi-messenger-expansion/05-03-SUMMARY.md
