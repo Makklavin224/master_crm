@@ -40,6 +40,12 @@ class Settings(BaseSettings):
     # CORS
     allowed_origins: list[str] = ["http://localhost:3000"]
 
+    # Encryption (for Robokassa credentials)
+    encryption_key: str = ""  # Fernet key, generate with: python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+
+    # Robokassa
+    robokassa_result_url: str = ""  # e.g. https://yourdomain.com/webhook/robokassa/result
+
 
 @lru_cache
 def get_settings() -> Settings:

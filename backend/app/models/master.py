@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, Integer, String, text
+from sqlalchemy import Boolean, DateTime, Integer, String, Text, text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -39,6 +39,43 @@ class Master(Base):
         Integer, default=24
     )
     slot_interval_minutes: Mapped[int] = mapped_column(Integer, default=30)
+
+    # Phase 3: Payment requisites
+    card_number: Mapped[str | None] = mapped_column(
+        String(20)
+    )  # for manual payment QR
+    sbp_phone: Mapped[str | None] = mapped_column(
+        String(20)
+    )  # SBP phone number
+    bank_name: Mapped[str | None] = mapped_column(
+        String(100)
+    )  # bank name for display
+
+    # Phase 3: Robokassa credentials (encrypted)
+    robokassa_merchant_login: Mapped[str | None] = mapped_column(String(255))
+    robokassa_password1_encrypted: Mapped[str | None] = mapped_column(
+        Text
+    )  # Fernet encrypted
+    robokassa_password2_encrypted: Mapped[str | None] = mapped_column(
+        Text
+    )  # Fernet encrypted
+    robokassa_is_test: Mapped[bool] = mapped_column(
+        Boolean, default=False, server_default=text("false")
+    )
+    robokassa_hash_algorithm: Mapped[str] = mapped_column(
+        String(10), default="sha256", server_default=text("'sha256'")
+    )
+
+    # Phase 3: Fiscalization settings
+    fiscalization_level: Mapped[str] = mapped_column(
+        String(20), default="none", server_default=text("'none'")
+    )  # none, manual, auto
+    has_seen_grey_warning: Mapped[bool] = mapped_column(
+        Boolean, default=False, server_default=text("false")
+    )
+    receipt_sno: Mapped[str] = mapped_column(
+        String(30), default="patent", server_default=text("'patent'")
+    )
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=text("now()")
