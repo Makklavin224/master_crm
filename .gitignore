@@ -1,6 +1,8 @@
 __pycache__/
 *.pyc
 .env
+.env.local
+.env.production
 .venv/
 *.egg-info/
 dist/
@@ -8,3 +10,7 @@ dist/
 .pytest_cache/
 .ruff_cache/
 .superpowers/
+node_modules/
+build/
+.DS_Store
+docker-compose.override.yml
