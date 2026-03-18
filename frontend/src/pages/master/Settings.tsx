@@ -392,14 +392,15 @@ export function Settings() {
                     </p>
                   </div>
 
-                  <Button
-                    onClick={handleSaveNotifications}
-                    loading={updateNotificationSettings.isPending}
-                  >
-                    Сохранить
-                  </Button>
                 </div>
               )}
+
+              <Button
+                onClick={handleSaveNotifications}
+                loading={updateNotificationSettings.isPending}
+              >
+                Сохранить настройки
+              </Button>
             </Card>
 
             {/* Booking link */}
