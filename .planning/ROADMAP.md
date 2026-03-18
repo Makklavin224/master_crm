@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Project scaffolding, data model, auth, Docker deployment (completed 2026-03-17)
 - [ ] **Phase 2: Booking Engine + Telegram** - Service catalog, schedule, booking flow, TG bot + mini-app
-- [ ] **Phase 3: Payments + Tax Receipts** - Robokassa SBP payments, three-tier fiscalization, auto-receipts
+- [x] **Phase 3: Payments + Tax Receipts** - Robokassa SBP payments, three-tier fiscalization, auto-receipts (completed 2026-03-18)
 - [ ] **Phase 4: Notifications** - Automated reminders (24h/2h), booking confirmations, master alerts
 - [ ] **Phase 5: Multi-Messenger Expansion** - MAX bot + mini-app, VK bot + mini-app, cross-messenger client identity
 - [ ] **Phase 6: Web Admin Panel** - Desktop management panel with Ant Design (calendar, clients, services, payments)
@@ -65,12 +65,12 @@ Plans:
   3. When the client pays via SBP, the Robokassa callback is processed idempotently (duplicate callbacks do not create duplicate payments) and the payment status updates to "Paid"
   4. Master can choose one of three fiscalization levels: no receipts (with a warning), manual (CRM shows ready-to-copy data for "Moy Nalog"), or automatic (Robochecks generates the receipt via FNS)
   5. Payment history shows all transactions with statuses (pending, paid, cancelled) and receipt statuses (not applicable, pending, issued)
-**Plans:** 3 plans
+**Plans:** 3/3 plans complete
 
 Plans:
 - [x] 03-01-PLAN.md -- Backend payment infrastructure: Alembic migration, model extensions, encryption/QR/Robokassa services, PaymentService orchestration
-- [ ] 03-02-PLAN.md -- Payment API endpoints, Robokassa webhook, notification extensions, comprehensive test suite
-- [ ] 03-03-PLAN.md -- Frontend payment UI: PaymentSheet (3 options), PaymentHistory, ReceiptDataCard, RobokassaWizard, Settings payment sections
+- [x] 03-02-PLAN.md -- Payment API endpoints, Robokassa webhook, notification extensions, comprehensive test suite
+- [x] 03-03-PLAN.md -- Frontend payment UI: PaymentSheet (3 options), PaymentHistory, ReceiptDataCard, RobokassaWizard, Settings payment sections
 
 ### Phase 4: Notifications
 **Goal**: Clients receive automated booking confirmations and reminders through their messenger; masters receive alerts about new bookings and cancellations
@@ -129,7 +129,7 @@ Note: Phase 4 (Notifications) depends on Phase 2 only. Phase 6 (Web Panel) depen
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/2 | Complete   | 2026-03-17 |
 | 2. Booking Engine + Telegram | 3/4 | In Progress | - |
-| 3. Payments + Tax Receipts | 1/3 | In Progress | - |
+| 3. Payments + Tax Receipts | 3/3 | Complete | 2026-03-18 |
 | 4. Notifications | 0/2 | Not started | - |
 | 5. Multi-Messenger Expansion | 0/3 | Not started | - |
 | 6. Web Admin Panel | 0/3 | Not started | - |
