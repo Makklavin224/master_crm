@@ -8,6 +8,8 @@ import {
   useUpdatePaymentSettings,
   useDisconnectRobokassa,
   useMarkGreyWarningSeen,
+  useNotificationSettings,
+  useUpdateNotificationSettings,
 } from "../../api/master-settings.ts";
 import { Card } from "../../components/ui/Card.tsx";
 import { Badge } from "../../components/ui/Badge.tsx";
@@ -36,6 +38,14 @@ const INTERVAL_OPTIONS = [
   { value: 30, label: "30 мин" },
 ];
 
+const REMINDER_INTERVAL_OPTIONS = [
+  { value: 1, label: "1 ч" },
+  { value: 2, label: "2 ч" },
+  { value: 6, label: "6 ч" },
+  { value: 12, label: "12 ч" },
+  { value: 24, label: "24 ч" },
+];
+
 const FISCAL_OPTIONS = [
   { value: "none", label: "Без чеков" },
   { value: "manual", label: "Ручной" },
@@ -57,6 +67,9 @@ export function Settings() {
   const updatePaymentSettings = useUpdatePaymentSettings();
   const disconnectRobokassa = useDisconnectRobokassa();
   const markGreyWarningSeen = useMarkGreyWarningSeen();
+  const { data: notificationSettings, isLoading: notifLoading } =
+    useNotificationSettings();
+  const updateNotificationSettings = useUpdateNotificationSettings();
   const toast = useToast();
 
   // General settings state
@@ -74,6 +87,12 @@ export function Settings() {
   const [showGreyWarning, setShowGreyWarning] = useState(false);
   const [seenWarningLocal, setSeenWarningLocal] = useState(false);
 
+  // Notification settings state
+  const [remindersEnabled, setRemindersEnabled] = useState(true);
+  const [reminder1Hours, setReminder1Hours] = useState(24);
+  const [reminder2Hours, setReminder2Hours] = useState<number | null>(2);
+  const [addressNote, setAddressNote] = useState("");
+
   // Robokassa state
   const [showWizard, setShowWizard] = useState(false);
   const [showDisconnectDialog, setShowDisconnectDialog] = useState(false);
@@ -85,6 +104,15 @@ export function Settings() {
       setInterval_(settings.slot_interval_minutes);
     }
   }, [settings]);
+
+  useEffect(() => {
+    if (notificationSettings) {
+      setRemindersEnabled(notificationSettings.reminders_enabled);
+      setReminder1Hours(notificationSettings.reminder_1_hours);
+      setReminder2Hours(notificationSettings.reminder_2_hours);
+      setAddressNote(notificationSettings.address_note ?? "");
+    }
+  }, [notificationSettings]);
 
   useEffect(() => {
     if (paymentSettings) {
@@ -181,7 +209,23 @@ export function Settings() {
     });
   };
 
-  const isLoadingAny = isLoading || paymentLoading;
+  const handleSaveNotifications = () => {
+    updateNotificationSettings.mutate(
+      {
+        reminders_enabled: remindersEnabled,
+        reminder_1_hours: reminder1Hours,
+        reminder_2_hours: reminder2Hours,
+        address_note: addressNote.trim() || null,
+      },
+      {
+        onSuccess: () => toast.success("Настройки напоминаний сохранены"),
+        onError: () =>
+          toast.error("Не удалось сохранить настройки напоминаний"),
+      },
+    );
+  };
+
+  const isLoadingAny = isLoading || paymentLoading || notifLoading;
   const hasRobokassa = paymentSettings?.has_robokassa ?? false;
 
   return (
@@ -195,6 +239,7 @@ export function Settings() {
       <div className="flex-1 px-4 pb-4 flex flex-col gap-4">
         {isLoadingAny ? (
           <div className="flex flex-col gap-4">
+            <Skeleton height="100px" className="w-full" />
             <Skeleton height="100px" className="w-full" />
             <Skeleton height="100px" className="w-full" />
             <Skeleton height="100px" className="w-full" />
@@ -265,6 +310,97 @@ export function Settings() {
             >
               Сохранить настройки
             </Button>
+
+            {/* Notification settings separator */}
+            <div className="h-px bg-border mt-2" />
+
+            {/* Notification settings */}
+            <Card className="flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <h2 className="text-[16px] font-semibold text-text-primary">
+                  Напоминания клиентам
+                </h2>
+                <button
+                  type="button"
+                  onClick={() => setRemindersEnabled(!remindersEnabled)}
+                  className={`relative w-[44px] h-[24px] rounded-full transition-colors ${
+                    remindersEnabled ? "bg-accent" : "bg-border"
+                  }`}
+                >
+                  <div
+                    className={`absolute top-[2px] w-[20px] h-[20px] rounded-full bg-white shadow transition-transform ${
+                      remindersEnabled
+                        ? "translate-x-[22px]"
+                        : "translate-x-[2px]"
+                    }`}
+                  />
+                </button>
+              </div>
+
+              {remindersEnabled && (
+                <div className="flex flex-col gap-3">
+                  <div>
+                    <p className="text-[12px] text-text-secondary mb-2">
+                      Первое напоминание
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {REMINDER_INTERVAL_OPTIONS.map((opt) => (
+                        <PillButton
+                          key={opt.value}
+                          label={opt.label}
+                          selected={reminder1Hours === opt.value}
+                          onClick={() => setReminder1Hours(opt.value)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="text-[12px] text-text-secondary mb-2">
+                      Второе напоминание
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {REMINDER_INTERVAL_OPTIONS.map((opt) => (
+                        <PillButton
+                          key={opt.value}
+                          label={opt.label}
+                          selected={reminder2Hours === opt.value}
+                          onClick={() => setReminder2Hours(opt.value)}
+                        />
+                      ))}
+                      <PillButton
+                        label="Выкл"
+                        selected={reminder2Hours === null}
+                        onClick={() => setReminder2Hours(null)}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-[12px] text-text-secondary mb-1 block">
+                      Адрес / заметка
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={addressNote}
+                      onChange={(e) => setAddressNote(e.target.value)}
+                      placeholder="ул. Ленина 5, кв 12"
+                      className="w-full rounded-[10px] border border-border px-3 py-2 text-[14px] text-text-primary outline-none focus:ring-2 focus:ring-accent/30 resize-none"
+                    />
+                    <p className="text-[12px] text-text-secondary mt-1">
+                      Будет добавлен в напоминания клиентам
+                    </p>
+                  </div>
+
+                  <Button
+                    onClick={handleSaveNotifications}
+                    loading={updateNotificationSettings.isPending}
+                  >
+                    Сохранить
+                  </Button>
+                </div>
+              )}
+            </Card>
 
             {/* Booking link */}
             <Card className="flex flex-col gap-3 mt-2">

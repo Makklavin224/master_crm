@@ -36,6 +36,48 @@ export function useUpdateSettings() {
   });
 }
 
+// --- Notification settings ---
+
+export interface NotificationSettings {
+  reminders_enabled: boolean;
+  reminder_1_hours: number;
+  reminder_2_hours: number | null;
+  address_note: string | null;
+}
+
+export interface NotificationSettingsUpdate {
+  reminders_enabled?: boolean;
+  reminder_1_hours?: number;
+  reminder_2_hours?: number | null;
+  address_note?: string | null;
+}
+
+export function useNotificationSettings() {
+  return useQuery<NotificationSettings>({
+    queryKey: ["master", "notificationSettings"],
+    queryFn: () =>
+      masterApiRequest<NotificationSettings>("/settings/notifications"),
+    staleTime: 60_000,
+  });
+}
+
+export function useUpdateNotificationSettings() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: NotificationSettingsUpdate) =>
+      masterApiRequest<NotificationSettings>("/settings/notifications", {
+        method: "PUT",
+        body: JSON.stringify(data),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["master", "notificationSettings"],
+      });
+    },
+  });
+}
+
 // --- Payment settings ---
 
 export interface PaymentSettings {
