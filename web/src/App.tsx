@@ -11,6 +11,8 @@ import { CalendarPage } from "./pages/CalendarPage";
 import { ClientsPage } from "./pages/ClientsPage";
 import { ClientDetailPage } from "./pages/ClientDetailPage";
 import { PaymentsPage } from "./pages/PaymentsPage";
+import { ServicesPage } from "./pages/ServicesPage";
+import { SettingsPage } from "./pages/SettingsPage";
 
 const queryClient = new QueryClient();
 
@@ -20,10 +22,6 @@ function ProtectedRoute() {
     return <Navigate to="/login" replace />;
   }
   return <Outlet />;
-}
-
-function PlaceholderPage({ title }: { title: string }) {
-  return <div><h2>{title}</h2><p>Coming soon...</p></div>;
 }
 
 function MagicLinkCallback() {
@@ -78,9 +76,9 @@ export default function App() {
                   <Route path="/calendar" element={<CalendarPage />} />
                   <Route path="/clients" element={<ClientsPage />} />
                   <Route path="/clients/:id" element={<ClientDetailPage />} />
-                  <Route path="/services" element={<PlaceholderPage title="\u0423\u0441\u043b\u0443\u0433\u0438" />} />
+                  <Route path="/services" element={<ServicesPage />} />
                   <Route path="/payments" element={<PaymentsPage />} />
-                  <Route path="/settings" element={<PlaceholderPage title="\u041d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438" />} />
+                  <Route path="/settings" element={<SettingsPage />} />
                 </Route>
               </Route>
             </Routes>
