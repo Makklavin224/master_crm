@@ -1,13 +1,21 @@
 import { useState, useEffect } from "react";
-import { Copy, Check } from "lucide-react";
+import { Copy, Check, ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import {
   useMasterSettings,
   useUpdateSettings,
+  usePaymentSettings,
+  useUpdatePaymentSettings,
+  useDisconnectRobokassa,
+  useMarkGreyWarningSeen,
 } from "../../api/master-settings.ts";
 import { Card } from "../../components/ui/Card.tsx";
+import { Badge } from "../../components/ui/Badge.tsx";
 import { Button } from "../../components/ui/Button.tsx";
 import { Skeleton } from "../../components/ui/Skeleton.tsx";
 import { useToast } from "../../components/ui/Toast.tsx";
+import { ConfirmDialog } from "../../components/ConfirmDialog.tsx";
+import { RobokassaWizard } from "../../components/RobokassaWizard.tsx";
 
 const BUFFER_OPTIONS = [
   { value: 0, label: "0 мин" },
@@ -28,15 +36,47 @@ const INTERVAL_OPTIONS = [
   { value: 30, label: "30 мин" },
 ];
 
+const FISCAL_OPTIONS = [
+  { value: "none", label: "Без чеков" },
+  { value: "manual", label: "Ручной" },
+  { value: "auto", label: "Автоматический" },
+];
+
+const SNO_OPTIONS = [
+  { value: "patent", label: "Патент" },
+  { value: "usn_income", label: "УСН доходы" },
+  { value: "osn", label: "ОСН" },
+];
+
 export function Settings() {
+  const navigate = useNavigate();
   const { data: settings, isLoading } = useMasterSettings();
+  const { data: paymentSettings, isLoading: paymentLoading } =
+    usePaymentSettings();
   const updateSettings = useUpdateSettings();
+  const updatePaymentSettings = useUpdatePaymentSettings();
+  const disconnectRobokassa = useDisconnectRobokassa();
+  const markGreyWarningSeen = useMarkGreyWarningSeen();
   const toast = useToast();
 
+  // General settings state
   const [buffer, setBuffer] = useState(15);
   const [deadline, setDeadline] = useState(2);
   const [interval, setInterval_] = useState(30);
   const [copied, setCopied] = useState(false);
+
+  // Payment settings state
+  const [cardNumber, setCardNumber] = useState("");
+  const [sbpPhone, setSbpPhone] = useState("");
+  const [bankName, setBankName] = useState("");
+  const [fiscalization, setFiscalization] = useState("none");
+  const [receiptSno, setReceiptSno] = useState("patent");
+  const [showGreyWarning, setShowGreyWarning] = useState(false);
+  const [seenWarningLocal, setSeenWarningLocal] = useState(false);
+
+  // Robokassa state
+  const [showWizard, setShowWizard] = useState(false);
+  const [showDisconnectDialog, setShowDisconnectDialog] = useState(false);
 
   useEffect(() => {
     if (settings) {
@@ -45,6 +85,17 @@ export function Settings() {
       setInterval_(settings.slot_interval_minutes);
     }
   }, [settings]);
+
+  useEffect(() => {
+    if (paymentSettings) {
+      setCardNumber(paymentSettings.card_number ?? "");
+      setSbpPhone(paymentSettings.sbp_phone ?? "");
+      setBankName(paymentSettings.bank_name ?? "");
+      setFiscalization(paymentSettings.fiscalization_level);
+      setReceiptSno(paymentSettings.receipt_sno ?? "patent");
+      setSeenWarningLocal(paymentSettings.has_seen_grey_warning);
+    }
+  }, [paymentSettings]);
 
   const handleSave = () => {
     updateSettings.mutate(
@@ -73,6 +124,66 @@ export function Settings() {
     }
   };
 
+  const handleSaveRequisites = () => {
+    updatePaymentSettings.mutate(
+      {
+        card_number: cardNumber.trim() || null,
+        sbp_phone: sbpPhone.trim() || null,
+        bank_name: bankName.trim() || null,
+      },
+      {
+        onSuccess: () => toast.success("Реквизиты сохранены"),
+        onError: () => toast.error("Не удалось сохранить реквизиты"),
+      },
+    );
+  };
+
+  const handleFiscalizationChange = (value: string) => {
+    setFiscalization(value);
+    if (value === "none" && !seenWarningLocal) {
+      setShowGreyWarning(true);
+    }
+  };
+
+  const handleDismissWarning = () => {
+    setShowGreyWarning(false);
+    setSeenWarningLocal(true);
+    markGreyWarningSeen.mutate();
+  };
+
+  const handleSaveFiscalization = () => {
+    updatePaymentSettings.mutate(
+      {
+        fiscalization_level: fiscalization,
+        receipt_sno: receiptSno,
+      },
+      {
+        onSuccess: () => toast.success("Настройки фискализации сохранены"),
+        onError: () => toast.error("Не удалось сохранить настройки"),
+      },
+    );
+  };
+
+  const handleDisconnectRobokassa = () => {
+    disconnectRobokassa.mutate(undefined, {
+      onSuccess: () => {
+        toast.success("Робокасса отключена");
+        setShowDisconnectDialog(false);
+        // If fiscalization was auto, reset to manual
+        if (fiscalization === "auto") {
+          setFiscalization("manual");
+        }
+      },
+      onError: () => {
+        toast.error("Не удалось отключить Робокассу");
+        setShowDisconnectDialog(false);
+      },
+    });
+  };
+
+  const isLoadingAny = isLoading || paymentLoading;
+  const hasRobokassa = paymentSettings?.has_robokassa ?? false;
+
   return (
     <div className="flex flex-col min-h-full">
       <div className="px-4 pt-8 pb-4">
@@ -82,8 +193,10 @@ export function Settings() {
       </div>
 
       <div className="flex-1 px-4 pb-4 flex flex-col gap-4">
-        {isLoading ? (
+        {isLoadingAny ? (
           <div className="flex flex-col gap-4">
+            <Skeleton height="100px" className="w-full" />
+            <Skeleton height="100px" className="w-full" />
             <Skeleton height="100px" className="w-full" />
             <Skeleton height="100px" className="w-full" />
             <Skeleton height="100px" className="w-full" />
@@ -144,7 +257,7 @@ export function Settings() {
               </div>
             </Card>
 
-            {/* Save button */}
+            {/* Save general settings button */}
             <Button
               onClick={handleSave}
               loading={updateSettings.isPending}
@@ -175,9 +288,216 @@ export function Settings() {
                 </button>
               </div>
             </Card>
+
+            {/* === PAYMENT SECTIONS === */}
+
+            <div className="h-px bg-border mt-2" />
+
+            {/* Section: Requisites */}
+            <Card className="flex flex-col gap-3">
+              <h2 className="text-[16px] font-semibold text-text-primary">
+                Реквизиты для оплаты
+              </h2>
+
+              <div className="flex flex-col gap-3">
+                <div>
+                  <label className="text-[12px] text-text-secondary mb-1 block">
+                    Номер карты
+                  </label>
+                  <input
+                    type="text"
+                    value={cardNumber}
+                    onChange={(e) => setCardNumber(e.target.value)}
+                    placeholder="2200 1234 5678 9012"
+                    className="w-full h-[44px] rounded-[10px] border border-border px-3 text-[14px] text-text-primary outline-none focus:ring-2 focus:ring-accent/30"
+                  />
+                </div>
+                <div>
+                  <label className="text-[12px] text-text-secondary mb-1 block">
+                    Телефон для СБП
+                  </label>
+                  <input
+                    type="text"
+                    value={sbpPhone}
+                    onChange={(e) => setSbpPhone(e.target.value)}
+                    placeholder="+7 916 123 45 67"
+                    className="w-full h-[44px] rounded-[10px] border border-border px-3 text-[14px] text-text-primary outline-none focus:ring-2 focus:ring-accent/30"
+                  />
+                </div>
+                <div>
+                  <label className="text-[12px] text-text-secondary mb-1 block">
+                    Название банка
+                  </label>
+                  <input
+                    type="text"
+                    value={bankName}
+                    onChange={(e) => setBankName(e.target.value)}
+                    placeholder="Сбербанк"
+                    className="w-full h-[44px] rounded-[10px] border border-border px-3 text-[14px] text-text-primary outline-none focus:ring-2 focus:ring-accent/30"
+                  />
+                </div>
+              </div>
+
+              <Button
+                onClick={handleSaveRequisites}
+                loading={updatePaymentSettings.isPending}
+              >
+                Сохранить
+              </Button>
+
+              <p className="text-[12px] text-text-secondary">
+                Эти данные увидит клиент при оплате
+              </p>
+            </Card>
+
+            {/* Section: Robokassa */}
+            <Card className="flex flex-col gap-3">
+              <h2 className="text-[16px] font-semibold text-text-primary">
+                Робокасса
+              </h2>
+
+              {showWizard ? (
+                <RobokassaWizard
+                  onComplete={() => setShowWizard(false)}
+                  onCancel={() => setShowWizard(false)}
+                />
+              ) : hasRobokassa ? (
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center gap-2">
+                    <Badge variant="confirmed">Подключена</Badge>
+                    {paymentSettings?.robokassa_is_test && (
+                      <span className="text-[12px] text-amber-600 font-medium">
+                        Тестовый режим
+                      </span>
+                    )}
+                  </div>
+                  <Button
+                    variant="destructive"
+                    onClick={() => setShowDisconnectDialog(true)}
+                  >
+                    Отключить
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  <p className="text-[14px] text-text-secondary">
+                    Робокасса не подключена
+                  </p>
+                  <Button
+                    variant="secondary"
+                    onClick={() => setShowWizard(true)}
+                  >
+                    Подключить
+                  </Button>
+                </div>
+              )}
+            </Card>
+
+            {/* Section: Fiscalization */}
+            <Card className="flex flex-col gap-3">
+              <h2 className="text-[16px] font-semibold text-text-primary">
+                Чеки и фискализация
+              </h2>
+
+              <div className="flex flex-wrap gap-2">
+                {FISCAL_OPTIONS.map((f) => {
+                  const isAutoDisabled =
+                    f.value === "auto" && !hasRobokassa;
+                  return (
+                    <PillButton
+                      key={f.value}
+                      label={f.label}
+                      selected={fiscalization === f.value}
+                      onClick={() => handleFiscalizationChange(f.value)}
+                      disabled={isAutoDisabled}
+                    />
+                  );
+                })}
+              </div>
+
+              {/* Auto disabled caption */}
+              {!hasRobokassa && (
+                <p className="text-[12px] text-text-secondary -mt-1">
+                  Автоматический режим требует подключения Робокассы
+                </p>
+              )}
+
+              {/* Grey warning */}
+              {showGreyWarning && (
+                <Card className="bg-amber-50 border-amber-200">
+                  <p className="text-[14px] text-amber-800 mb-3">
+                    Рекомендуем выставлять чеки самозанятым для защиты от
+                    штрафов ФНС
+                  </p>
+                  <Button
+                    variant="secondary"
+                    onClick={handleDismissWarning}
+                    fullWidth={false}
+                    className="text-[12px] h-[36px] px-4"
+                  >
+                    Понятно
+                  </Button>
+                </Card>
+              )}
+
+              {/* Receipt SNO selector */}
+              {fiscalization !== "none" && (
+                <div>
+                  <p className="text-[12px] text-text-secondary mb-2">
+                    Система налогообложения
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {SNO_OPTIONS.map((opt) => (
+                      <PillButton
+                        key={opt.value}
+                        label={opt.label}
+                        selected={receiptSno === opt.value}
+                        onClick={() => setReceiptSno(opt.value)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <Button
+                onClick={handleSaveFiscalization}
+                loading={updatePaymentSettings.isPending}
+              >
+                Сохранить
+              </Button>
+
+              <p className="text-[12px] text-text-secondary">
+                Уровень по умолчанию. Можно изменить при каждой оплате.
+              </p>
+            </Card>
+
+            {/* Payment history link */}
+            <button
+              onClick={() => navigate("/master/payments")}
+              className="w-full text-left"
+            >
+              <Card className="flex items-center justify-between">
+                <h2 className="text-[16px] font-semibold text-text-primary">
+                  История платежей
+                </h2>
+                <ChevronRight className="w-5 h-5 text-text-secondary" />
+              </Card>
+            </button>
           </>
         )}
       </div>
+
+      {/* Disconnect Robokassa dialog */}
+      <ConfirmDialog
+        isOpen={showDisconnectDialog}
+        title="Отключить Робокассу?"
+        message="Вы не сможете отправлять ссылки на оплату."
+        confirmLabel="Отключить"
+        cancelLabel="Отмена"
+        variant="destructive"
+        onConfirm={handleDisconnectRobokassa}
+        onCancel={() => setShowDisconnectDialog(false)}
+      />
     </div>
   );
 }
@@ -186,20 +506,23 @@ function PillButton({
   label,
   selected,
   onClick,
+  disabled = false,
 }: {
   label: string;
   selected: boolean;
   onClick: () => void;
+  disabled?: boolean;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
+      disabled={disabled}
       className={`h-[44px] px-5 rounded-full text-[14px] font-medium border transition-colors ${
         selected
           ? "bg-accent/8 border-accent text-accent"
           : "border-border text-text-secondary hover:border-text-secondary"
-      }`}
+      } ${disabled ? "opacity-50 pointer-events-none" : ""}`}
     >
       {label}
     </button>
