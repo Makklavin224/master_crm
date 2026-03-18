@@ -5,7 +5,7 @@ milestone_name: milestone
 status: completed
 stopped_at: Completed quick task 260318-srs (pre-deployment fixes)
 last_updated: "2026-03-18T16:51:11.296Z"
-last_activity: 2026-03-18 -- Plan 06-03 complete, clients + payments + settings pages
+last_activity: 2026-03-18 -- Completed quick task 260318-srs: pre-deployment fixes (Docker, TLS, env, auth persistence, phone validation)
 progress:
   total_phases: 6
   completed_phases: 6
@@ -157,6 +157,12 @@ None yet.
 - MAX Mini App bridge API documentation is sparse -- needs investigation before Phase 5
 - Robochecks receipt annulment/cancellation flow poorly documented -- receipt cancellation is reminder-only in v1
 - Robokassa merchant model resolved: per-master accounts (credentials stored encrypted per master)
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260318-srs | Fix all pre-deployment issues for VPS deployment | 2026-03-18 | 42d9404 | [260318-srs](./quick/260318-srs-fix-all-pre-deployment-issues-for-vps-de/) |
 
 ## Session Continuity
 
