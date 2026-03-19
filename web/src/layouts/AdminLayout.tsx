@@ -1,4 +1,4 @@
-import { Layout, Menu, Button, Switch } from "antd";
+import { Layout, Menu, Button, Switch, Breadcrumb, Space, Typography } from "antd";
 import {
   CalendarOutlined,
   TeamOutlined,
@@ -6,36 +6,70 @@ import {
   DollarOutlined,
   SettingOutlined,
   LogoutOutlined,
-  BulbOutlined,
+  SunOutlined,
+  MoonOutlined,
 } from "@ant-design/icons";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../stores/auth";
 import { useThemeStore } from "../stores/theme";
 
 const { Sider, Content, Header } = Layout;
 
+const PAGE_TITLES: Record<string, string> = {
+  "/calendar": "Календарь",
+  "/clients": "Клиенты",
+  "/services": "Услуги",
+  "/payments": "Платежи",
+  "/settings": "Настройки",
+};
+
 const menuItems = [
-  { key: "/calendar", icon: <CalendarOutlined />, label: "\u041a\u0430\u043b\u0435\u043d\u0434\u0430\u0440\u044c" },
-  { key: "/clients", icon: <TeamOutlined />, label: "\u041a\u043b\u0438\u0435\u043d\u0442\u044b" },
-  { key: "/services", icon: <AppstoreOutlined />, label: "\u0423\u0441\u043b\u0443\u0433\u0438" },
-  { key: "/payments", icon: <DollarOutlined />, label: "\u041f\u043b\u0430\u0442\u0435\u0436\u0438" },
-  { key: "/settings", icon: <SettingOutlined />, label: "\u041d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438" },
+  { key: "/calendar", icon: <CalendarOutlined />, label: "Календарь" },
+  { key: "/clients", icon: <TeamOutlined />, label: "Клиенты" },
+  { key: "/services", icon: <AppstoreOutlined />, label: "Услуги" },
+  { key: "/payments", icon: <DollarOutlined />, label: "Платежи" },
+  { key: "/settings", icon: <SettingOutlined />, label: "Настройки" },
 ];
 
 export function AdminLayout() {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(() => {
+    try {
+      return localStorage.getItem("admin_sidebar_collapsed") === "true";
+    } catch {
+      return false;
+    }
+  });
   const navigate = useNavigate();
   const location = useLocation();
   const logout = useAuth((s) => s.logout);
+  const profile = useAuth((s) => s.profile);
   const { isDark, toggle } = useThemeStore();
+
+  const basePath = location.pathname.startsWith("/clients/")
+    ? "/clients"
+    : location.pathname;
+  const currentPageTitle = PAGE_TITLES[basePath] || "MasterCRM";
+
+  useEffect(() => {
+    document.title = `${currentPageTitle} — MasterCRM`;
+  }, [currentPageTitle]);
+
+  const handleCollapse = (val: boolean) => {
+    setCollapsed(val);
+    try {
+      localStorage.setItem("admin_sidebar_collapsed", String(val));
+    } catch {
+      // Ignore storage errors
+    }
+  };
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider
         collapsible
         collapsed={collapsed}
-        onCollapse={setCollapsed}
+        onCollapse={handleCollapse}
         breakpoint="lg"
         theme={isDark ? "dark" : "light"}
       >
@@ -63,19 +97,37 @@ export function AdminLayout() {
           style={{
             padding: "0 24px",
             display: "flex",
-            justifyContent: "flex-end",
+            justifyContent: "space-between",
             alignItems: "center",
             gap: 16,
             background: isDark ? "#141414" : "#fff",
           }}
         >
-          <Switch
-            checked={isDark}
-            onChange={toggle}
-            checkedChildren={<BulbOutlined />}
-            unCheckedChildren={<BulbOutlined />}
-          />
-          <Button type="text" icon={<LogoutOutlined />} onClick={logout} />
+          <Space>
+            <Breadcrumb
+              items={[
+                { title: "MasterCRM" },
+                { title: currentPageTitle },
+              ]}
+            />
+          </Space>
+          <Space>
+            <Typography.Text type="secondary">
+              {profile?.business_name || profile?.name || ""}
+            </Typography.Text>
+            <Switch
+              checked={isDark}
+              onChange={toggle}
+              checkedChildren={<MoonOutlined />}
+              unCheckedChildren={<SunOutlined />}
+              aria-label={
+                isDark
+                  ? "Переключить на светлую тему"
+                  : "Переключить на тёмную тему"
+              }
+            />
+            <Button type="text" icon={<LogoutOutlined />} onClick={logout} />
+          </Space>
         </Header>
         <Content style={{ margin: 24 }}>
           <Outlet />
