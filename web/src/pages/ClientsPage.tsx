@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Card, Input, Table } from "antd";
+import { Card, Empty, Input, Table } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
@@ -56,7 +56,7 @@ export function ClientsPage() {
   ];
 
   return (
-    <Card title="Клиенты">
+    <Card title={<>Клиенты {data && <span style={{ color: "#999", fontWeight: 400 }}>({filtered.length})</span>}</>}>
       <Input
         prefix={<SearchOutlined />}
         placeholder="Поиск по имени или телефону"
@@ -70,7 +70,12 @@ export function ClientsPage() {
         dataSource={filtered}
         loading={isLoading}
         rowKey={(r) => r.client.id}
-        pagination={{ pageSize: 20 }}
+        locale={{ emptyText: <Empty description="Нет клиентов" /> }}
+        pagination={{
+          pageSize: 20,
+          showTotal: (total) => `Всего: ${total}`,
+          showSizeChanger: false,
+        }}
         onRow={(record) => ({
           onClick: () => navigate(`/clients/${record.client.id}`),
           style: { cursor: "pointer" },

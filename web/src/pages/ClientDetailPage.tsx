@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { Button, Card, Descriptions, Spin, Table, Alert } from "antd";
+import { Button, Card, Descriptions, Empty, Spin, Table, Alert } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { useClientDetail, type BookingRead } from "../api/clients";
@@ -90,6 +90,7 @@ export function ClientDetailPage() {
           columns={columns}
           dataSource={bookings}
           rowKey="id"
+          locale={{ emptyText: <Empty description="Нет визитов" /> }}
           pagination={{ pageSize: 20 }}
         />
       </Card>

@@ -103,9 +103,10 @@ export function PaymentsPage() {
       <Space style={{ marginBottom: 16 }} wrap>
         <RangePicker
           format="DD.MM.YYYY"
-          onChange={(dates) =>
-            setDateRange(dates as [Dayjs | null, Dayjs | null] | null)
-          }
+          onChange={(dates) => {
+            setDateRange(dates as [Dayjs | null, Dayjs | null] | null);
+            setPage(1);
+          }}
           placeholder={["Дата от", "Дата до"]}
         />
         <Select
@@ -120,11 +121,25 @@ export function PaymentsPage() {
           style={{ minWidth: 150 }}
         />
         {data && (
-          <Statistic
-            title="Всего"
-            value={data.total}
-            style={{ marginLeft: 16 }}
-          />
+          <>
+            <Statistic
+              title="Платежей"
+              value={data.total}
+              style={{ marginLeft: 16 }}
+            />
+            <Statistic
+              title="Выручка"
+              value={
+                data.items
+                  .filter((p) => p.status === "paid")
+                  .reduce((sum, p) => sum + p.amount, 0) / 100
+              }
+              suffix="руб"
+              precision={0}
+              formatter={(val) => Number(val).toLocaleString("ru-RU")}
+              style={{ marginLeft: 16 }}
+            />
+          </>
         )}
       </Space>
       <Table<PaymentRead>
