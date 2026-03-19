@@ -29,6 +29,19 @@
 - [ ] Мастер может управлять через мини-апп в мессенджере (мобильный доступ)
 - [ ] Идентификация клиента по номеру телефона (MAX даёт автоматически, TG/VK при первой записи)
 
+## Current Milestone: v1.1 UX Polish
+
+**Goal:** Шлифовка UI/UX Mini-App (7.25/10 → 9/10) и Web Admin Panel (67/100 → 85/100) до production-ready качества
+
+**Target improvements:**
+- Accessibility: WCAG AA compliance (accent color contrast, aria-live, focus traps)
+- Error states: API errors handled gracefully на всех экранах
+- Mobile UX: safe-area, touch targets ≥44px, touch-friendly controls (no hover-only)
+- Telegram theme: поддержка tg-theme CSS vars (light/dark)
+- Web Admin completeness: создание записи из календаря, booking actions, keyboard shortcuts
+- Visual polish: elevation hierarchy, micro-interactions, typography tokens
+- Russian localization: все тексты на русском, форматы дат
+
 ### Out of Scope
 
 - Склад/остатки — оверкилл для solo-мастера
@@ -103,4 +116,4 @@
 20K мастеров x 150₽ avg = 3M₽/мес (подписки) + 1.5% от 50M₽ оборота = 750K₽/мес → ~3.75M₽/мес к концу года 1
 
 ---
-*Last updated: 2026-03-17 after initialization*
+*Last updated: 2026-03-19 after v1.1 milestone start*

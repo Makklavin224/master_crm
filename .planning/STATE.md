@@ -1,36 +1,36 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: completed
-stopped_at: Completed quick task 260318-srs (pre-deployment fixes)
-last_updated: "2026-03-18T16:51:11.296Z"
-last_activity: 2026-03-18 -- Completed quick task 260318-srs: pre-deployment fixes (Docker, TLS, env, auth persistence, phone validation)
+milestone: v1.1
+milestone_name: ux-polish
+status: in_progress
+stopped_at: Defining requirements
+last_updated: "2026-03-19T09:00:00.000Z"
+last_activity: 2026-03-19 -- Milestone v1.1 started
 progress:
-  total_phases: 6
-  completed_phases: 6
-  total_plans: 17
-  completed_plans: 17
-  percent: 100
+  total_phases: 2
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-17)
+See: .planning/PROJECT.md (updated 2026-03-19)
 
 **Core value:** Master taps "Complete" -- client gets SBP payment link -- tax receipt auto-generates. 3 steps instead of 9.
-**Current focus:** All phases complete -- v1.0 milestone done
+**Current focus:** v1.1 UX Polish -- Mini-App + Web Admin шлифовка
 
 ## Current Position
 
-Phase: 6 of 6 (Web Admin Panel) -- COMPLETE
-Plan: 3 of 3 in current phase -- COMPLETE
-Status: All 17 plans across 6 phases complete
-Last activity: 2026-03-18 -- Plan 06-03 complete, clients + payments + settings pages
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements for v1.1
+Last activity: 2026-03-19 -- Milestone v1.1 started
 
-Progress: [██████████] 100%
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
