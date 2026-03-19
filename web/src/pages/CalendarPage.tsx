@@ -1,12 +1,27 @@
 import { useState, useMemo, useCallback } from "react";
-import { Card, Spin } from "antd";
+import {
+  Card,
+  Button,
+  Modal,
+  Form,
+  Select,
+  Input,
+  DatePicker,
+  TimePicker,
+  Space,
+  App,
+} from "antd";
+import { PlusOutlined, LoadingOutlined } from "@ant-design/icons";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import type { DatesSetArg, EventClickArg } from "@fullcalendar/core";
+import type { DateClickArg } from "@fullcalendar/interaction";
 import ruLocale from "@fullcalendar/core/locales/ru";
-import { useBookings, type BookingRead } from "../api/bookings";
+import dayjs from "dayjs";
+import { useBookings, useCreateManualBooking, type BookingRead } from "../api/bookings";
+import { useServices } from "../api/services";
 import { useScheduleTemplate } from "../api/schedule";
 import { BookingDrawer } from "../components/BookingDrawer";
 
@@ -33,12 +48,17 @@ export function CalendarPage() {
   const [selectedBooking, setSelectedBooking] = useState<BookingRead | null>(
     null,
   );
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [createForm] = Form.useForm();
 
   const { data: bookingsData, isLoading: bookingsLoading } = useBookings(
     dateRange.date_from ? dateRange : {},
   );
 
   const { data: schedule } = useScheduleTemplate();
+  const { data: servicesData } = useServices();
+  const createMutation = useCreateManualBooking();
+  const { message: messageApi } = App.useApp();
 
   const { slotMinTime, slotMaxTime } = useMemo(() => {
     if (!schedule || schedule.length === 0) {
@@ -99,41 +119,90 @@ export function CalendarPage() {
     setSelectedBooking(null);
   }, []);
 
+  const handleDateClick = useCallback(
+    (arg: DateClickArg) => {
+      createForm.setFieldsValue({
+        date: dayjs(arg.dateStr),
+        time: dayjs(arg.dateStr),
+      });
+      setCreateModalOpen(true);
+    },
+    [createForm],
+  );
+
+  const handleCreateBooking = useCallback(async () => {
+    try {
+      const values = await createForm.validateFields();
+      const date = values.date as dayjs.Dayjs;
+      const time = values.time as dayjs.Dayjs;
+      const startsAt = date
+        .hour(time.hour())
+        .minute(time.minute())
+        .second(0)
+        .toISOString();
+      await createMutation.mutateAsync({
+        service_id: values.service_id,
+        starts_at: startsAt,
+        client_name: values.client_name,
+        client_phone: values.client_phone,
+        notes: values.notes || null,
+      });
+      messageApi.success("Запись создана");
+      setCreateModalOpen(false);
+      createForm.resetFields();
+    } catch {
+      // validation or API error
+    }
+  }, [createForm, createMutation, messageApi]);
+
   return (
     <>
       <Card
         styles={{ body: { padding: 16 } }}
-        style={{ minHeight: "calc(100vh - 120px)" }}
+        style={{ minHeight: "calc(100vh - 120px)", position: "relative" }}
+        extra={
+          <Space>
+            {bookingsLoading && (
+              <LoadingOutlined spin style={{ color: "#6C5CE7" }} />
+            )}
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={() => setCreateModalOpen(true)}
+            >
+              Новая запись
+            </Button>
+          </Space>
+        }
       >
-        <Spin spinning={bookingsLoading}>
-          <FullCalendar
-            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-            initialView="timeGridWeek"
-            locale={ruLocale}
-            firstDay={1}
-            allDaySlot={false}
-            slotMinTime={slotMinTime}
-            slotMaxTime={slotMaxTime}
-            headerToolbar={{
-              left: "prev,next today",
-              center: "title",
-              right: "timeGridDay,timeGridWeek,dayGridMonth",
-            }}
-            buttonText={{
-              today: "Сегодня",
-              day: "День",
-              week: "Неделя",
-              month: "Месяц",
-            }}
-            events={events}
-            datesSet={handleDatesSet}
-            eventClick={handleEventClick}
-            height="auto"
-            nowIndicator
-            slotDuration="00:30:00"
-            eventDisplay="block"
-          />
-        </Spin>
+        <FullCalendar
+          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+          initialView="timeGridWeek"
+          locale={ruLocale}
+          firstDay={1}
+          allDaySlot={false}
+          slotMinTime={slotMinTime}
+          slotMaxTime={slotMaxTime}
+          headerToolbar={{
+            left: "prev,next today",
+            center: "title",
+            right: "timeGridDay,timeGridWeek,dayGridMonth",
+          }}
+          buttonText={{
+            today: "Сегодня",
+            day: "День",
+            week: "Неделя",
+            month: "Месяц",
+          }}
+          events={events}
+          datesSet={handleDatesSet}
+          eventClick={handleEventClick}
+          dateClick={handleDateClick}
+          height="auto"
+          nowIndicator
+          slotDuration="00:30:00"
+          eventDisplay="block"
+        />
       </Card>
 
       <BookingDrawer
@@ -141,6 +210,74 @@ export function CalendarPage() {
         booking={selectedBooking}
         onClose={handleDrawerClose}
       />
+
+      <Modal
+        title="Новая запись"
+        open={createModalOpen}
+        onOk={handleCreateBooking}
+        onCancel={() => {
+          setCreateModalOpen(false);
+          createForm.resetFields();
+        }}
+        confirmLoading={createMutation.isPending}
+        okText="Создать"
+        cancelText="Отмена"
+      >
+        <Form form={createForm} layout="vertical">
+          <Form.Item
+            name="service_id"
+            label="Услуга"
+            rules={[{ required: true, message: "Выберите услугу" }]}
+          >
+            <Select
+              placeholder="Выберите услугу"
+              options={
+                servicesData
+                  ?.filter((s) => s.is_active)
+                  .map((s) => ({
+                    value: s.id,
+                    label: `${s.name} (${s.duration_minutes} мин, ${(s.price / 100).toLocaleString("ru-RU")} руб)`,
+                  })) ?? []
+              }
+            />
+          </Form.Item>
+          <Form.Item
+            name="date"
+            label="Дата"
+            rules={[{ required: true, message: "Выберите дату" }]}
+          >
+            <DatePicker format="DD.MM.YYYY" style={{ width: "100%" }} />
+          </Form.Item>
+          <Form.Item
+            name="time"
+            label="Время"
+            rules={[{ required: true, message: "Выберите время" }]}
+          >
+            <TimePicker
+              format="HH:mm"
+              minuteStep={15}
+              style={{ width: "100%" }}
+            />
+          </Form.Item>
+          <Form.Item
+            name="client_name"
+            label="Имя клиента"
+            rules={[{ required: true, message: "Введите имя" }]}
+          >
+            <Input placeholder="Имя клиента" />
+          </Form.Item>
+          <Form.Item
+            name="client_phone"
+            label="Телефон клиента"
+            rules={[{ required: true, message: "Введите телефон" }]}
+          >
+            <Input placeholder="+79161234567" />
+          </Form.Item>
+          <Form.Item name="notes" label="Заметки">
+            <Input.TextArea rows={2} placeholder="Необязательно" />
+          </Form.Item>
+        </Form>
+      </Modal>
     </>
   );
 }
