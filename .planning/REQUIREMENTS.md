@@ -100,8 +100,8 @@
 
 ### Web Admin Critical (WCRT)
 
-- [ ] **WCRT-01**: Calendar page has "Create booking" entry point (button + click-on-slot)
-- [ ] **WCRT-02**: BookingDrawer has action buttons (complete, no-show, reschedule) not just cancel
+- [x] **WCRT-01**: Calendar page has "Create booking" entry point (button + click-on-slot)
+- [x] **WCRT-02**: BookingDrawer has action buttons (complete, no-show, reschedule) not just cancel
 - [x] **WCRT-03**: StatusTag and AdminLayout use plain UTF-8 Russian strings (not Unicode escapes)
 - [x] **WCRT-04**: Magic link redirect uses React Router navigate (not hardcoded window.location)
 - [x] **WCRT-05**: All tables have Russian empty states (not English "No data")
@@ -116,7 +116,7 @@
 - [x] **WAUX-05**: ClientsPage has total count badge and proper pagination controls
 - [x] **WAUX-06**: Sidebar collapse state persisted to localStorage
 - [x] **WAUX-07**: Schedule exceptions form fields hidden when is_day_off is true
-- [ ] **WAUX-08**: CalendarPage uses subtle loading indicator (not full Spin overlay)
+- [x] **WAUX-08**: CalendarPage uses subtle loading indicator (not full Spin overlay)
 - [x] **WAUX-09**: Page titles set per route (document.title for tab identification)
 - [x] **WAUX-10**: QueryClient configured with staleTime for non-realtime data (services, clients, settings)
 
@@ -222,8 +222,8 @@
 | MVIS-06 | Phase 7 | Complete |
 | MVIS-07 | Phase 7 | Complete |
 | MVIS-08 | Phase 7 | Complete |
-| WCRT-01 | Phase 8 | Pending |
-| WCRT-02 | Phase 8 | Pending |
+| WCRT-01 | Phase 8 | Complete |
+| WCRT-02 | Phase 8 | Complete |
 | WCRT-03 | Phase 8 | Complete |
 | WCRT-04 | Phase 8 | Complete |
 | WCRT-05 | Phase 8 | Complete |
@@ -235,7 +235,7 @@
 | WAUX-05 | Phase 8 | Complete |
 | WAUX-06 | Phase 8 | Complete |
 | WAUX-07 | Phase 8 | Complete |
-| WAUX-08 | Phase 8 | Pending |
+| WAUX-08 | Phase 8 | Complete |
 | WAUX-09 | Phase 8 | Complete |
 | WAUX-10 | Phase 8 | Complete |
 
