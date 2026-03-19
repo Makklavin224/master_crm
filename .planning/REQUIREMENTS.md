@@ -73,7 +73,7 @@
 
 ### Mini-App Accessibility (MACC)
 
-- [ ] **MACC-01**: Accent color passes WCAG AA contrast (≥4.5:1 on white)
+- [x] **MACC-01**: Accent color passes WCAG AA contrast (≥4.5:1 on white)
 - [ ] **MACC-02**: All async list containers have `aria-live="polite"` for screen readers
 - [ ] **MACC-03**: PaymentSheet has focus trap and `aria-labelledby`
 - [ ] **MACC-04**: Settings toggle has `role="switch"` and `aria-checked`
@@ -89,8 +89,8 @@
 
 ### Mini-App Visual Polish (MVIS)
 
-- [ ] **MVIS-01**: Telegram theme CSS variables supported (--tg-theme-bg-color, dark mode adaptation)
-- [ ] **MVIS-02**: Named typography tokens (text-heading, text-body, text-caption) instead of raw px
+- [x] **MVIS-01**: Telegram theme CSS variables supported (--tg-theme-bg-color, dark mode adaptation)
+- [x] **MVIS-02**: Named typography tokens (text-heading, text-body, text-caption) instead of raw px
 - [ ] **MVIS-03**: Badge colors use design tokens instead of raw Tailwind colors
 - [ ] **MVIS-04**: Elevation hierarchy: bottom sheets and modals have progressively stronger shadows
 - [ ] **MVIS-05**: PillButton extracted into shared component (deduplicated from 3 implementations)
@@ -204,7 +204,7 @@
 | WEB-03 | Phase 6 | Complete |
 | WEB-04 | Phase 6 | Complete |
 | WEB-05 | Phase 6 | Complete |
-| MACC-01 | Phase 7 | Pending |
+| MACC-01 | Phase 7 | Complete |
 | MACC-02 | Phase 7 | Pending |
 | MACC-03 | Phase 7 | Pending |
 | MACC-04 | Phase 7 | Pending |
@@ -214,8 +214,8 @@
 | MMUX-03 | Phase 7 | Pending |
 | MMUX-04 | Phase 7 | Pending |
 | MMUX-05 | Phase 7 | Pending |
-| MVIS-01 | Phase 7 | Pending |
-| MVIS-02 | Phase 7 | Pending |
+| MVIS-01 | Phase 7 | Complete |
+| MVIS-02 | Phase 7 | Complete |
 | MVIS-03 | Phase 7 | Pending |
 | MVIS-04 | Phase 7 | Pending |
 | MVIS-05 | Phase 7 | Pending |
