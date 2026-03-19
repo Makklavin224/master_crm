@@ -164,7 +164,7 @@ Plans:
   3. The admin panel remembers sidebar collapse state across sessions, sets unique page titles per route, and configures smart data caching (stale services/clients are not refetched on every navigation)
   4. PaymentsPage shows total revenue alongside payment count, resets pagination when date range changes; ClientsPage shows total client count with proper pagination controls
   5. Dark mode toggle has distinct on/off icons with aria-label; header displays breadcrumb navigation and master's business name; schedule exception form hides irrelevant fields when "day off" is selected; calendar loading uses a subtle indicator instead of a full overlay spinner
-**Plans:** 3 plans
+**Plans:** 2/3 plans executed
 
 Plans:
 - [ ] 08-01-PLAN.md -- Global fixes: StatusTag UTF-8 strings, App.tsx magic link + QueryClient staleTime, AdminLayout header/sidebar/titles/dark mode
@@ -185,4 +185,4 @@ Phases execute in numeric order: 7 -> 8
 | 5. Multi-Messenger Expansion | v1.0 | 3/3 | Complete | 2026-03-18 |
 | 6. Web Admin Panel | v1.0 | 3/3 | Complete | 2026-03-18 |
 | 7. Mini-App UX Polish | 5/5 | Complete   | 2026-03-19 | - |
-| 8. Web Admin UX Polish | v1.1 | 0/3 | Not started | - |
+| 8. Web Admin UX Polish | 2/3 | In Progress|  | - |
