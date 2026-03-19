@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { CalendarDays, Plus, Trash2 } from "lucide-react";
 import {
   useMasterSchedule,
   useUpdateSchedule,
@@ -13,6 +13,7 @@ import { Card } from "../../components/ui/Card.tsx";
 import { Input } from "../../components/ui/Input.tsx";
 import { Button } from "../../components/ui/Button.tsx";
 import { Skeleton } from "../../components/ui/Skeleton.tsx";
+import { EmptyState } from "../../components/ui/EmptyState.tsx";
 import { ConfirmDialog } from "../../components/ConfirmDialog.tsx";
 import { useToast } from "../../components/ui/Toast.tsx";
 import { formatDate } from "../../lib/format.ts";
@@ -29,8 +30,8 @@ const DEFAULT_SCHEDULE: ScheduleDayRead[] = Array.from({ length: 7 }, (_, i) => 
 }));
 
 export function Schedule() {
-  const { data: scheduleData, isLoading: scheduleLoading } = useMasterSchedule();
-  const { data: exceptions, isLoading: exceptionsLoading } = useScheduleExceptions();
+  const { data: scheduleData, isLoading: scheduleLoading, error: scheduleError } = useMasterSchedule();
+  const { data: exceptions, isLoading: exceptionsLoading, error: exceptionsError } = useScheduleExceptions();
   const updateSchedule = useUpdateSchedule();
   const createException = useCreateException();
   const deleteException = useDeleteException();
@@ -102,6 +103,7 @@ export function Schedule() {
   };
 
   const isLoading = scheduleLoading || exceptionsLoading;
+  const hasError = !!scheduleError || !!exceptionsError;
 
   return (
     <div className="flex flex-col min-h-full">
@@ -111,13 +113,19 @@ export function Schedule() {
         </h1>
       </div>
 
-      <div className="flex-1 px-4 pb-4 flex flex-col gap-4">
+      <div className="flex-1 px-4 pb-4 flex flex-col gap-4" aria-live="polite">
         {isLoading ? (
           <div className="flex flex-col gap-3">
             {[1, 2, 3, 4, 5, 6, 7].map((i) => (
               <Skeleton key={i} height="56px" className="w-full" />
             ))}
           </div>
+        ) : hasError ? (
+          <EmptyState
+            icon={<CalendarDays className="w-12 h-12" />}
+            heading="Не удалось загрузить расписание"
+            body="Проверьте соединение и попробуйте ещё раз."
+          />
         ) : (
           <>
             {/* Weekly schedule */}

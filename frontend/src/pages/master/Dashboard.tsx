@@ -13,7 +13,7 @@ function getToday(): string {
 
 export function Dashboard() {
   const today = getToday();
-  const { data, isLoading } = useMasterBookings({
+  const { data, isLoading, error } = useMasterBookings({
     date_from: today,
     date_to: today,
   });
@@ -40,13 +40,19 @@ export function Dashboard() {
         <h1 className="text-[20px] font-semibold text-text-primary">Сегодня</h1>
       </div>
 
-      <div className="flex-1 px-4 pb-4">
+      <div className="flex-1 px-4 pb-4" aria-live="polite">
         {isLoading ? (
           <div className="flex flex-col gap-4">
             {[1, 2, 3].map((i) => (
               <Skeleton key={i} height="96px" className="w-full" />
             ))}
           </div>
+        ) : error ? (
+          <EmptyState
+            icon={<CalendarDays className="w-12 h-12" />}
+            heading="Не удалось загрузить записи"
+            body="Проверьте соединение и попробуйте ещё раз."
+          />
         ) : sorted.length === 0 ? (
           <EmptyState
             icon={<CalendarDays className="w-12 h-12" />}

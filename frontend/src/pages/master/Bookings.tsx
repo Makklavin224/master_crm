@@ -36,7 +36,7 @@ export function Bookings() {
   const [paymentBooking, setPaymentBooking] =
     useState<MasterBookingRead | null>(null);
 
-  const { data, isLoading } = useMasterBookings({
+  const { data, isLoading, error } = useMasterBookings({
     date_from: dateFrom || undefined,
     date_to: dateTo || undefined,
     status: statusFilter === "all" ? undefined : statusFilter,
@@ -121,13 +121,19 @@ export function Bookings() {
       </div>
 
       {/* Bookings list */}
-      <div className="flex-1 px-4 pb-4">
+      <div className="flex-1 px-4 pb-4" aria-live="polite">
         {isLoading ? (
           <div className="flex flex-col gap-4">
             {[1, 2, 3].map((i) => (
               <Skeleton key={i} height="96px" className="w-full" />
             ))}
           </div>
+        ) : error ? (
+          <EmptyState
+            icon={<BookOpen className="w-12 h-12" />}
+            heading="Не удалось загрузить записи"
+            body="Проверьте соединение и попробуйте ещё раз."
+          />
         ) : bookings.length === 0 ? (
           <EmptyState
             icon={<BookOpen className="w-12 h-12" />}

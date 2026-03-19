@@ -10,7 +10,7 @@ import { Button } from "../../components/ui/Button.tsx";
 import { useToast } from "../../components/ui/Toast.tsx";
 
 export function Services() {
-  const { data: services, isLoading } = useMasterServices();
+  const { data: services, isLoading, error } = useMasterServices();
   const deleteService = useDeleteService();
   const navigate = useNavigate();
   const toast = useToast();
@@ -47,13 +47,19 @@ export function Services() {
         </button>
       </div>
 
-      <div className="flex-1 px-4 pb-4">
+      <div className="flex-1 px-4 pb-4" aria-live="polite">
         {isLoading ? (
           <div className="flex flex-col gap-4">
             {[1, 2, 3].map((i) => (
               <Skeleton key={i} height="80px" className="w-full" />
             ))}
           </div>
+        ) : error ? (
+          <EmptyState
+            icon={<Scissors className="w-12 h-12" />}
+            heading="Не удалось загрузить услуги"
+            body="Проверьте соединение и попробуйте ещё раз."
+          />
         ) : !services || services.length === 0 ? (
           <EmptyState
             icon={<Scissors className="w-12 h-12" />}
