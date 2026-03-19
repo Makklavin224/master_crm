@@ -83,7 +83,7 @@
 
 - [x] **MMUX-01**: BottomTabBar safe-area does not collapse touch targets on iPhone (min-h instead of fixed h)
 - [x] **MMUX-02**: Services delete button accessible on touch (not hover-only)
-- [ ] **MMUX-03**: All filter pills and action buttons meet 44px minimum touch target
+- [x] **MMUX-03**: All filter pills and action buttons meet 44px minimum touch target
 - [ ] **MMUX-04**: Error states on all master-panel pages (Dashboard, Services, Schedule, Bookings, Clients, ClientDetail, Settings, PaymentHistory)
 - [x] **MMUX-05**: DatePicker has 300ms settle delay before auto-advance (matching ServiceSelection pattern)
 
@@ -92,8 +92,8 @@
 - [x] **MVIS-01**: Telegram theme CSS variables supported (--tg-theme-bg-color, dark mode adaptation)
 - [x] **MVIS-02**: Named typography tokens (text-heading, text-body, text-caption) instead of raw px
 - [x] **MVIS-03**: Badge colors use design tokens instead of raw Tailwind colors
-- [ ] **MVIS-04**: Elevation hierarchy: bottom sheets and modals have progressively stronger shadows
-- [ ] **MVIS-05**: PillButton extracted into shared component (deduplicated from 3 implementations)
+- [x] **MVIS-04**: Elevation hierarchy: bottom sheets and modals have progressively stronger shadows
+- [x] **MVIS-05**: PillButton extracted into shared component (deduplicated from 3 implementations)
 - [x] **MVIS-06**: Confirmation screen has celebratory moment (larger heading, entrance animation)
 - [x] **MVIS-07**: BottomTabBar label transition animated (not instant appear/disappear)
 - [x] **MVIS-08**: Button active state includes subtle scale transform
@@ -211,14 +211,14 @@
 | MACC-05 | Phase 7 | Complete |
 | MMUX-01 | Phase 7 | Complete |
 | MMUX-02 | Phase 7 | Complete |
-| MMUX-03 | Phase 7 | Pending |
+| MMUX-03 | Phase 7 | Complete |
 | MMUX-04 | Phase 7 | Pending |
 | MMUX-05 | Phase 7 | Complete |
 | MVIS-01 | Phase 7 | Complete |
 | MVIS-02 | Phase 7 | Complete |
 | MVIS-03 | Phase 7 | Complete |
-| MVIS-04 | Phase 7 | Pending |
-| MVIS-05 | Phase 7 | Pending |
+| MVIS-04 | Phase 7 | Complete |
+| MVIS-05 | Phase 7 | Complete |
 | MVIS-06 | Phase 7 | Complete |
 | MVIS-07 | Phase 7 | Complete |
 | MVIS-08 | Phase 7 | Complete |
