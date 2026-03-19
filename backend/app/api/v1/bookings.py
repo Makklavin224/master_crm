@@ -19,9 +19,11 @@ from app.schemas.booking import (
 )
 from app.services.booking_service import (
     cancel_booking,
+    complete_booking,
     create_booking,
     create_manual_booking,
     get_master_bookings,
+    mark_no_show,
     reschedule_booking,
 )
 
@@ -167,6 +169,28 @@ async def cancel_booking_endpoint(
         cancelled_by=cancelled_by,
         cancellation_deadline_hours=deadline_hours,
     )
+    return _booking_to_read(booking)
+
+
+@router.put("/{booking_id}/complete", response_model=BookingRead)
+async def complete_booking_endpoint(
+    booking_id: uuid.UUID,
+    master: Annotated[Master, Depends(get_current_master)],
+    db: Annotated[AsyncSession, Depends(get_db)],
+):
+    """Mark a booking as completed (master-only)."""
+    booking = await complete_booking(db=db, booking_id=booking_id, master_id=master.id)
+    return _booking_to_read(booking)
+
+
+@router.put("/{booking_id}/no_show", response_model=BookingRead)
+async def mark_no_show_endpoint(
+    booking_id: uuid.UUID,
+    master: Annotated[Master, Depends(get_current_master)],
+    db: Annotated[AsyncSession, Depends(get_db)],
+):
+    """Mark a booking as no-show (master-only)."""
+    booking = await mark_no_show(db=db, booking_id=booking_id, master_id=master.id)
     return _booking_to_read(booking)
 
 

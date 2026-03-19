@@ -485,6 +485,60 @@ async def reschedule_booking(
     return booking
 
 
+async def complete_booking(
+    db: AsyncSession,
+    booking_id: uuid.UUID,
+    master_id: uuid.UUID,
+) -> Booking:
+    """Mark a booking as completed. Only confirmed bookings can be completed."""
+    result = await db.execute(
+        select(Booking)
+        .where(Booking.id == booking_id, Booking.master_id == master_id)
+        .options(selectinload(Booking.client), selectinload(Booking.service))
+    )
+    booking = result.scalar_one_or_none()
+    if booking is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Booking not found"
+        )
+    if booking.status != "confirmed":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Cannot complete booking with status '{booking.status}'. Must be 'confirmed'.",
+        )
+    booking.status = "completed"
+    await db.commit()
+    await db.refresh(booking, ["client", "service"])
+    return booking
+
+
+async def mark_no_show(
+    db: AsyncSession,
+    booking_id: uuid.UUID,
+    master_id: uuid.UUID,
+) -> Booking:
+    """Mark a booking as no-show. Only confirmed bookings can be marked."""
+    result = await db.execute(
+        select(Booking)
+        .where(Booking.id == booking_id, Booking.master_id == master_id)
+        .options(selectinload(Booking.client), selectinload(Booking.service))
+    )
+    booking = result.scalar_one_or_none()
+    if booking is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Booking not found"
+        )
+    if booking.status != "confirmed":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Cannot mark no-show for booking with status '{booking.status}'. Must be 'confirmed'.",
+        )
+    booking.status = "no_show"
+    await db.commit()
+    await db.refresh(booking, ["client", "service"])
+    return booking
+
+
 async def create_manual_booking(
     db: AsyncSession,
     master_id: uuid.UUID,

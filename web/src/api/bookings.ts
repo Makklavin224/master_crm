@@ -79,3 +79,49 @@ export function useCreateManualBooking() {
     },
   });
 }
+
+export function useCompleteBooking() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (bookingId: string) =>
+      apiRequest<BookingRead>(`/bookings/${bookingId}/complete`, {
+        method: "PUT",
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["bookings"] });
+    },
+  });
+}
+
+export function useMarkNoShow() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (bookingId: string) =>
+      apiRequest<BookingRead>(`/bookings/${bookingId}/no_show`, {
+        method: "PUT",
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["bookings"] });
+    },
+  });
+}
+
+export function useRescheduleBooking() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      bookingId,
+      newStartsAt,
+    }: {
+      bookingId: string;
+      newStartsAt: string;
+    }) =>
+      apiRequest<BookingRead>(`/bookings/${bookingId}/reschedule`, {
+        method: "PUT",
+        body: JSON.stringify({ new_starts_at: newStartsAt }),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["bookings"] });
+    },
+  });
+}
