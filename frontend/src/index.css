@@ -30,6 +30,23 @@ html, body, #root {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Telegram Theme Integration */
+:root {
+  /* Map Telegram theme variables to design tokens */
+  --app-bg: var(--tg-theme-bg-color, #FFFFFF);
+  --app-text: var(--tg-theme-text-color, #1A1A2E);
+  --app-hint: var(--tg-theme-hint-color, #6B7280);
+  --app-link: var(--tg-theme-link-color, var(--color-accent));
+  --app-button: var(--tg-theme-button-color, var(--color-accent));
+  --app-button-text: var(--tg-theme-button-text-color, #FFFFFF);
+  --app-secondary-bg: var(--tg-theme-secondary-bg-color, #F4F5F7);
+}
+
+html, body, #root {
+  background-color: var(--app-bg);
+  color: var(--app-text);
+}
+
 /* Prevent overscroll bounce in Telegram WebView */
 body {
   overscroll-behavior: none;
