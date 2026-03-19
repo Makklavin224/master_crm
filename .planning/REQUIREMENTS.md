@@ -74,7 +74,7 @@
 ### Mini-App Accessibility (MACC)
 
 - [x] **MACC-01**: Accent color passes WCAG AA contrast (≥4.5:1 on white)
-- [ ] **MACC-02**: All async list containers have `aria-live="polite"` for screen readers
+- [x] **MACC-02**: All async list containers have `aria-live="polite"` for screen readers
 - [x] **MACC-03**: PaymentSheet has focus trap and `aria-labelledby`
 - [x] **MACC-04**: Settings toggle has `role="switch"` and `aria-checked`
 - [x] **MACC-05**: BottomTabBar has `aria-label` on both active and inactive tabs
@@ -84,7 +84,7 @@
 - [x] **MMUX-01**: BottomTabBar safe-area does not collapse touch targets on iPhone (min-h instead of fixed h)
 - [x] **MMUX-02**: Services delete button accessible on touch (not hover-only)
 - [x] **MMUX-03**: All filter pills and action buttons meet 44px minimum touch target
-- [ ] **MMUX-04**: Error states on all master-panel pages (Dashboard, Services, Schedule, Bookings, Clients, ClientDetail, Settings, PaymentHistory)
+- [x] **MMUX-04**: Error states on all master-panel pages (Dashboard, Services, Schedule, Bookings, Clients, ClientDetail, Settings, PaymentHistory)
 - [x] **MMUX-05**: DatePicker has 300ms settle delay before auto-advance (matching ServiceSelection pattern)
 
 ### Mini-App Visual Polish (MVIS)
@@ -205,14 +205,14 @@
 | WEB-04 | Phase 6 | Complete |
 | WEB-05 | Phase 6 | Complete |
 | MACC-01 | Phase 7 | Complete |
-| MACC-02 | Phase 7 | Pending |
+| MACC-02 | Phase 7 | Complete |
 | MACC-03 | Phase 7 | Complete |
 | MACC-04 | Phase 7 | Complete |
 | MACC-05 | Phase 7 | Complete |
 | MMUX-01 | Phase 7 | Complete |
 | MMUX-02 | Phase 7 | Complete |
 | MMUX-03 | Phase 7 | Complete |
-| MMUX-04 | Phase 7 | Pending |
+| MMUX-04 | Phase 7 | Complete |
 | MMUX-05 | Phase 7 | Complete |
 | MVIS-01 | Phase 7 | Complete |
 | MVIS-02 | Phase 7 | Complete |
