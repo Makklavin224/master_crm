@@ -1,6 +1,6 @@
 import { ConfigProvider, App as AntApp } from "antd";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, Outlet, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useAuth } from "./stores/auth";
 import { useThemeStore } from "./stores/theme";
@@ -14,7 +14,14 @@ import { PaymentsPage } from "./pages/PaymentsPage";
 import { ServicesPage } from "./pages/ServicesPage";
 import { SettingsPage } from "./pages/SettingsPage";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      retry: 1,
+    },
+  },
+});
 
 function ProtectedRoute() {
   const isAuthenticated = useAuth((s) => s.isAuthenticated);
@@ -26,6 +33,7 @@ function ProtectedRoute() {
 
 function MagicLinkCallback() {
   const setToken = useAuth((s) => s.setToken);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -43,13 +51,13 @@ function MagicLinkCallback() {
         })
         .then((data) => {
           setToken(data.access_token);
-          window.location.href = "/admin/calendar";
+          navigate("/calendar");
         })
         .catch(() => {
-          window.location.href = "/admin/login";
+          navigate("/login");
         });
     }
-  }, [setToken]);
+  }, [setToken, navigate]);
 
   return <div style={{ padding: 48, textAlign: "center" }}>Verifying magic link...</div>;
 }
