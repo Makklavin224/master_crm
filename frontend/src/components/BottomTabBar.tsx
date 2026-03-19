@@ -46,8 +46,7 @@ export function BottomTabBar() {
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-border z-40">
       <div
-        className="flex items-center justify-around h-[56px]"
-        style={{ paddingBottom: "calc(16px + env(safe-area-inset-bottom, 0px))" }}
+        className="flex items-center justify-around min-h-[56px] pb-[calc(16px+env(safe-area-inset-bottom,0px))]"
       >
         {tabs.map((tab) => (
           <NavLink
@@ -55,18 +54,25 @@ export function BottomTabBar() {
             to={tab.path}
             end={tab.path === ROUTES.MASTER_DASHBOARD}
             className="flex-1"
+            aria-label={tab.ariaLabel}
           >
             {({ isActive }) => (
-              <div className="flex flex-col items-center justify-center gap-0.5 py-1">
+              <div
+                className="flex flex-col items-center justify-center gap-0.5 py-1"
+                aria-current={isActive ? "page" : undefined}
+              >
                 <tab.icon
                   className={`w-6 h-6 ${isActive ? "text-accent" : "text-text-secondary"}`}
-                  {...(!isActive ? { "aria-label": tab.ariaLabel } : {})}
                 />
-                {isActive && (
-                  <span className="text-[12px] font-semibold text-accent leading-none">
-                    {tab.label}
-                  </span>
-                )}
+                <span
+                  className={`text-[12px] font-semibold leading-none transition-all duration-200 ${
+                    isActive
+                      ? "text-accent opacity-100 max-h-4 mt-0.5"
+                      : "text-transparent opacity-0 max-h-0 overflow-hidden"
+                  }`}
+                >
+                  {tab.label}
+                </span>
               </div>
             )}
           </NavLink>
