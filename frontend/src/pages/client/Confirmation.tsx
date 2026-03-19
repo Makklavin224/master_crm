@@ -62,7 +62,7 @@ export function Confirmation() {
           <Check className="w-8 h-8 text-white" strokeWidth={3} />
         </div>
 
-        <h1 className="text-[20px] font-semibold text-text-primary mb-2">
+        <h1 className="text-[24px] font-semibold text-text-primary mb-2">
           Вы записаны!
         </h1>
 
@@ -72,7 +72,7 @@ export function Confirmation() {
           Мастер получил уведомление.
         </p>
 
-        <Card className="w-full mb-6">
+        <Card className="w-full mb-6 animate-slide-up">
           <div className="flex flex-col gap-2">
             <div className="flex justify-between">
               <span className="text-[14px] text-text-secondary">Услуга</span>

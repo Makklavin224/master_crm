@@ -43,8 +43,10 @@ export function DatePicker() {
     const dateStr = `${year}-${month}-${day}`;
 
     selectDate(dateStr);
-    // Auto-advance to time picker
-    navigate(`/book/${masterId}/time`);
+    // Auto-advance to time picker with 300ms settle delay (matches ServiceSelection pattern)
+    setTimeout(() => {
+      navigate(`/book/${masterId}/time`);
+    }, 300);
   };
 
   return (

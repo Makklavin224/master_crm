@@ -81,7 +81,7 @@ export function Services() {
                     e.stopPropagation();
                     setDeleteTarget({ id: service.id, name: service.name });
                   }}
-                  className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full bg-red-50 text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="absolute top-3 right-3 w-10 h-10 flex items-center justify-center rounded-full bg-red-50 text-destructive transition-opacity"
                   aria-label={`Удалить ${service.name}`}
                 >
                   <Trash2 className="w-4 h-4" />
