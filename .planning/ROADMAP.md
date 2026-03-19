@@ -1,8 +1,9 @@
 # Roadmap: Master-CRM
 
-## Overview
+## Milestones
 
-Master-CRM delivers a multi-messenger CRM for self-employed professionals in Russia. The build follows the core dependency chain: data model and infrastructure first, then the booking engine with Telegram as the first messenger, then the killer differentiator (SBP payments + auto tax receipts), then automated reminders, then multi-messenger expansion (MAX + VK), and finally the web admin panel. Each phase delivers a complete, verifiable capability. Telegram is built first to validate the full booking-to-payment-to-receipt flow before adding multi-messenger complexity.
+- **v1.0 MVP** - Phases 1-6 (shipped 2026-03-18)
+- **v1.1 UX Polish** - Phases 7-8 (in progress)
 
 ## Phases
 
@@ -12,14 +13,27 @@ Master-CRM delivers a multi-messenger CRM for self-employed professionals in Rus
 
 Decimal phases appear between their surrounding integers in numeric order.
 
+<details>
+<summary>v1.0 MVP (Phases 1-6) -- SHIPPED 2026-03-18</summary>
+
 - [x] **Phase 1: Foundation** - Project scaffolding, data model, auth, Docker deployment (completed 2026-03-17)
 - [x] **Phase 2: Booking Engine + Telegram** - Service catalog, schedule, booking flow, TG bot + mini-app (completed 2026-03-17)
 - [x] **Phase 3: Payments + Tax Receipts** - Robokassa SBP payments, three-tier fiscalization, auto-receipts (completed 2026-03-18)
 - [x] **Phase 4: Notifications** - Automated reminders (24h/2h), booking confirmations, master alerts (completed 2026-03-18)
 - [x] **Phase 5: Multi-Messenger Expansion** - MAX bot + mini-app, VK bot + mini-app, cross-messenger client identity (completed 2026-03-18)
-- [ ] **Phase 6: Web Admin Panel** - Desktop management panel with Ant Design (calendar, clients, services, payments)
+- [x] **Phase 6: Web Admin Panel** - Desktop management panel with Ant Design (calendar, clients, services, payments) (completed 2026-03-18)
+
+</details>
+
+### v1.1 UX Polish (In Progress)
+
+- [ ] **Phase 7: Mini-App UX Polish** - Accessibility, mobile UX, visual polish, and Telegram theme support
+- [ ] **Phase 8: Web Admin UX Polish** - Critical fixes, missing features, and UX improvements for the admin panel
 
 ## Phase Details
+
+<details>
+<summary>v1.0 MVP Phase Details (Phases 1-6)</summary>
 
 ### Phase 1: Foundation
 **Goal**: The backend is running, the database schema captures all domain entities, masters can authenticate, and the project deploys via Docker Compose
@@ -112,24 +126,51 @@ Plans:
   2. Master can search clients by name or phone and view each client's full visit history
   3. Master can create, edit, and delete services with categories; changes are immediately reflected in the mini-app
   4. Master can view payment history with statuses and receipt statuses; can configure schedule settings (working hours, breaks, days off) and profile information
-**Plans:** 3 plans
+**Plans:** 3/3 plans complete
 
 Plans:
-- [ ] 06-01-PLAN.md -- Project scaffolding, auth (email + QR + magic link), sidebar layout, theme toggle, Docker/Caddy integration
-- [ ] 06-02-PLAN.md -- Calendar page (FullCalendar day/week/month views) + Services page (CRUD table with modal)
-- [ ] 06-03-PLAN.md -- Clients page (search + detail), Payments page (history + filters), Settings page (schedule/notifications/payment/profile)
+- [x] 06-01-PLAN.md -- Project scaffolding, auth (email + QR + magic link), sidebar layout, theme toggle, Docker/Caddy integration
+- [x] 06-02-PLAN.md -- Calendar page (FullCalendar day/week/month views) + Services page (CRUD table with modal)
+- [x] 06-03-PLAN.md -- Clients page (search + detail), Payments page (history + filters), Settings page (schedule/notifications/payment/profile)
+
+</details>
+
+### Phase 7: Mini-App UX Polish
+**Goal**: The mini-app meets accessibility standards, works flawlessly on mobile devices, and has a polished visual identity with Telegram theme integration
+**Depends on**: Phase 6 (v1.0 complete)
+**Requirements**: MACC-01, MACC-02, MACC-03, MACC-04, MACC-05, MMUX-01, MMUX-02, MMUX-03, MMUX-04, MMUX-05, MVIS-01, MVIS-02, MVIS-03, MVIS-04, MVIS-05, MVIS-06, MVIS-07, MVIS-08
+**Success Criteria** (what must be TRUE):
+  1. A screen reader user can navigate the mini-app: async content changes are announced, the PaymentSheet traps focus, toggles report their state, and tab bar items are labeled
+  2. On an iPhone with safe-area insets, all touch targets (tab bar items, filter pills, action buttons, delete buttons) are at least 44px and fully reachable without accidental taps
+  3. Every master-panel page (Dashboard, Services, Schedule, Bookings, Clients, ClientDetail, Settings, PaymentHistory) shows a meaningful Russian error state when the API call fails, instead of a blank screen or spinner
+  4. Opening the mini-app in Telegram dark mode automatically adapts the color scheme via tg-theme CSS variables; accent colors pass WCAG AA contrast ratio (4.5:1) in both light and dark modes
+  5. The UI uses named design tokens for typography, colors, and elevation; repeated components (PillButton) are deduplicated; confirmation screens and tab transitions have smooth animations
+**Plans**: TBD
+
+### Phase 8: Web Admin UX Polish
+**Goal**: The web admin panel has complete booking workflow actions, correct Russian localization, and professional UX details that make daily use efficient
+**Depends on**: Phase 7
+**Requirements**: WCRT-01, WCRT-02, WCRT-03, WCRT-04, WCRT-05, WCRT-06, WAUX-01, WAUX-02, WAUX-03, WAUX-04, WAUX-05, WAUX-06, WAUX-07, WAUX-08, WAUX-09, WAUX-10
+**Success Criteria** (what must be TRUE):
+  1. Master can create a new booking directly from the calendar page (via a "Create" button or by clicking on an empty time slot) and can complete, mark no-show, or reschedule a booking from the BookingDrawer -- not just cancel
+  2. All table empty states, status tags, and UI strings display correct Russian text (plain UTF-8 strings, no Unicode escape artifacts); magic link redirect uses React Router navigation
+  3. The admin panel remembers sidebar collapse state across sessions, sets unique page titles per route, and configures smart data caching (stale services/clients are not refetched on every navigation)
+  4. PaymentsPage shows total revenue alongside payment count, resets pagination when date range changes; ClientsPage shows total client count with proper pagination controls
+  5. Dark mode toggle has distinct on/off icons with aria-label; header displays breadcrumb navigation and master's business name; schedule exception form hides irrelevant fields when "day off" is selected; calendar loading uses a subtle indicator instead of a full overlay spinner
+**Plans**: TBD
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
-Note: Phase 4 (Notifications) depends on Phase 2 only. Phase 6 (Web Panel) depends on Phase 3 only. Phases 4-5 and Phase 6 could potentially overlap after their dependencies are met.
+Phases execute in numeric order: 7 -> 8
 
-| Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 1. Foundation | 2/2 | Complete   | 2026-03-17 |
-| 2. Booking Engine + Telegram | 4/4 | Complete | 2026-03-17 |
-| 3. Payments + Tax Receipts | 3/3 | Complete | 2026-03-18 |
-| 4. Notifications | 2/2 | Complete | 2026-03-18 |
-| 5. Multi-Messenger Expansion | 3/3 | Complete   | 2026-03-18 |
-| 6. Web Admin Panel | 0/3 | Not started | - |
+| Phase | Milestone | Plans Complete | Status | Completed |
+|-------|-----------|----------------|--------|-----------|
+| 1. Foundation | v1.0 | 2/2 | Complete | 2026-03-17 |
+| 2. Booking Engine + Telegram | v1.0 | 4/4 | Complete | 2026-03-17 |
+| 3. Payments + Tax Receipts | v1.0 | 3/3 | Complete | 2026-03-18 |
+| 4. Notifications | v1.0 | 2/2 | Complete | 2026-03-18 |
+| 5. Multi-Messenger Expansion | v1.0 | 3/3 | Complete | 2026-03-18 |
+| 6. Web Admin Panel | v1.0 | 3/3 | Complete | 2026-03-18 |
+| 7. Mini-App UX Polish | v1.1 | 0/? | Not started | - |
+| 8. Web Admin UX Polish | v1.1 | 0/? | Not started | - |

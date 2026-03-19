@@ -204,12 +204,45 @@
 | WEB-03 | Phase 6 | Complete |
 | WEB-04 | Phase 6 | Complete |
 | WEB-05 | Phase 6 | Complete |
+| MACC-01 | Phase 7 | Pending |
+| MACC-02 | Phase 7 | Pending |
+| MACC-03 | Phase 7 | Pending |
+| MACC-04 | Phase 7 | Pending |
+| MACC-05 | Phase 7 | Pending |
+| MMUX-01 | Phase 7 | Pending |
+| MMUX-02 | Phase 7 | Pending |
+| MMUX-03 | Phase 7 | Pending |
+| MMUX-04 | Phase 7 | Pending |
+| MMUX-05 | Phase 7 | Pending |
+| MVIS-01 | Phase 7 | Pending |
+| MVIS-02 | Phase 7 | Pending |
+| MVIS-03 | Phase 7 | Pending |
+| MVIS-04 | Phase 7 | Pending |
+| MVIS-05 | Phase 7 | Pending |
+| MVIS-06 | Phase 7 | Pending |
+| MVIS-07 | Phase 7 | Pending |
+| MVIS-08 | Phase 7 | Pending |
+| WCRT-01 | Phase 8 | Pending |
+| WCRT-02 | Phase 8 | Pending |
+| WCRT-03 | Phase 8 | Pending |
+| WCRT-04 | Phase 8 | Pending |
+| WCRT-05 | Phase 8 | Pending |
+| WCRT-06 | Phase 8 | Pending |
+| WAUX-01 | Phase 8 | Pending |
+| WAUX-02 | Phase 8 | Pending |
+| WAUX-03 | Phase 8 | Pending |
+| WAUX-04 | Phase 8 | Pending |
+| WAUX-05 | Phase 8 | Pending |
+| WAUX-06 | Phase 8 | Pending |
+| WAUX-07 | Phase 8 | Pending |
+| WAUX-08 | Phase 8 | Pending |
+| WAUX-09 | Phase 8 | Pending |
+| WAUX-10 | Phase 8 | Pending |
 
 **Coverage:**
-- v1 requirements: 40 total
-- Mapped to phases: 40
-- Unmapped: 0
+- v1 requirements: 40 total, mapped: 40, unmapped: 0
+- v1.1 requirements: 34 total, mapped: 34, unmapped: 0
 
 ---
 *Requirements defined: 2026-03-17*
-*Last updated: 2026-03-19 after v1.1 milestone requirements*
+*Last updated: 2026-03-19 after v1.1 roadmap creation*
