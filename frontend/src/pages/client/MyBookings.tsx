@@ -95,7 +95,7 @@ export function MyBookings() {
                       <Button
                         variant="destructive"
                         fullWidth={false}
-                        className="text-[12px] h-[36px] px-4"
+                        className="text-[12px] min-h-[44px] px-4"
                         onClick={() => setConfirmCancelId(booking.id)}
                       >
                         Отменить запись

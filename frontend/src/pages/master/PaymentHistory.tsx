@@ -127,7 +127,7 @@ export function PaymentHistory() {
                 setStatusFilter(opt.value);
                 setLimit(PAGE_SIZE);
               }}
-              className={`h-[36px] px-4 rounded-full text-[14px] font-medium whitespace-nowrap border transition-colors ${
+              className={`h-[44px] px-4 rounded-full text-[14px] font-medium whitespace-nowrap border transition-colors ${
                 statusFilter === opt.value
                   ? "bg-accent/8 border-accent text-accent"
                   : "border-border text-text-secondary hover:border-text-secondary"

@@ -258,7 +258,7 @@ export function PaymentSheet({
 
       {/* Bottom sheet */}
       <div
-        className="relative bg-white rounded-t-[20px] w-full max-w-[428px] p-6 pb-[calc(24px+env(safe-area-inset-bottom,0px))] animate-slide-up max-h-[85vh] overflow-y-auto"
+        className="relative bg-white rounded-t-[20px] w-full max-w-[428px] p-6 pb-[calc(24px+env(safe-area-inset-bottom,0px))] animate-slide-up max-h-[85vh] overflow-y-auto shadow-[0_-4px_20px_rgba(0,0,0,0.08)]"
         role="dialog"
         aria-modal="true"
         aria-labelledby="payment-sheet-title"

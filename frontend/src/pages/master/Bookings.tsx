@@ -108,7 +108,7 @@ export function Bookings() {
             <button
               key={opt.value}
               onClick={() => setStatusFilter(opt.value)}
-              className={`h-[36px] px-4 rounded-full text-[14px] font-medium whitespace-nowrap border transition-colors ${
+              className={`h-[44px] px-4 rounded-full text-[14px] font-medium whitespace-nowrap border transition-colors ${
                 statusFilter === opt.value
                   ? "bg-accent/8 border-accent text-accent"
                   : "border-border text-text-secondary hover:border-text-secondary"
@@ -154,7 +154,7 @@ export function Bookings() {
                         <Button
                           variant="primary"
                           fullWidth={false}
-                          className="text-[12px] h-[36px] px-4"
+                          className="text-[12px] min-h-[44px] px-4"
                           onClick={() => setPaymentBooking(booking)}
                         >
                           Завершить
@@ -162,7 +162,7 @@ export function Bookings() {
                         <Button
                           variant="destructive"
                           fullWidth={false}
-                          className="text-[12px] h-[36px] px-4"
+                          className="text-[12px] min-h-[44px] px-4"
                           onClick={() =>
                             setCancelTarget({
                               id: booking.id,

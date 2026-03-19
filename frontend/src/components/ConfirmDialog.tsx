@@ -50,7 +50,7 @@ export function ConfirmDialog({
       {/* Bottom sheet */}
       <div
         ref={dialogRef}
-        className="relative bg-white rounded-t-[20px] w-full max-w-[428px] p-6 pb-[calc(24px+env(safe-area-inset-bottom,0px))] animate-slide-up"
+        className="relative bg-white rounded-t-[20px] w-full max-w-[428px] p-6 pb-[calc(24px+env(safe-area-inset-bottom,0px))] animate-slide-up shadow-[0_8px_32px_rgba(0,0,0,0.12)]"
         role="dialog"
         aria-modal="true"
         aria-labelledby="confirm-dialog-title"
