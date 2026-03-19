@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import {
+  App,
   Badge,
   Button,
   Card,
@@ -16,7 +17,6 @@ import {
   Table,
   Tabs,
   TimePicker,
-  message,
 } from "antd";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
@@ -47,6 +47,7 @@ function BookingSettingsSection() {
   const { data, isLoading } = useSettings();
   const mutation = useUpdateSettings();
   const [form] = Form.useForm();
+  const { message: messageApi } = App.useApp();
 
   useEffect(() => {
     if (data) {
@@ -58,12 +59,12 @@ function BookingSettingsSection() {
     async (values: Record<string, unknown>) => {
       try {
         await mutation.mutateAsync(values);
-        message.success("Настройки сохранены");
+        messageApi.success("Настройки сохранены");
       } catch {
-        message.error("Ошибка сохранения");
+        messageApi.error("Ошибка сохранения");
       }
     },
-    [mutation],
+    [mutation, messageApi],
   );
 
   if (isLoading) return <Spin />;
@@ -131,6 +132,7 @@ function WeeklyScheduleSection() {
   const { data, isLoading } = useScheduleTemplate();
   const mutation = useUpdateScheduleTemplate();
   const [rows, setRows] = useState<ScheduleRow[]>([]);
+  const { message: messageApi } = App.useApp();
 
   useEffect(() => {
     if (data && data.length === 7) {
@@ -165,11 +167,11 @@ function WeeklyScheduleSection() {
         }),
       );
       await mutation.mutateAsync({ days });
-      message.success("Расписание сохранено");
+      messageApi.success("Расписание сохранено");
     } catch {
-      message.error("Ошибка сохранения");
+      messageApi.error("Ошибка сохранения");
     }
-  }, [rows, mutation]);
+  }, [rows, mutation, messageApi]);
 
   if (isLoading) return <Spin />;
 
@@ -274,6 +276,8 @@ function ExceptionsSection() {
   const deleteMutation = useDeleteScheduleException();
   const [modalOpen, setModalOpen] = useState(false);
   const [form] = Form.useForm();
+  const { message: messageApi } = App.useApp();
+  const isDayOff = Form.useWatch("is_day_off", form);
 
   const handleCreate = useCallback(async () => {
     try {
@@ -285,24 +289,24 @@ function ExceptionsSection() {
         end_time: values.end_time?.format("HH:mm:ss") ?? null,
         reason: values.reason || null,
       });
-      message.success("Исключение добавлено");
+      messageApi.success("Исключение добавлено");
       setModalOpen(false);
       form.resetFields();
     } catch {
       // Validation failed or API error
     }
-  }, [form, createMutation]);
+  }, [form, createMutation, messageApi]);
 
   const handleDelete = useCallback(
     async (id: string) => {
       try {
         await deleteMutation.mutateAsync(id);
-        message.success("Исключение удалено");
+        messageApi.success("Исключение удалено");
       } catch {
-        message.error("Ошибка удаления");
+        messageApi.error("Ошибка удаления");
       }
     },
-    [deleteMutation],
+    [deleteMutation, messageApi],
   );
 
   const columns: ColumnsType<ExceptionRow> = [
@@ -376,12 +380,16 @@ function ExceptionsSection() {
           <Form.Item name="is_day_off" label="Выходной" valuePropName="checked">
             <Switch />
           </Form.Item>
-          <Form.Item name="start_time" label="Начало (если не выходной)">
-            <TimePicker format="HH:mm" minuteStep={15} style={{ width: "100%" }} />
-          </Form.Item>
-          <Form.Item name="end_time" label="Конец (если не выходной)">
-            <TimePicker format="HH:mm" minuteStep={15} style={{ width: "100%" }} />
-          </Form.Item>
+          {!isDayOff && (
+            <>
+              <Form.Item name="start_time" label="Начало">
+                <TimePicker format="HH:mm" minuteStep={15} style={{ width: "100%" }} />
+              </Form.Item>
+              <Form.Item name="end_time" label="Конец">
+                <TimePicker format="HH:mm" minuteStep={15} style={{ width: "100%" }} />
+              </Form.Item>
+            </>
+          )}
           <Form.Item name="reason" label="Причина">
             <Input placeholder="Необязательно" />
           </Form.Item>
@@ -409,6 +417,7 @@ function NotificationsTab() {
   const { data, isLoading } = useNotificationSettings();
   const mutation = useUpdateNotificationSettings();
   const [form] = Form.useForm();
+  const { message: messageApi } = App.useApp();
 
   useEffect(() => {
     if (data) {
@@ -422,12 +431,12 @@ function NotificationsTab() {
     async (values: Record<string, unknown>) => {
       try {
         await mutation.mutateAsync(values);
-        message.success("Настройки уведомлений сохранены");
+        messageApi.success("Настройки уведомлений сохранены");
       } catch {
-        message.error("Ошибка сохранения");
+        messageApi.error("Ошибка сохранения");
       }
     },
-    [mutation],
+    [mutation, messageApi],
   );
 
   if (isLoading) return <Spin />;
