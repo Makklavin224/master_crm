@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Copy, Check, ChevronRight } from "lucide-react";
+import { Copy, Check, ChevronRight, AlertCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {
   useMasterSettings,
@@ -14,6 +14,7 @@ import {
 import { Card } from "../../components/ui/Card.tsx";
 import { Badge } from "../../components/ui/Badge.tsx";
 import { Button } from "../../components/ui/Button.tsx";
+import { EmptyState } from "../../components/ui/EmptyState.tsx";
 import { Skeleton } from "../../components/ui/Skeleton.tsx";
 import { useToast } from "../../components/ui/Toast.tsx";
 import { PillButton } from "../../components/ui/PillSelector.tsx";
@@ -61,14 +62,14 @@ const SNO_OPTIONS = [
 
 export function Settings() {
   const navigate = useNavigate();
-  const { data: settings, isLoading } = useMasterSettings();
-  const { data: paymentSettings, isLoading: paymentLoading } =
+  const { data: settings, isLoading, error: settingsError } = useMasterSettings();
+  const { data: paymentSettings, isLoading: paymentLoading, error: paymentError } =
     usePaymentSettings();
   const updateSettings = useUpdateSettings();
   const updatePaymentSettings = useUpdatePaymentSettings();
   const disconnectRobokassa = useDisconnectRobokassa();
   const markGreyWarningSeen = useMarkGreyWarningSeen();
-  const { data: notificationSettings, isLoading: notifLoading } =
+  const { data: notificationSettings, isLoading: notifLoading, error: notifError } =
     useNotificationSettings();
   const updateNotificationSettings = useUpdateNotificationSettings();
   const toast = useToast();
@@ -227,6 +228,7 @@ export function Settings() {
   };
 
   const isLoadingAny = isLoading || paymentLoading || notifLoading;
+  const hasError = !!settingsError || !!paymentError || !!notifError;
   const hasRobokassa = paymentSettings?.has_robokassa ?? false;
 
   return (
@@ -237,7 +239,7 @@ export function Settings() {
         </h1>
       </div>
 
-      <div className="flex-1 px-4 pb-4 flex flex-col gap-4">
+      <div className="flex-1 px-4 pb-4 flex flex-col gap-4" aria-live="polite">
         {isLoadingAny ? (
           <div className="flex flex-col gap-4">
             <Skeleton height="100px" className="w-full" />
@@ -247,6 +249,12 @@ export function Settings() {
             <Skeleton height="100px" className="w-full" />
             <Skeleton height="100px" className="w-full" />
           </div>
+        ) : hasError ? (
+          <EmptyState
+            icon={<AlertCircle className="w-12 h-12" />}
+            heading="Не удалось загрузить настройки"
+            body="Проверьте соединение и попробуйте ещё раз."
+          />
         ) : (
           <>
             {/* Buffer time */}

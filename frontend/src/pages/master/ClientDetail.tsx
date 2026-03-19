@@ -3,6 +3,7 @@ import { ArrowLeft, User } from "lucide-react";
 import { useClientDetail } from "../../api/master-clients.ts";
 import { BookingCard } from "../../components/BookingCard.tsx";
 import { Card } from "../../components/ui/Card.tsx";
+import { EmptyState } from "../../components/ui/EmptyState.tsx";
 import { Skeleton } from "../../components/ui/Skeleton.tsx";
 import { formatDate } from "../../lib/format.ts";
 
@@ -16,7 +17,7 @@ function formatPhone(phone: string): string {
 export function ClientDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { data, isLoading } = useClientDetail(id);
+  const { data, isLoading, error } = useClientDetail(id);
 
   return (
     <div className="flex flex-col min-h-full">
@@ -34,13 +35,19 @@ export function ClientDetail() {
         </h1>
       </div>
 
-      <div className="flex-1 px-4 pb-4">
+      <div className="flex-1 px-4 pb-4" aria-live="polite">
         {isLoading ? (
           <div className="flex flex-col gap-4">
             <Skeleton height="120px" className="w-full" />
             <Skeleton height="80px" className="w-full" />
             <Skeleton height="80px" className="w-full" />
           </div>
+        ) : error ? (
+          <EmptyState
+            icon={<User className="w-12 h-12" />}
+            heading="Не удалось загрузить данные клиента"
+            body="Проверьте соединение и попробуйте ещё раз."
+          />
         ) : data ? (
           <div className="flex flex-col gap-4">
             {/* Client info card */}
