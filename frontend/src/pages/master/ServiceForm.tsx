@@ -9,6 +9,7 @@ import {
 } from "../../api/master-services.ts";
 import { Input } from "../../components/ui/Input.tsx";
 import { Button } from "../../components/ui/Button.tsx";
+import { PillButton } from "../../components/ui/PillSelector.tsx";
 import { useToast } from "../../components/ui/Toast.tsx";
 
 const DURATION_OPTIONS = [15, 30, 45, 60, 90, 120];
@@ -122,21 +123,12 @@ export function ServiceForm() {
           </label>
           <div className="flex flex-wrap gap-2">
             {DURATION_OPTIONS.map((opt) => (
-              <button
+              <PillButton
                 key={opt}
-                type="button"
+                label={opt >= 60 ? `${Math.floor(opt / 60)} ч${opt % 60 !== 0 ? ` ${opt % 60} мин` : ""}` : `${opt} мин`}
+                selected={duration === opt}
                 onClick={() => setDuration(opt)}
-                className={`h-[44px] px-4 rounded-[10px] text-[14px] font-medium border transition-colors ${
-                  duration === opt
-                    ? "bg-accent/8 border-accent text-accent"
-                    : "border-border text-text-secondary hover:border-text-secondary"
-                }`}
-              >
-                {opt >= 60 ? `${opt / 60} ч` : `${opt} мин`}
-                {opt >= 60 && opt % 60 !== 0
-                  ? ` ${opt % 60} мин`
-                  : ""}
-              </button>
+              />
             ))}
           </div>
           {errors.duration && (
