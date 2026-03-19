@@ -17,7 +17,7 @@ export function Button({
   ...props
 }: ButtonProps) {
   const base =
-    "h-[44px] rounded-[12px] font-semibold text-[14px] flex items-center justify-center gap-2 transition-opacity active:opacity-80";
+    "h-[44px] rounded-[12px] font-semibold text-[14px] flex items-center justify-center gap-2 transition-all active:opacity-80 active:scale-[0.97]";
   const width = fullWidth ? "w-full" : "";
 
   const variants: Record<string, string> = {
