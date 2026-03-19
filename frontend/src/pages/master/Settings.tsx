@@ -16,6 +16,7 @@ import { Badge } from "../../components/ui/Badge.tsx";
 import { Button } from "../../components/ui/Button.tsx";
 import { Skeleton } from "../../components/ui/Skeleton.tsx";
 import { useToast } from "../../components/ui/Toast.tsx";
+import { PillButton } from "../../components/ui/PillSelector.tsx";
 import { ConfirmDialog } from "../../components/ConfirmDialog.tsx";
 import { RobokassaWizard } from "../../components/RobokassaWizard.tsx";
 
@@ -322,6 +323,9 @@ export function Settings() {
                 </h2>
                 <button
                   type="button"
+                  role="switch"
+                  aria-checked={remindersEnabled}
+                  aria-label="Напоминания клиентам"
                   onClick={() => setRemindersEnabled(!remindersEnabled)}
                   className={`relative w-[44px] h-[24px] rounded-full transition-colors ${
                     remindersEnabled ? "bg-accent" : "bg-border"
@@ -636,32 +640,5 @@ export function Settings() {
         onCancel={() => setShowDisconnectDialog(false)}
       />
     </div>
-  );
-}
-
-function PillButton({
-  label,
-  selected,
-  onClick,
-  disabled = false,
-}: {
-  label: string;
-  selected: boolean;
-  onClick: () => void;
-  disabled?: boolean;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      className={`h-[44px] px-5 rounded-full text-[14px] font-medium border transition-colors ${
-        selected
-          ? "bg-accent/8 border-accent text-accent"
-          : "border-border text-text-secondary hover:border-text-secondary"
-      } ${disabled ? "opacity-50 pointer-events-none" : ""}`}
-    >
-      {label}
-    </button>
   );
 }

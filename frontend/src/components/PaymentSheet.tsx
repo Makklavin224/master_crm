@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Card } from "./ui/Card.tsx";
 import { Button } from "./ui/Button.tsx";
+import { PillButton } from "./ui/PillSelector.tsx";
 import { ReceiptDataCard } from "./ReceiptDataCard.tsx";
 import {
   useCreateManualPayment,
@@ -115,6 +116,40 @@ export function PaymentSheet({
       document.body.style.overflow = "";
     };
   }, [open]);
+
+  // Focus trap
+  useEffect(() => {
+    if (!open) return;
+    const sheet = document.querySelector('[role="dialog"]') as HTMLElement;
+    if (!sheet) return;
+
+    const focusableSelectors = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+      const focusable = sheet.querySelectorAll(focusableSelectors);
+      if (focusable.length === 0) return;
+      const first = focusable[0] as HTMLElement;
+      const last = focusable[focusable.length - 1] as HTMLElement;
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    // Focus first focusable element
+    const firstFocusable = sheet.querySelector(focusableSelectors) as HTMLElement;
+    firstFocusable?.focus();
+
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [open, state]);
 
   if (!open || !booking) return null;
 
@@ -226,11 +261,12 @@ export function PaymentSheet({
         className="relative bg-white rounded-t-[20px] w-full max-w-[428px] p-6 pb-[calc(24px+env(safe-area-inset-bottom,0px))] animate-slide-up max-h-[85vh] overflow-y-auto"
         role="dialog"
         aria-modal="true"
+        aria-labelledby="payment-sheet-title"
       >
         {/* State: Option selection */}
         {state === "options" && (
           <div className="flex flex-col gap-4">
-            <h3 className="text-[20px] font-semibold text-text-primary">
+            <h3 id="payment-sheet-title" className="text-[20px] font-semibold text-text-primary">
               Способ оплаты
             </h3>
 
@@ -301,7 +337,7 @@ export function PaymentSheet({
         {/* State: Manual payment form */}
         {state === "manual" && (
           <div className="flex flex-col gap-4">
-            <h3 className="text-[20px] font-semibold text-text-primary">
+            <h3 id="payment-sheet-title" className="text-[20px] font-semibold text-text-primary">
               Отметить оплату
             </h3>
 
@@ -312,17 +348,12 @@ export function PaymentSheet({
               </p>
               <div className="flex flex-wrap gap-2">
                 {PAYMENT_METHODS.map((m) => (
-                  <button
+                  <PillButton
                     key={m.value}
+                    label={m.label}
+                    selected={paymentMethod === m.value}
                     onClick={() => setPaymentMethod(m.value)}
-                    className={`h-[44px] px-5 rounded-full text-[14px] font-medium border transition-colors ${
-                      paymentMethod === m.value
-                        ? "bg-accent/8 border-accent text-accent"
-                        : "border-border text-text-secondary hover:border-text-secondary"
-                    }`}
-                  >
-                    {m.label}
-                  </button>
+                  />
                 ))}
               </div>
             </div>
@@ -337,18 +368,13 @@ export function PaymentSheet({
                   const isAutoDisabled =
                     f.value === "auto" && !hasRobokassa;
                   return (
-                    <button
+                    <PillButton
                       key={f.value}
+                      label={f.label}
+                      selected={fiscalization === f.value}
                       onClick={() => handleFiscalizationChange(f.value)}
                       disabled={isAutoDisabled}
-                      className={`h-[44px] px-5 rounded-full text-[14px] font-medium border transition-colors ${
-                        fiscalization === f.value
-                          ? "bg-accent/8 border-accent text-accent"
-                          : "border-border text-text-secondary hover:border-text-secondary"
-                      } ${isAutoDisabled ? "opacity-50 pointer-events-none" : ""}`}
-                    >
-                      {f.label}
-                    </button>
+                    />
                   );
                 })}
               </div>
@@ -400,7 +426,7 @@ export function PaymentSheet({
             ) : (
               <>
                 <CheckCircle className="w-12 h-12 text-success" />
-                <h3 className="text-[20px] font-semibold text-text-primary">
+                <h3 id="payment-sheet-title" className="text-[20px] font-semibold text-text-primary">
                   Ссылка отправлена клиенту
                 </h3>
 
@@ -455,7 +481,7 @@ export function PaymentSheet({
               </>
             ) : requisites ? (
               <>
-                <h3 className="text-[20px] font-semibold text-text-primary">
+                <h3 id="payment-sheet-title" className="text-[20px] font-semibold text-text-primary">
                   Реквизиты для оплаты
                 </h3>
 
