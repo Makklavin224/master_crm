@@ -69,6 +69,57 @@
 - [x] **INFR-04**: Master authentication (registration/login via messenger)
 - [x] **INFR-05**: Multi-tenant isolation (master_id on all tables, PostgreSQL RLS)
 
+## v1.1 Requirements — UX Polish
+
+### Mini-App Accessibility (MACC)
+
+- [ ] **MACC-01**: Accent color passes WCAG AA contrast (≥4.5:1 on white)
+- [ ] **MACC-02**: All async list containers have `aria-live="polite"` for screen readers
+- [ ] **MACC-03**: PaymentSheet has focus trap and `aria-labelledby`
+- [ ] **MACC-04**: Settings toggle has `role="switch"` and `aria-checked`
+- [ ] **MACC-05**: BottomTabBar has `aria-label` on both active and inactive tabs
+
+### Mini-App Mobile UX (MMUX)
+
+- [ ] **MMUX-01**: BottomTabBar safe-area does not collapse touch targets on iPhone (min-h instead of fixed h)
+- [ ] **MMUX-02**: Services delete button accessible on touch (not hover-only)
+- [ ] **MMUX-03**: All filter pills and action buttons meet 44px minimum touch target
+- [ ] **MMUX-04**: Error states on all master-panel pages (Dashboard, Services, Schedule, Bookings, Clients, ClientDetail, Settings, PaymentHistory)
+- [ ] **MMUX-05**: DatePicker has 300ms settle delay before auto-advance (matching ServiceSelection pattern)
+
+### Mini-App Visual Polish (MVIS)
+
+- [ ] **MVIS-01**: Telegram theme CSS variables supported (--tg-theme-bg-color, dark mode adaptation)
+- [ ] **MVIS-02**: Named typography tokens (text-heading, text-body, text-caption) instead of raw px
+- [ ] **MVIS-03**: Badge colors use design tokens instead of raw Tailwind colors
+- [ ] **MVIS-04**: Elevation hierarchy: bottom sheets and modals have progressively stronger shadows
+- [ ] **MVIS-05**: PillButton extracted into shared component (deduplicated from 3 implementations)
+- [ ] **MVIS-06**: Confirmation screen has celebratory moment (larger heading, entrance animation)
+- [ ] **MVIS-07**: BottomTabBar label transition animated (not instant appear/disappear)
+- [ ] **MVIS-08**: Button active state includes subtle scale transform
+
+### Web Admin Critical (WCRT)
+
+- [ ] **WCRT-01**: Calendar page has "Create booking" entry point (button + click-on-slot)
+- [ ] **WCRT-02**: BookingDrawer has action buttons (complete, no-show, reschedule) not just cancel
+- [ ] **WCRT-03**: StatusTag and AdminLayout use plain UTF-8 Russian strings (not Unicode escapes)
+- [ ] **WCRT-04**: Magic link redirect uses React Router navigate (not hardcoded window.location)
+- [ ] **WCRT-05**: All tables have Russian empty states (not English "No data")
+- [ ] **WCRT-06**: SettingsPage uses App.useApp() message API (not static import)
+
+### Web Admin UX (WAUX)
+
+- [ ] **WAUX-01**: Dark mode toggle has distinct icons for on/off states + aria-label
+- [ ] **WAUX-02**: Header has breadcrumb and master profile/business name display
+- [ ] **WAUX-03**: PaymentsPage RangePicker resets page to 1 on change
+- [ ] **WAUX-04**: PaymentsPage shows total revenue statistic (not just count)
+- [ ] **WAUX-05**: ClientsPage has total count badge and proper pagination controls
+- [ ] **WAUX-06**: Sidebar collapse state persisted to localStorage
+- [ ] **WAUX-07**: Schedule exceptions form fields hidden when is_day_off is true
+- [ ] **WAUX-08**: CalendarPage uses subtle loading indicator (not full Spin overlay)
+- [ ] **WAUX-09**: Page titles set per route (document.title for tab identification)
+- [ ] **WAUX-10**: QueryClient configured with staleTime for non-realtime data (services, clients, settings)
+
 ## v2 Requirements
 
 ### Analytics
@@ -161,4 +212,4 @@
 
 ---
 *Requirements defined: 2026-03-17*
-*Last updated: 2026-03-17 after roadmap creation*
+*Last updated: 2026-03-19 after v1.1 milestone requirements*
