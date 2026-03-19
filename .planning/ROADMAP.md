@@ -145,7 +145,14 @@ Plans:
   3. Every master-panel page (Dashboard, Services, Schedule, Bookings, Clients, ClientDetail, Settings, PaymentHistory) shows a meaningful Russian error state when the API call fails, instead of a blank screen or spinner
   4. Opening the mini-app in Telegram dark mode automatically adapts the color scheme via tg-theme CSS variables; accent colors pass WCAG AA contrast ratio (4.5:1) in both light and dark modes
   5. The UI uses named design tokens for typography, colors, and elevation; repeated components (PillButton) are deduplicated; confirmation screens and tab transitions have smooth animations
-**Plans**: TBD
+**Plans:** 5 plans
+
+Plans:
+- [ ] 07-01-PLAN.md -- Design tokens foundation: accessible accent color, Telegram theme CSS variables, typography and elevation tokens
+- [ ] 07-02-PLAN.md -- BottomTabBar accessibility + safe-area + label animation, Button scale transform, Badge design tokens
+- [ ] 07-03-PLAN.md -- PillSelector extraction + 44px touch targets + elevation hierarchy
+- [ ] 07-04-PLAN.md -- PaymentSheet focus trap, Settings toggle a11y, Services delete touch, DatePicker delay, Confirmation polish
+- [ ] 07-05-PLAN.md -- Error states and aria-live on all 8 master-panel pages
 
 ### Phase 8: Web Admin UX Polish
 **Goal**: The web admin panel has complete booking workflow actions, correct Russian localization, and professional UX details that make daily use efficient
@@ -172,5 +179,5 @@ Phases execute in numeric order: 7 -> 8
 | 4. Notifications | v1.0 | 2/2 | Complete | 2026-03-18 |
 | 5. Multi-Messenger Expansion | v1.0 | 3/3 | Complete | 2026-03-18 |
 | 6. Web Admin Panel | v1.0 | 3/3 | Complete | 2026-03-18 |
-| 7. Mini-App UX Polish | v1.1 | 0/? | Not started | - |
+| 7. Mini-App UX Polish | v1.1 | 0/5 | Not started | - |
 | 8. Web Admin UX Polish | v1.1 | 0/? | Not started | - |
