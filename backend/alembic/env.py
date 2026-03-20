@@ -1,7 +1,6 @@
 import asyncio
 from logging.config import fileConfig
 
-import sqlalchemy as sa
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
@@ -41,19 +40,6 @@ def run_migrations_offline() -> None:
 
 
 def do_run_migrations(connection: Connection) -> None:
-    # Widen alembic_version.version_num from default varchar(32) to varchar(128)
-    # Our revision IDs use full names like "003_add_booking_exclusion_and_master_settings"
-    connection.execute(
-        sa.text(
-            "DO $$ BEGIN "
-            "IF EXISTS (SELECT 1 FROM information_schema.columns "
-            "WHERE table_name='alembic_version' AND column_name='version_num' "
-            "AND character_maximum_length < 128) THEN "
-            "ALTER TABLE alembic_version ALTER COLUMN version_num TYPE varchar(128); "
-            "END IF; END $$;"
-        )
-    )
-
     context.configure(connection=connection, target_metadata=target_metadata)
 
     with context.begin_transaction():
