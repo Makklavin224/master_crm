@@ -200,7 +200,11 @@ Plans:
   2. Master profile API returns extended fields (username, specialization, city, avatar_path, instagram_url) and the master can update them
   3. Alembic migrations for all v2.0 tables (portfolio_photos, reviews, client_sessions) and column extensions (masters, payments) run cleanly on top of existing schema
   4. New public API endpoints exist and return data (GET /api/v1/masters/{username}/profile, /services, /slots, /reviews) even if the data is empty
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 09-01-PLAN.md -- Alembic migrations (009-013) + SQLAlchemy models (PortfolioPhoto, Review, ClientSession) + Master/Payment extensions
+- [ ] 09-02-PLAN.md -- Public API endpoints (profile, services, slots, reviews) + profile settings (username validation, reserved words) + test suites
 
 ### Phase 10: Public Master Page
 **Goal**: Any person with a link can view a master's public profile, see their services and available slots, and book an appointment through a web browser without needing a messenger
@@ -293,7 +297,7 @@ Note: Phases 12-13 and 10-14 have independent dependency chains. Execution follo
 | 6. Web Admin Panel | v1.0 | 3/3 | Complete | 2026-03-18 |
 | 7. Mini-App UX Polish | v1.1 | 5/5 | Complete | 2026-03-19 |
 | 8. Web Admin UX Polish | v1.1 | 3/3 | Complete | 2026-03-19 |
-| 9. Backend Foundation | v2.0 | 0/? | Not started | - |
+| 9. Backend Foundation | v2.0 | 0/2 | Planned | - |
 | 10. Public Master Page | v2.0 | 0/? | Not started | - |
 | 11. Client Cabinet | v2.0 | 0/? | Not started | - |
 | 12. Admin Payments | v2.0 | 0/? | Not started | - |
