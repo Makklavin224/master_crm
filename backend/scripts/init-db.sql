@@ -1,3 +1,9 @@
+-- Pre-create alembic_version with wider column (default varchar(32) is too short for our descriptive revision IDs)
+CREATE TABLE IF NOT EXISTS alembic_version (
+    version_num VARCHAR(128) NOT NULL,
+    CONSTRAINT alembic_version_pkc PRIMARY KEY (version_num)
+);
+
 -- Create the application role (unprivileged, for RLS enforcement)
 -- The owner role (mastercrm_owner) runs migrations; app_user runs the application
 DO $$ BEGIN
