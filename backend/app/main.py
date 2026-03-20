@@ -24,16 +24,26 @@ async def lifespan(app: FastAPI):
     async with engine.begin() as conn:
         await conn.execute(text("SELECT 1"))
 
-    # Register TG webhook
+    # Register TG webhook (with retry for flood control)
     if bot and settings.base_webhook_url:
         webhook_url = f"{settings.base_webhook_url}/webhook/telegram"
-        await bot.set_webhook(
-            webhook_url,
-            secret_token=settings.tg_webhook_secret,
-            drop_pending_updates=True,
-            allowed_updates=["message", "callback_query"],
-        )
-        logger.info("Telegram webhook registered: %s", webhook_url)
+        for attempt in range(3):
+            try:
+                await bot.set_webhook(
+                    webhook_url,
+                    secret_token=settings.tg_webhook_secret,
+                    drop_pending_updates=True,
+                    allowed_updates=["message", "callback_query"],
+                )
+                logger.info("Telegram webhook registered: %s", webhook_url)
+                break
+            except Exception as e:
+                import asyncio
+                logger.warning("Telegram webhook attempt %d failed: %s", attempt + 1, e)
+                if attempt < 2:
+                    await asyncio.sleep(2 ** attempt)
+                else:
+                    logger.error("Telegram webhook registration failed after 3 attempts, continuing anyway")
 
     # Register MAX webhook
     if max_bot_token and settings.base_webhook_url:
