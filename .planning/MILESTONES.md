@@ -17,10 +17,22 @@
 **Stats:** 6 phases, 17 plans, ~2.5 hours execution
 **Last phase number:** 6
 
-## Current Milestone
-
-### v1.1 — UX Polish (started 2026-03-19)
+### v1.1 — UX Polish (completed 2026-03-19)
 
 **Goal:** Шлифовка UI/UX Mini-App и Web Admin Panel до production-ready качества по результатам аудита
 
-**Planned phases:** 7, 8
+**Phases:**
+7. Mini-App UX Polish — accessibility, touch targets, error states, TG theme, design tokens
+8. Web Admin UX Polish — UTF-8 strings, calendar booking, drawer actions, pagination, dark mode
+
+**Stats:** 2 phases, 8 plans
+**Last phase number:** 8
+
+## Current Milestone
+
+### v2.0 — Feature Expansion (started 2026-03-20)
+
+**Goal:** Публичная страница мастера, кабинет клиента, платежи в админке, авточеки, портфолио, отзывы, аналитика
+
+**Design spec:** docs/superpowers/specs/2026-03-20-v2-master-crm-design.md
+**Planned phases:** 9-16

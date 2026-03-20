@@ -1,36 +1,36 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.1
-milestone_name: UX Polish
-status: completed
-stopped_at: Completed 08-03-PLAN.md (v1.1 milestone complete)
-last_updated: "2026-03-19T04:20:06.603Z"
-last_activity: 2026-03-19 -- completed 08-03 Booking workflow (create-booking, action buttons, backend endpoints, subtle loading)
+milestone: v2.0
+milestone_name: Feature Expansion
+status: in_progress
+stopped_at: Defining requirements for v2.0
+last_updated: "2026-03-20T12:00:00.000Z"
+last_activity: 2026-03-20 -- Milestone v2.0 started
 progress:
-  total_phases: 2
-  completed_phases: 2
-  total_plans: 8
-  completed_plans: 8
-  percent: 100
+  total_phases: 8
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-19)
+See: .planning/PROJECT.md (updated 2026-03-20)
 
 **Core value:** Master taps "Complete" -- client gets SBP payment link -- tax receipt auto-generates. 3 steps instead of 9.
-**Current focus:** v1.1 UX Polish -- Phase 8 (Web Admin UX Polish)
+**Current focus:** v2.0 Feature Expansion -- defining requirements
 
 ## Current Position
 
-Phase: 8 of 8 (Web Admin UX Polish)
-Plan: 3 of 3
-Status: Complete (v1.1 milestone done)
-Last activity: 2026-03-19 -- completed 08-03 Booking workflow (create-booking, action buttons, backend endpoints, subtle loading)
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements for v2.0
+Last activity: 2026-03-20 -- Milestone v2.0 started
 
-Progress: [██████████] 100%
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 

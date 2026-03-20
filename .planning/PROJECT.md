@@ -29,18 +29,21 @@
 - [ ] Мастер может управлять через мини-апп в мессенджере (мобильный доступ)
 - [ ] Идентификация клиента по номеру телефона (MAX даёт автоматически, TG/VK при первой записи)
 
-## Current Milestone: v1.1 UX Polish
+## Current Milestone: v2.0 Feature Expansion
 
-**Goal:** Шлифовка UI/UX Mini-App (7.25/10 → 9/10) и Web Admin Panel (67/100 → 85/100) до production-ready качества
+**Goal:** Расширение до полноценной платформы — публичная страница мастера с портфолио, кабинет клиента, платежи в админке, авточеки для самозанятых, отзывы, аналитика
 
-**Target improvements:**
-- Accessibility: WCAG AA compliance (accent color contrast, aria-live, focus traps)
-- Error states: API errors handled gracefully на всех экранах
-- Mobile UX: safe-area, touch targets ≥44px, touch-friendly controls (no hover-only)
-- Telegram theme: поддержка tg-theme CSS vars (light/dark)
-- Web Admin completeness: создание записи из календаря, booking actions, keyboard shortcuts
-- Visual polish: elevation hierarchy, micro-interactions, typography tokens
-- Russian localization: все тексты на русском, форматы дат
+**Target features:**
+- Публичная страница мастера (moiokoshki.ru/m/{username}) с портфолио и отзывами
+- Flow записи через веб-браузер (без мессенджера)
+- Кабинет клиента (история визитов, перезапись, отмена)
+- Приём оплаты в веб-админке (завершение визита + выбор метода)
+- Авточеки для наличных/перевод через Robokassa ReceiptAttach
+- Портфолио мастера (галерея работ)
+- Система отзывов (автосбор через бот + модерация)
+- Аналитика (доход, загруженность, retention, топ услуг)
+
+**Design spec:** docs/superpowers/specs/2026-03-20-v2-master-crm-design.md
 
 ### Out of Scope
 
@@ -116,4 +119,4 @@
 20K мастеров x 150₽ avg = 3M₽/мес (подписки) + 1.5% от 50M₽ оборота = 750K₽/мес → ~3.75M₽/мес к концу года 1
 
 ---
-*Last updated: 2026-03-19 after v1.1 milestone start*
+*Last updated: 2026-03-20 after v2.0 milestone start*
