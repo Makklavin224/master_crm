@@ -7,7 +7,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.dependencies import get_current_master, get_db, get_optional_master
+from app.core.dependencies import get_current_master, get_db, get_db_with_rls, get_optional_master
 from app.models.master import Master
 from app.schemas.booking import (
     BookingCancel,
@@ -71,7 +71,7 @@ async def create_booking_endpoint(
 @router.get("", response_model=BookingListResponse)
 async def list_bookings(
     master: Annotated[Master, Depends(get_current_master)],
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db_with_rls)],
     date_from: datetime | None = Query(default=None),
     date_to: datetime | None = Query(default=None),
     status: str | None = Query(default=None),
@@ -119,7 +119,7 @@ async def get_booking(
 async def create_manual_booking_endpoint(
     data: ManualBookingCreate,
     master: Annotated[Master, Depends(get_current_master)],
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db_with_rls)],
 ):
     """Create a booking manually (master-only)."""
     booking = await create_manual_booking(
@@ -176,7 +176,7 @@ async def cancel_booking_endpoint(
 async def complete_booking_endpoint(
     booking_id: uuid.UUID,
     master: Annotated[Master, Depends(get_current_master)],
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db_with_rls)],
 ):
     """Mark a booking as completed (master-only)."""
     booking = await complete_booking(db=db, booking_id=booking_id, master_id=master.id)
@@ -187,7 +187,7 @@ async def complete_booking_endpoint(
 async def mark_no_show_endpoint(
     booking_id: uuid.UUID,
     master: Annotated[Master, Depends(get_current_master)],
-    db: Annotated[AsyncSession, Depends(get_db)],
+    db: Annotated[AsyncSession, Depends(get_db_with_rls)],
 ):
     """Mark a booking as no-show (master-only)."""
     booking = await mark_no_show(db=db, booking_id=booking_id, master_id=master.id)
