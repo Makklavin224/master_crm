@@ -49,7 +49,7 @@ export default function App() {
   return (
     <PlatformProvider>
       <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
+        <BrowserRouter basename="/app">
           <div className="min-h-full flex flex-col bg-white">
             <Routes>
               {/* Client booking flow */}
