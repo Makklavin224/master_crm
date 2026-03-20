@@ -61,9 +61,10 @@ async def get_db_with_rls(
     master: Annotated[Master, Depends(get_current_master)],
 ) -> AsyncSession:
     """Set RLS context for the current master. Uses SET LOCAL (transaction-scoped)."""
+    # SET LOCAL does not support parameterized values in asyncpg.
+    # Safe: master.id is a UUID parsed from a verified JWT, not user input.
     await session.execute(
-        text("SET LOCAL app.current_master_id = :master_id"),
-        {"master_id": str(master.id)},
+        text(f"SET LOCAL app.current_master_id = '{master.id}'"),
     )
     return session
 
