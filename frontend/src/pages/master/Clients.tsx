@@ -16,7 +16,7 @@ function formatPhone(phone: string): string {
 }
 
 export function Clients() {
-  const { data: clients, isLoading } = useMasterClients();
+  const { data: clients, isLoading, error } = useMasterClients();
   const navigate = useNavigate();
 
   return (
@@ -27,13 +27,19 @@ export function Clients() {
         </h1>
       </div>
 
-      <div className="flex-1 px-4 pb-4">
+      <div className="flex-1 px-4 pb-4" aria-live="polite">
         {isLoading ? (
           <div className="flex flex-col gap-4">
             {[1, 2, 3].map((i) => (
               <Skeleton key={i} height="72px" className="w-full" />
             ))}
           </div>
+        ) : error ? (
+          <EmptyState
+            icon={<Users className="w-12 h-12" />}
+            heading="Не удалось загрузить клиентов"
+            body="Проверьте соединение и попробуйте ещё раз."
+          />
         ) : !clients || clients.length === 0 ? (
           <EmptyState
             icon={<Users className="w-12 h-12" />}
