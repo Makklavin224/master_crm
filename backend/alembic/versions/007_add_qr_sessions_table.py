@@ -1,15 +1,15 @@
 """Add qr_sessions table for QR code and magic link login flows.
 
-Revision ID: 007
-Revises: 006
+Revision ID: 007_add_qr_sessions_table
+Revises: 006_add_max_vk_master_columns
 """
 
 from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
-revision = "007"
-down_revision = "006"
+revision = "007_add_qr_sessions_table"
+down_revision = "006_add_max_vk_master_columns"
 branch_labels = None
 depends_on = None
 
