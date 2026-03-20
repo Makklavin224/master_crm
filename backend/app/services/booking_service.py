@@ -14,6 +14,17 @@ from app.models.booking import Booking
 from app.models.client import Client, ClientPlatform
 from app.models.master import Master
 from app.models.service import Service
+
+
+async def _load_booking_with_rels(db: AsyncSession, booking_id: uuid.UUID) -> Booking:
+    """Reload a booking with service and client relationships eagerly loaded."""
+    result = await db.execute(
+        select(Booking)
+        .where(Booking.id == booking_id)
+        .options(selectinload(Booking.service), selectinload(Booking.client))
+    )
+    return result.scalar_one()
+from app.models.service import Service
 from app.services.client_service import (
     find_or_create_client,
     get_or_create_master_client,
@@ -340,7 +351,7 @@ async def create_booking(
     # 7. Send booking confirmation to client (fire-and-forget)
     await _notify_client_confirmation(db, booking)
 
-    return booking
+    return await _load_booking_with_rels(db, booking.id)
 
 
 async def cancel_booking(
@@ -394,7 +405,7 @@ async def cancel_booking(
     # Notify client about cancellation (fire-and-forget)
     await _notify_client_change(db, booking, "cancelled")
 
-    return booking
+    return await _load_booking_with_rels(db, booking.id)
 
 
 async def reschedule_booking(
@@ -476,7 +487,7 @@ async def reschedule_booking(
     # Notify client about reschedule (fire-and-forget)
     await _notify_client_change(db, booking, "rescheduled")
 
-    return booking
+    return await _load_booking_with_rels(db, booking.id)
 
 
 async def complete_booking(
@@ -502,8 +513,7 @@ async def complete_booking(
         )
     booking.status = "completed"
     await db.flush()
-    await db.refresh(booking, ["client", "service"])
-    return booking
+    return await _load_booking_with_rels(db, booking.id)
 
 
 async def mark_no_show(
@@ -529,8 +539,7 @@ async def mark_no_show(
         )
     booking.status = "no_show"
     await db.flush()
-    await db.refresh(booking, ["client", "service"])
-    return booking
+    return await _load_booking_with_rels(db, booking.id)
 
 
 async def create_manual_booking(
