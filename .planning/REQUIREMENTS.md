@@ -73,7 +73,7 @@
 
 ### Mini-App Accessibility (MACC)
 
-- [x] **MACC-01**: Accent color passes WCAG AA contrast (≥4.5:1 on white)
+- [x] **MACC-01**: Accent color passes WCAG AA contrast (>=4.5:1 on white)
 - [x] **MACC-02**: All async list containers have `aria-live="polite"` for screen readers
 - [x] **MACC-03**: PaymentSheet has focus trap and `aria-labelledby`
 - [x] **MACC-04**: Settings toggle has `role="switch"` and `aria-checked`
@@ -126,19 +126,19 @@
 
 - [ ] **PBUK-01**: Master has a public profile page at /m/{username} with avatar, name, specialization, city, rating
 - [ ] **PBUK-02**: Master can set a unique username (latin lowercase + digits + underscore, 3-30 chars, reserved words blocked)
-- [ ] **PBUK-03**: Public page shows list of services with prices and "Записаться" button
+- [ ] **PBUK-03**: Public page shows list of services with prices and "Zapisatsya" button
 - [ ] **PBUK-04**: Public page shows nearest available slots (3-5 days ahead)
-- [ ] **PBUK-05**: Client can book through web browser without a messenger (service → date → time → phone+name → confirm)
+- [ ] **PBUK-05**: Client can book through web browser without a messenger (service -> date -> time -> phone+name -> confirm)
 - [ ] **PBUK-06**: Master can copy booking link and auto-generated QR code from settings
 - [ ] **PBUK-07**: Public page has SEO meta tags (title, description, OpenGraph with avatar)
 
 ### Client Cabinet (CCAB)
 
 - [ ] **CCAB-01**: Client can access cabinet at /my by entering phone number + 6-digit OTP
-- [ ] **CCAB-02**: OTP sent via messenger bot (TG/MAX/VK); SMS fallback for web-booked clients (~2₽)
+- [ ] **CCAB-02**: OTP sent via messenger bot (TG/MAX/VK); SMS fallback for web-booked clients (~2 rub)
 - [ ] **CCAB-03**: OTP has 5-min expiration, max 3 attempts, 60-sec cooldown
 - [ ] **CCAB-04**: Client sees upcoming bookings with cancel/reschedule buttons
-- [ ] **CCAB-05**: Client sees past visits with "Записаться снова" button (pre-fills master + service)
+- [ ] **CCAB-05**: Client sees past visits with "Zapisatsya snova" button (pre-fills master + service)
 - [ ] **CCAB-06**: Client can leave a review after completed visit (1-5 stars + optional text)
 - [ ] **CCAB-07**: Client sees bookings from all masters in one list
 
@@ -150,13 +150,13 @@
 - [ ] **APAY-04**: Payments page shows total revenue for selected period
 - [ ] **APAY-05**: Payments page has filter by payment method
 - [ ] **APAY-06**: Payments page has CSV export
-- [ ] **APAY-07**: Calendar event shows ₽ icon for quick payment access
+- [ ] **APAY-07**: Calendar event shows ruble icon for quick payment access
 
 ### Auto Receipts (ARCT)
 
 - [ ] **ARCT-01**: Master can bind INN in settings for auto-receipt via Robokassa ReceiptAttach
 - [ ] **ARCT-02**: When "auto receipt" selected, system sends receipt data to Robokassa ReceiptAttach
-- [ ] **ARCT-03**: Receipt works for all payment methods (cash, card, SBP) — not just SBP
+- [ ] **ARCT-03**: Receipt works for all payment methods (cash, card, SBP) -- not just SBP
 - [ ] **ARCT-04**: Client receives receipt link in messenger after payment
 - [ ] **ARCT-05**: Failed receipt attempts retry 3 times via background job; error notification to master on failure
 
@@ -172,7 +172,7 @@
 
 - [ ] **REVW-01**: Bot sends review request to client 2 hours after completed visit
 - [ ] **REVW-02**: Client rates 1-5 stars + optional text (max 500 chars)
-- [ ] **REVW-03**: Reviews ≥3 stars auto-publish; <3 stars require master reply
+- [ ] **REVW-03**: Reviews >=3 stars auto-publish; <3 stars require master reply
 - [ ] **REVW-04**: Negative reviews auto-publish after 7 days if master doesn't reply
 - [ ] **REVW-05**: Reviews displayed on public profile page with average rating
 - [ ] **REVW-06**: Only clients with real completed visits can leave reviews (1 per booking)
@@ -301,11 +301,59 @@
 | WAUX-08 | Phase 8 | Complete |
 | WAUX-09 | Phase 8 | Complete |
 | WAUX-10 | Phase 8 | Complete |
+| PBUK-02 | Phase 9 | Pending |
+| PBUK-01 | Phase 10 | Pending |
+| PBUK-03 | Phase 10 | Pending |
+| PBUK-04 | Phase 10 | Pending |
+| PBUK-05 | Phase 10 | Pending |
+| PBUK-06 | Phase 10 | Pending |
+| PBUK-07 | Phase 10 | Pending |
+| CCAB-01 | Phase 11 | Pending |
+| CCAB-02 | Phase 11 | Pending |
+| CCAB-03 | Phase 11 | Pending |
+| CCAB-04 | Phase 11 | Pending |
+| CCAB-05 | Phase 11 | Pending |
+| CCAB-06 | Phase 11 | Pending |
+| CCAB-07 | Phase 11 | Pending |
+| APAY-01 | Phase 12 | Pending |
+| APAY-02 | Phase 12 | Pending |
+| APAY-03 | Phase 12 | Pending |
+| APAY-04 | Phase 12 | Pending |
+| APAY-05 | Phase 12 | Pending |
+| APAY-06 | Phase 12 | Pending |
+| APAY-07 | Phase 12 | Pending |
+| ARCT-01 | Phase 13 | Pending |
+| ARCT-02 | Phase 13 | Pending |
+| ARCT-03 | Phase 13 | Pending |
+| ARCT-04 | Phase 13 | Pending |
+| ARCT-05 | Phase 13 | Pending |
+| PORT-01 | Phase 14 | Pending |
+| PORT-02 | Phase 14 | Pending |
+| PORT-03 | Phase 14 | Pending |
+| PORT-04 | Phase 14 | Pending |
+| PORT-05 | Phase 14 | Pending |
+| REVW-01 | Phase 15 | Pending |
+| REVW-02 | Phase 15 | Pending |
+| REVW-03 | Phase 15 | Pending |
+| REVW-04 | Phase 15 | Pending |
+| REVW-05 | Phase 15 | Pending |
+| REVW-06 | Phase 15 | Pending |
+| ANLT-01 | Phase 16 | Pending |
+| ANLT-02 | Phase 16 | Pending |
+| ANLT-03 | Phase 16 | Pending |
+| ANLT-04 | Phase 16 | Pending |
+| ANLT-05 | Phase 16 | Pending |
+| ANLT-06 | Phase 16 | Pending |
+| ANLT-07 | Phase 16 | Pending |
+| ANLT-08 | Phase 16 | Pending |
+| ANLT-09 | Phase 16 | Pending |
+| ANLT-10 | Phase 16 | Pending |
 
 **Coverage:**
-- v1 requirements: 40 total, mapped: 40, unmapped: 0
+- v1.0 requirements: 40 total, mapped: 40, unmapped: 0
 - v1.1 requirements: 34 total, mapped: 34, unmapped: 0
+- v2.0 requirements: 47 total, mapped: 47, unmapped: 0
 
 ---
 *Requirements defined: 2026-03-17*
-*Last updated: 2026-03-20 after v2.0 requirements definition*
+*Last updated: 2026-03-20 after v2.0 roadmap creation*

@@ -3,7 +3,8 @@
 ## Milestones
 
 - **v1.0 MVP** - Phases 1-6 (shipped 2026-03-18)
-- **v1.1 UX Polish** - Phases 7-8 (in progress)
+- **v1.1 UX Polish** - Phases 7-8 (shipped 2026-03-19)
+- **v2.0 Feature Expansion** - Phases 9-16 (in progress)
 
 ## Phases
 
@@ -25,10 +26,24 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 </details>
 
-### v1.1 UX Polish (In Progress)
+<details>
+<summary>v1.1 UX Polish (Phases 7-8) -- SHIPPED 2026-03-19</summary>
 
-- [ ] **Phase 7: Mini-App UX Polish** - Accessibility, mobile UX, visual polish, and Telegram theme support
-- [ ] **Phase 8: Web Admin UX Polish** - Critical fixes, missing features, and UX improvements for the admin panel
+- [x] **Phase 7: Mini-App UX Polish** - Accessibility, mobile UX, visual polish, and Telegram theme support (completed 2026-03-19)
+- [x] **Phase 8: Web Admin UX Polish** - Critical fixes, missing features, and UX improvements for the admin panel (completed 2026-03-19)
+
+</details>
+
+### v2.0 Feature Expansion (In Progress)
+
+- [ ] **Phase 9: Backend Foundation** - DB migrations, new models, master profile API, username system
+- [ ] **Phase 10: Public Master Page** - Public profile page at /m/{username} with web booking flow
+- [ ] **Phase 11: Client Cabinet** - OTP authentication at /my, booking history, rebook, leave reviews
+- [ ] **Phase 12: Admin Payments** - Visit completion flow with payment method selection and enhanced payments page
+- [ ] **Phase 13: Auto Receipts** - Robokassa ReceiptAttach for cash/card payments, INN binding, retry logic
+- [ ] **Phase 14: Portfolio** - Photo upload, auto-resize, gallery on public page, service tags
+- [ ] **Phase 15: Reviews** - Auto-collect via bot after visit, moderation rules, public display
+- [ ] **Phase 16: Analytics** - Revenue dashboard, charts, retention metrics, detailed reports, CSV export
 
 ## Phase Details
 
@@ -135,6 +150,9 @@ Plans:
 
 </details>
 
+<details>
+<summary>v1.1 UX Polish Phase Details (Phases 7-8)</summary>
+
 ### Phase 7: Mini-App UX Polish
 **Goal**: The mini-app meets accessibility standards, works flawlessly on mobile devices, and has a polished visual identity with Telegram theme integration
 **Depends on**: Phase 6 (v1.0 complete)
@@ -148,11 +166,11 @@ Plans:
 **Plans:** 5/5 plans complete
 
 Plans:
-- [ ] 07-01-PLAN.md -- Design tokens foundation: accessible accent color, Telegram theme CSS variables, typography and elevation tokens
-- [ ] 07-02-PLAN.md -- BottomTabBar accessibility + safe-area + label animation, Button scale transform, Badge design tokens
-- [ ] 07-03-PLAN.md -- PillSelector extraction + 44px touch targets + elevation hierarchy
-- [ ] 07-04-PLAN.md -- PaymentSheet focus trap, Settings toggle a11y, Services delete touch, DatePicker delay, Confirmation polish
-- [ ] 07-05-PLAN.md -- Error states and aria-live on all 8 master-panel pages
+- [x] 07-01-PLAN.md -- Design tokens foundation: accessible accent color, Telegram theme CSS variables, typography and elevation tokens
+- [x] 07-02-PLAN.md -- BottomTabBar accessibility + safe-area + label animation, Button scale transform, Badge design tokens
+- [x] 07-03-PLAN.md -- PillSelector extraction + 44px touch targets + elevation hierarchy
+- [x] 07-04-PLAN.md -- PaymentSheet focus trap, Settings toggle a11y, Services delete touch, DatePicker delay, Confirmation polish
+- [x] 07-05-PLAN.md -- Error states and aria-live on all 8 master-panel pages
 
 ### Phase 8: Web Admin UX Polish
 **Goal**: The web admin panel has complete booking workflow actions, correct Russian localization, and professional UX details that make daily use efficient
@@ -167,14 +185,103 @@ Plans:
 **Plans:** 3/3 plans complete
 
 Plans:
-- [ ] 08-01-PLAN.md -- Global fixes: StatusTag UTF-8 strings, App.tsx magic link + QueryClient staleTime, AdminLayout header/sidebar/titles/dark mode
-- [ ] 08-02-PLAN.md -- Page-specific fixes: PaymentsPage pagination + revenue, ClientsPage empty state + count, SettingsPage useApp() + conditional fields
-- [ ] 08-03-PLAN.md -- Booking workflow: backend complete/no_show endpoints, CalendarPage create-booking, BookingDrawer action buttons, subtle loading
+- [x] 08-01-PLAN.md -- Global fixes: StatusTag UTF-8 strings, App.tsx magic link + QueryClient staleTime, AdminLayout header/sidebar/titles/dark mode
+- [x] 08-02-PLAN.md -- Page-specific fixes: PaymentsPage pagination + revenue, ClientsPage empty state + count, SettingsPage useApp() + conditional fields
+- [x] 08-03-PLAN.md -- Booking workflow: backend complete/no_show endpoints, CalendarPage create-booking, BookingDrawer action buttons, subtle loading
+
+</details>
+
+### Phase 9: Backend Foundation
+**Goal**: The database schema, models, and API endpoints are extended with all v2.0 entities so that frontend phases can build on a stable backend
+**Depends on**: Phase 8 (v1.1 complete)
+**Requirements**: PBUK-02
+**Success Criteria** (what must be TRUE):
+  1. Master can set a unique username in profile settings (latin lowercase + digits + underscore, 3-30 chars); reserved words (admin, api, app, my, webhook, m, static) are rejected; duplicate usernames return a clear error
+  2. Master profile API returns extended fields (username, specialization, city, avatar_path, instagram_url) and the master can update them
+  3. Alembic migrations for all v2.0 tables (portfolio_photos, reviews, client_sessions) and column extensions (masters, payments) run cleanly on top of existing schema
+  4. New public API endpoints exist and return data (GET /api/v1/masters/{username}/profile, /services, /slots, /reviews) even if the data is empty
+**Plans**: TBD
+
+### Phase 10: Public Master Page
+**Goal**: Any person with a link can view a master's public profile, see their services and available slots, and book an appointment through a web browser without needing a messenger
+**Depends on**: Phase 9
+**Requirements**: PBUK-01, PBUK-03, PBUK-04, PBUK-05, PBUK-06, PBUK-07
+**Success Criteria** (what must be TRUE):
+  1. Visiting moiokoshki.ru/m/{username} shows the master's public page with avatar, name, specialization, city, rating, and a "Zapisatsya" button
+  2. The public page lists all services with prices and durations; clicking "Zapisatsya" on a service pre-selects it and starts the booking flow (service -> date -> time -> phone+name -> confirm)
+  3. The public page shows nearest available slots (3-5 days ahead); a client completes a web booking without any messenger and receives a confirmation
+  4. The page has proper SEO meta tags (title, description, OpenGraph with avatar); master can copy their booking link and auto-generated QR code from settings
+**Plans**: TBD
+
+### Phase 11: Client Cabinet
+**Goal**: Clients can log in to a personal cabinet at /my, see all their bookings across masters, rebook past services, and leave reviews after completed visits
+**Depends on**: Phase 10
+**Requirements**: CCAB-01, CCAB-02, CCAB-03, CCAB-04, CCAB-05, CCAB-06, CCAB-07
+**Success Criteria** (what must be TRUE):
+  1. Client enters phone number at /my and receives a 6-digit OTP via their messenger bot (TG/MAX/VK); web-booked clients without a bot connection receive OTP via SMS fallback
+  2. OTP expires after 5 minutes, allows max 3 attempts, and enforces a 60-second cooldown between requests; session persists for 7 days via cookie
+  3. Client sees upcoming bookings with cancel/reschedule buttons, and past visits with "Zapisatsya snova" (pre-fills master + service) and "Ostavit otzyv" buttons
+  4. Client who visits multiple masters sees all bookings in one list grouped by date; clicking master name navigates to their public page
+**Plans**: TBD
+
+### Phase 12: Admin Payments
+**Goal**: Masters can complete visits and accept payments directly from the web admin panel with method selection, and the payments page provides filtering, totals, and export
+**Depends on**: Phase 8 (v1.1 complete)
+**Requirements**: APAY-01, APAY-02, APAY-03, APAY-04, APAY-05, APAY-06, APAY-07
+**Success Criteria** (what must be TRUE):
+  1. Master clicks "Zavershit vizit" on a confirmed booking in BookingDrawer, sees a modal with pre-filled amount (editable), payment method selector (cash/card/SBP), and fiscalization option (auto/manual/none), and can complete with one click
+  2. Payments page shows total revenue for the selected period and can be filtered by payment method (cash/card/SBP)
+  3. Master can export the payments list to CSV for accounting purposes
+  4. Calendar event cards show a ruble icon for quick payment access; clicking it opens BookingDrawer focused on payment
+**Plans**: TBD
+
+### Phase 13: Auto Receipts
+**Goal**: Masters who are self-employed (samozan) can bind their INN and automatically generate tax receipts for any payment method (cash, card, SBP) via Robokassa ReceiptAttach
+**Depends on**: Phase 12
+**Requirements**: ARCT-01, ARCT-02, ARCT-03, ARCT-04, ARCT-05
+**Success Criteria** (what must be TRUE):
+  1. Master enters INN (12 digits) in Settings > "Nalogi i cheki"; when Robokassa is connected and INN is valid, auto-receipts are activated and settings show "Avtocheki podklyucheny" with a disconnect option
+  2. When master completes a visit with "Chek: Avtomaticheski", the system sends receipt data to Robokassa ReceiptAttach regardless of payment method (cash, card, or SBP); client receives receipt link in their messenger
+  3. If ReceiptAttach fails, the receipt is queued for retry (up to 3 attempts via background job); if all retries fail, master receives an error notification with instructions to issue the receipt manually
+**Plans**: TBD
+
+### Phase 14: Portfolio
+**Goal**: Masters can upload photos of their work and clients see them as a gallery on the public profile page
+**Depends on**: Phase 10
+**Requirements**: PORT-01, PORT-02, PORT-03, PORT-04, PORT-05
+**Success Criteria** (what must be TRUE):
+  1. Master can upload up to 30 photos (max 5MB, JPEG/PNG/WebP) from both web admin settings and mini-app settings; photos are auto-resized to 1200px with 300px thumbnails generated
+  2. Portfolio photos appear as a horizontal-scroll gallery on the master's public profile page with a lightbox for full-size viewing
+  3. Master can tag photos with service names; the public page gallery supports filtering by service tag
+**Plans**: TBD
+
+### Phase 15: Reviews
+**Goal**: Completed visits automatically trigger a review request via bot; reviews are moderated and displayed on the master's public profile
+**Depends on**: Phase 11
+**Requirements**: REVW-01, REVW-02, REVW-03, REVW-04, REVW-05, REVW-06
+**Success Criteria** (what must be TRUE):
+  1. Two hours after a completed visit, the bot sends the client a review prompt with 1-5 star buttons; client can optionally add text (up to 500 chars)
+  2. Reviews with 3+ stars auto-publish; reviews below 3 stars are held for master reply and auto-publish after 7 days if the master does not respond
+  3. Only clients with real completed visits can leave reviews (one per booking); reviews are displayed on the public profile page with average rating and individual entries
+**Plans**: TBD
+
+### Phase 16: Analytics
+**Goal**: Masters can see their business performance at a glance -- revenue, utilization, client retention, top services -- and export detailed reports
+**Depends on**: Phase 12
+**Requirements**: ANLT-01, ANLT-02, ANLT-03, ANLT-04, ANLT-05, ANLT-06, ANLT-07, ANLT-08, ANLT-09, ANLT-10
+**Success Criteria** (what must be TRUE):
+  1. Analytics dashboard shows three top-line metrics (revenue, booking count, unique clients) for a selectable period (today/week/month/custom range)
+  2. Dashboard displays a revenue line chart by day, a new-vs-repeat clients donut chart, utilization rate, average check, retention rate (% returning within 60 days), and cancellation/no-show rates
+  3. Reports tab shows a top services table (service, count, revenue, % of total) and a daily breakdown table (date, bookings, revenue, utilization)
+  4. Master can export both reports to CSV
+**Plans**: TBD
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 7 -> 8
+Phases execute in numeric order: 9 -> 10 -> 11 -> 12 -> 13 -> 14 -> 15 -> 16
+
+Note: Phases 12-13 and 10-14 have independent dependency chains. Execution follows numeric order for simplicity, but 12 does not depend on 11.
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -184,5 +291,13 @@ Phases execute in numeric order: 7 -> 8
 | 4. Notifications | v1.0 | 2/2 | Complete | 2026-03-18 |
 | 5. Multi-Messenger Expansion | v1.0 | 3/3 | Complete | 2026-03-18 |
 | 6. Web Admin Panel | v1.0 | 3/3 | Complete | 2026-03-18 |
-| 7. Mini-App UX Polish | 5/5 | Complete   | 2026-03-19 | - |
-| 8. Web Admin UX Polish | 3/3 | Complete   | 2026-03-19 | - |
+| 7. Mini-App UX Polish | v1.1 | 5/5 | Complete | 2026-03-19 |
+| 8. Web Admin UX Polish | v1.1 | 3/3 | Complete | 2026-03-19 |
+| 9. Backend Foundation | v2.0 | 0/? | Not started | - |
+| 10. Public Master Page | v2.0 | 0/? | Not started | - |
+| 11. Client Cabinet | v2.0 | 0/? | Not started | - |
+| 12. Admin Payments | v2.0 | 0/? | Not started | - |
+| 13. Auto Receipts | v2.0 | 0/? | Not started | - |
+| 14. Portfolio | v2.0 | 0/? | Not started | - |
+| 15. Reviews | v2.0 | 0/? | Not started | - |
+| 16. Analytics | v2.0 | 0/? | Not started | - |

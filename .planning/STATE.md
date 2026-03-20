@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Feature Expansion
 status: in_progress
-stopped_at: Defining requirements for v2.0
-last_updated: "2026-03-20T12:00:00.000Z"
-last_activity: 2026-03-20 -- Milestone v2.0 started
+stopped_at: Roadmap created for v2.0 (phases 9-16)
+last_updated: "2026-03-20T14:00:00.000Z"
+last_activity: 2026-03-20 -- Roadmap created for v2.0 Feature Expansion
 progress:
   total_phases: 8
   completed_phases: 0
@@ -21,25 +21,25 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-20)
 
 **Core value:** Master taps "Complete" -- client gets SBP payment link -- tax receipt auto-generates. 3 steps instead of 9.
-**Current focus:** v2.0 Feature Expansion -- defining requirements
+**Current focus:** v2.0 Feature Expansion -- Phase 9 (Backend Foundation) ready to plan
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements for v2.0
-Last activity: 2026-03-20 -- Milestone v2.0 started
+Phase: 9 of 16 (Backend Foundation)
+Plan: --
+Status: Ready to plan
+Last activity: 2026-03-20 -- Roadmap created for v2.0 Feature Expansion (phases 9-16, 47 requirements mapped)
 
 Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 23
-- Average duration: 7min
-- Total execution time: 2.57 hours
+- Total plans completed: 25
+- Average duration: 6min
+- Total execution time: ~2.6 hours
 
-**By Phase:**
+**By Phase (v1.0 + v1.1):**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
@@ -49,17 +49,12 @@ Progress: [░░░░░░░░░░] 0%
 | 4. Notifications | 2/2 | 12min | 6min |
 | 5. Multi-Messenger | 3/3 | 20min | 7min |
 | 6. Web Admin Panel | 3/3 | 16min | 5min |
-
 | 7. Mini-App UX Polish | 5/5 | 11min | 2min |
+| 8. Web Admin UX Polish | 3/3 | 6min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 6min, 1min, 2min, 2min, 1min
+- Last 5 plans: 2min, 1min, 2min, 3min, 1min
 - Trend: consistent
-| Phase 07 P03 | 5min | 2 tasks | 8 files |
-| Phase 07 P05 | 1min | 2 tasks | 7 files |
-| Phase 08 P01 | 2min | 2 tasks | 3 files |
-| Phase 08 P02 | 3min | 2 tasks | 4 files |
-| Phase 08 P03 | 1min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -68,23 +63,12 @@ Progress: [░░░░░░░░░░] 0%
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
-- v1.1 scope defined from UX audit: Mini-App (7.25/10 target 9/10), Web Admin (67/100 target 85/100)
-- Phase 7 covers all mini-app polish (MACC + MMUX + MVIS = 18 requirements)
-- Phase 8 covers all web admin polish (WCRT + WAUX = 16 requirements)
-- [Phase 07]: Used CSS var() fallback chain for TG theme integration (--tg-theme-* -> --app-* tokens)
-- [Phase 07]: Accent #5A4BD1 for 5.2:1 WCAG AA contrast ratio (was #6C5CE7 at 3.8:1)
-- [Phase 07-02]: Badge uses CSS variable design tokens (var(--color-badge-*)) for themeability
-- [Phase 07-02]: Safe-area padding via Tailwind arbitrary value class instead of inline style
-- [Phase 07-04]: Focus trap uses querySelectorAll for focusable elements in multi-state dialog
-- [Phase 07-04]: Delete button always visible (removed hover gate) for touch device accessibility
-- [Phase 07-03]: PillButton uses rounded-full shape consistently across all consumers
-- [Phase 07]: AlertCircle icon for Settings error state (avoids naming conflict with Settings component)
-- [Phase 08]: PAGE_TITLES const map for both breadcrumb and document.title to avoid duplication
-- [Phase 08]: Sidebar collapse key: admin_sidebar_collapsed (matches admin_token naming convention)
-- [Phase 08]: App.useApp() for themed message toasts instead of static message import
-- [Phase 08]: Exception time fields hidden (not disabled) when is_day_off is true
-- [Phase 08-03]: Green (#00B894) primary button for Complete action to distinguish from standard primary
-- [Phase 08-03]: Popconfirm on destructive actions (no-show, cancel), direct click on positive/neutral (complete, reschedule)
+- v2.0 design spec approved (2026-03-20): 8 phases, 47 requirements
+- Phase structure follows design spec Section 10 priority order
+- Public page is separate React SPA in /public/ dir (not part of admin or mini-app)
+- Robokassa ReceiptAttach for cash/card receipts (not direct FNS API)
+- Client cabinet shares SPA with public page (both under /public/, routes /m/ and /my/)
+- Portfolio stored in Docker volume (/data/portfolio/) for MVP; S3/MinIO later
 
 ### Pending Todos
 
@@ -96,6 +80,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-19T04:13:55Z
-Stopped at: Completed 08-03-PLAN.md (v1.1 milestone complete)
+Last session: 2026-03-20
+Stopped at: Roadmap created for v2.0 (phases 9-16)
 Resume file: None
