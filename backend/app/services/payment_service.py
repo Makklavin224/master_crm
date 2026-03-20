@@ -28,6 +28,21 @@ class PaymentService:
     """Orchestrates all three payment flows with proper status management."""
 
     @staticmethod
+    async def _load_payment_with_rels(
+        db: AsyncSession, payment_id: uuid.UUID
+    ) -> Payment:
+        """Reload a payment with booking->service and booking->client eagerly loaded."""
+        result = await db.execute(
+            select(Payment)
+            .where(Payment.id == payment_id)
+            .options(
+                selectinload(Payment.booking).selectinload(Booking.service),
+                selectinload(Payment.booking).selectinload(Booking.client),
+            )
+        )
+        return result.scalar_one()
+
+    @staticmethod
     async def _load_booking(
         db: AsyncSession,
         master_id: uuid.UUID,
@@ -148,9 +163,8 @@ class PaymentService:
         booking.status = "completed"
 
         await db.flush()
-        await db.refresh(payment)
 
-        return payment
+        return await PaymentService._load_payment_with_rels(db, payment.id)
 
     @staticmethod
     async def create_robokassa_payment(
@@ -243,9 +257,8 @@ class PaymentService:
         db.add(payment)
 
         await db.flush()
-        await db.refresh(payment)
 
-        return payment
+        return await PaymentService._load_payment_with_rels(db, payment.id)
 
     @staticmethod
     async def create_requisites_payment(
@@ -292,7 +305,8 @@ class PaymentService:
         db.add(payment)
 
         await db.flush()
-        await db.refresh(payment)
+
+        loaded_payment = await PaymentService._load_payment_with_rels(db, payment.id)
 
         requisites = {
             "card_number": master.card_number,
@@ -301,7 +315,7 @@ class PaymentService:
             "qr_code_base64": qr_base64,
         }
 
-        return payment, requisites
+        return loaded_payment, requisites
 
     @staticmethod
     async def confirm_requisites_payment(
@@ -378,9 +392,8 @@ class PaymentService:
                 booking.status = "completed"
 
         await db.flush()
-        await db.refresh(payment)
 
-        return payment
+        return await PaymentService._load_payment_with_rels(db, payment.id)
 
     @staticmethod
     async def handle_robokassa_callback(
@@ -624,6 +637,5 @@ class PaymentService:
             # For manual: master will be reminded to cancel in "Moy Nalog"
 
         await db.flush()
-        await db.refresh(payment)
 
-        return payment
+        return await PaymentService._load_payment_with_rels(db, payment.id)

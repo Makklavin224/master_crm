@@ -82,11 +82,12 @@ async def create_robokassa_payment(
 
     # Fire-and-forget: send payment link to client via notification
     try:
-        from sqlalchemy import select
+        from sqlalchemy import and_, select
         from sqlalchemy.orm import selectinload
 
         from app.bots.common.notification import notification_service
         from app.models.booking import Booking
+        from app.models.client import ClientPlatform
 
         result = await db.execute(
             select(Booking)
@@ -97,17 +98,28 @@ async def create_robokassa_payment(
             )
         )
         booking = result.scalar_one_or_none()
-        if booking and booking.client and booking.client.tg_user_id:
-            amount_rub = payment.amount / 100
-            amount_display = f"{amount_rub:,.2f} \u20bd".replace(",", " ")
-            service_name = booking.service.name if booking.service else "Service"
-            await notification_service.send_payment_link(
-                platform="telegram",
-                platform_user_id=booking.client.tg_user_id,
-                payment_url=payment.payment_url or "",
-                service_name=service_name,
-                amount_display=amount_display,
+        if booking and booking.client:
+            # Look up telegram platform user ID from client_platforms
+            cp_result = await db.execute(
+                select(ClientPlatform).where(
+                    and_(
+                        ClientPlatform.client_id == booking.client.id,
+                        ClientPlatform.platform == "telegram",
+                    )
+                )
             )
+            tg_platform = cp_result.scalar_one_or_none()
+            if tg_platform:
+                amount_rub = payment.amount / 100
+                amount_display = f"{amount_rub:,.2f} \u20bd".replace(",", " ")
+                service_name = booking.service.name if booking.service else "Service"
+                await notification_service.send_payment_link(
+                    platform="telegram",
+                    platform_user_id=tg_platform.platform_user_id,
+                    payment_url=payment.payment_url or "",
+                    service_name=service_name,
+                    amount_display=amount_display,
+                )
     except Exception:
         import logging
 

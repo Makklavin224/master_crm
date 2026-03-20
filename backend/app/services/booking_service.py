@@ -14,6 +14,13 @@ from app.models.booking import Booking
 from app.models.client import Client, ClientPlatform
 from app.models.master import Master
 from app.models.service import Service
+from app.services.client_service import (
+    find_or_create_client,
+    get_or_create_master_client,
+    update_visit_stats,
+)
+
+logger = logging.getLogger(__name__)
 
 
 async def _load_booking_with_rels(db: AsyncSession, booking_id: uuid.UUID) -> Booking:
@@ -24,14 +31,6 @@ async def _load_booking_with_rels(db: AsyncSession, booking_id: uuid.UUID) -> Bo
         .options(selectinload(Booking.service), selectinload(Booking.client))
     )
     return result.scalar_one()
-from app.models.service import Service
-from app.services.client_service import (
-    find_or_create_client,
-    get_or_create_master_client,
-    update_visit_stats,
-)
-
-logger = logging.getLogger(__name__)
 
 
 async def _notify_master(
@@ -564,7 +563,8 @@ async def create_manual_booking(
     if notes:
         booking.notes = notes
         await db.flush()
-        await db.refresh(booking)
+        # Reload with relationships (refresh would expire them)
+        booking = await _load_booking_with_rels(db, booking.id)
     return booking
 
 
