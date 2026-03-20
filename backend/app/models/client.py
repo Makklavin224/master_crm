@@ -35,12 +35,13 @@ class Client(Base):
         onupdate=datetime.now,
     )
 
-    # Relationships
+    # Relationships -- use lazy="raise_on_sql" to prevent accidental lazy loads
+    # in async code.  Use explicit selectinload() in queries that need them.
     platforms: Mapped[list["ClientPlatform"]] = relationship(
-        back_populates="client", lazy="selectin"
+        back_populates="client", lazy="raise_on_sql"
     )
     bookings: Mapped[list["Booking"]] = relationship(  # noqa: F821
-        back_populates="client", lazy="selectin"
+        back_populates="client", lazy="raise_on_sql"
     )
 
 
@@ -63,8 +64,10 @@ class ClientPlatform(Base):
         UniqueConstraint("client_id", "platform", name="uq_client_platforms_client_platform"),
     )
 
-    # Relationships
-    client: Mapped["Client"] = relationship(back_populates="platforms")
+    # Relationships -- lazy="raise_on_sql" prevents accidental lazy loads in async
+    client: Mapped["Client"] = relationship(
+        back_populates="platforms", lazy="raise_on_sql"
+    )
 
 
 class MasterClient(Base):
@@ -97,8 +100,8 @@ class MasterClient(Base):
         UniqueConstraint("master_id", "client_id", name="uq_master_clients_master_client"),
     )
 
-    # Relationships
+    # Relationships -- lazy="raise_on_sql" prevents accidental lazy loads in async
     master: Mapped["Master"] = relationship(  # noqa: F821
-        back_populates="master_clients"
+        back_populates="master_clients", lazy="raise_on_sql"
     )
-    client: Mapped["Client"] = relationship()
+    client: Mapped["Client"] = relationship(lazy="raise_on_sql")

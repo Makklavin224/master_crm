@@ -31,8 +31,13 @@ async def get_db():
 
 async def get_current_master(
     token: Annotated[str, Depends(oauth2_scheme)],
+    db: Annotated[AsyncSession, Depends(get_db)],
 ) -> Master:
-    """Decode JWT, load master from DB, raise 401 if invalid."""
+    """Decode JWT, load master from DB, raise 401 if invalid.
+
+    Uses the shared request session (get_db) so the Master stays attached
+    and can be flushed/refreshed by downstream code without MissingGreenlet.
+    """
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -46,14 +51,13 @@ async def get_current_master(
     except InvalidTokenError:
         raise credentials_exception
 
-    async with async_session_factory() as db:
-        result = await db.execute(
-            select(Master).where(Master.id == UUID(master_id))
-        )
-        master = result.scalar_one_or_none()
-        if master is None or not master.is_active:
-            raise credentials_exception
-        return master
+    result = await db.execute(
+        select(Master).where(Master.id == UUID(master_id))
+    )
+    master = result.scalar_one_or_none()
+    if master is None or not master.is_active:
+        raise credentials_exception
+    return master
 
 
 async def get_db_with_rls(
@@ -97,10 +101,12 @@ async def get_current_client_from_initdata(
 
 async def get_optional_master(
     token: Annotated[str | None, Depends(oauth2_scheme_optional)],
+    db: Annotated[AsyncSession, Depends(get_db)],
 ) -> Master | None:
     """
     Try JWT auth, return Master or None.
     Used by dual-auth endpoints (master OR client).
+    Uses the shared request session (get_db).
     """
     if token is None:
         return None
@@ -113,11 +119,10 @@ async def get_optional_master(
     except InvalidTokenError:
         return None
 
-    async with async_session_factory() as db:
-        result = await db.execute(
-            select(Master).where(Master.id == UUID(master_id))
-        )
-        master = result.scalar_one_or_none()
-        if master is None or not master.is_active:
-            return None
-        return master
+    result = await db.execute(
+        select(Master).where(Master.id == UUID(master_id))
+    )
+    master = result.scalar_one_or_none()
+    if master is None or not master.is_active:
+        return None
+    return master

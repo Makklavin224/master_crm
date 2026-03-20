@@ -56,24 +56,18 @@ async def _notify_master(
         if not platform_ids:
             return
 
-        # Load related objects if not already loaded
-        if not booking.service:
-            svc_result = await db.execute(
-                select(Service).where(Service.id == booking.service_id)
-            )
-            service = svc_result.scalar_one_or_none()
-        else:
-            service = booking.service
+        # Load related objects by FK (avoids lazy-load issues in async)
+        svc_result = await db.execute(
+            select(Service).where(Service.id == booking.service_id)
+        )
+        service = svc_result.scalar_one_or_none()
 
         from app.models.client import Client
 
-        if not booking.client:
-            client_result = await db.execute(
-                select(Client).where(Client.id == booking.client_id)
-            )
-            client = client_result.scalar_one_or_none()
-        else:
-            client = booking.client
+        client_result = await db.execute(
+            select(Client).where(Client.id == booking.client_id)
+        )
+        client = client_result.scalar_one_or_none()
 
         client_name = client.name if client else "Client"
         service_name = service.name if service else "Service"
@@ -507,7 +501,7 @@ async def complete_booking(
             detail=f"Cannot complete booking with status '{booking.status}'. Must be 'confirmed'.",
         )
     booking.status = "completed"
-    await db.commit()
+    await db.flush()
     await db.refresh(booking, ["client", "service"])
     return booking
 
@@ -534,7 +528,7 @@ async def mark_no_show(
             detail=f"Cannot mark no-show for booking with status '{booking.status}'. Must be 'confirmed'.",
         )
     booking.status = "no_show"
-    await db.commit()
+    await db.flush()
     await db.refresh(booking, ["client", "service"])
     return booking
 

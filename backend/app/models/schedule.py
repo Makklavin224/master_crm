@@ -45,9 +45,9 @@ class MasterSchedule(Base):
         ),
     )
 
-    # Relationships
+    # Relationships -- lazy="raise_on_sql" prevents accidental lazy loads in async
     master: Mapped["Master"] = relationship(  # noqa: F821
-        back_populates="schedules"
+        back_populates="schedules", lazy="raise_on_sql"
     )
 
 

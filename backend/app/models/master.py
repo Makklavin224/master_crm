@@ -106,16 +106,17 @@ class Master(Base):
         onupdate=datetime.now,
     )
 
-    # Relationships
+    # Relationships -- use lazy="raise_on_sql" to prevent accidental lazy loads
+    # in async code.  Use explicit selectinload() in queries that need them.
     services: Mapped[list["Service"]] = relationship(  # noqa: F821
-        back_populates="master", lazy="selectin"
+        back_populates="master", lazy="raise_on_sql"
     )
     bookings: Mapped[list["Booking"]] = relationship(  # noqa: F821
-        back_populates="master", lazy="selectin"
+        back_populates="master", lazy="raise_on_sql"
     )
     schedules: Mapped[list["MasterSchedule"]] = relationship(  # noqa: F821
-        back_populates="master", lazy="selectin"
+        back_populates="master", lazy="raise_on_sql"
     )
     master_clients: Mapped[list["MasterClient"]] = relationship(  # noqa: F821
-        back_populates="master", lazy="selectin"
+        back_populates="master", lazy="raise_on_sql"
     )

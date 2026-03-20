@@ -61,7 +61,7 @@ class Payment(Base):
         onupdate=datetime.now,
     )
 
-    # Relationships
+    # Relationships -- lazy="raise_on_sql" prevents accidental lazy loads in async
     booking: Mapped["Booking"] = relationship(  # noqa: F821
-        back_populates="payment"
+        back_populates="payment", lazy="raise_on_sql"
     )

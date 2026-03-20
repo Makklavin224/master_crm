@@ -35,7 +35,7 @@ class Service(Base):
         onupdate=datetime.now,
     )
 
-    # Relationships
+    # Relationships -- lazy="raise_on_sql" prevents accidental lazy loads in async
     master: Mapped["Master"] = relationship(  # noqa: F821
-        back_populates="services"
+        back_populates="services", lazy="raise_on_sql"
     )
