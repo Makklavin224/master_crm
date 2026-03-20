@@ -11,6 +11,10 @@
     # Enable gzip
     encode gzip
 
+    # Redirect /admin and /app without trailing slash
+    redir /admin /admin/ 308
+    redir /app /app/ 308
+
     # Admin panel
     handle /admin/* {
         uri strip_prefix /admin
