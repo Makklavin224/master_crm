@@ -120,19 +120,82 @@
 - [x] **WAUX-09**: Page titles set per route (document.title for tab identification)
 - [x] **WAUX-10**: QueryClient configured with staleTime for non-realtime data (services, clients, settings)
 
-## v2 Requirements
+## v2.0 Requirements — Feature Expansion
 
-### Analytics
+### Public Booking (PBUK)
 
-- **ANLYT-01**: Revenue per period (day/week/month)
-- **ANLYT-02**: Booking count and conversion
-- **ANLYT-03**: Repeat client percentage
+- [ ] **PBUK-01**: Master has a public profile page at /m/{username} with avatar, name, specialization, city, rating
+- [ ] **PBUK-02**: Master can set a unique username (latin lowercase + digits + underscore, 3-30 chars, reserved words blocked)
+- [ ] **PBUK-03**: Public page shows list of services with prices and "Записаться" button
+- [ ] **PBUK-04**: Public page shows nearest available slots (3-5 days ahead)
+- [ ] **PBUK-05**: Client can book through web browser without a messenger (service → date → time → phone+name → confirm)
+- [ ] **PBUK-06**: Master can copy booking link and auto-generated QR code from settings
+- [ ] **PBUK-07**: Public page has SEO meta tags (title, description, OpenGraph with avatar)
+
+### Client Cabinet (CCAB)
+
+- [ ] **CCAB-01**: Client can access cabinet at /my by entering phone number + 6-digit OTP
+- [ ] **CCAB-02**: OTP sent via messenger bot (TG/MAX/VK); SMS fallback for web-booked clients (~2₽)
+- [ ] **CCAB-03**: OTP has 5-min expiration, max 3 attempts, 60-sec cooldown
+- [ ] **CCAB-04**: Client sees upcoming bookings with cancel/reschedule buttons
+- [ ] **CCAB-05**: Client sees past visits with "Записаться снова" button (pre-fills master + service)
+- [ ] **CCAB-06**: Client can leave a review after completed visit (1-5 stars + optional text)
+- [ ] **CCAB-07**: Client sees bookings from all masters in one list
+
+### Admin Payments (APAY)
+
+- [ ] **APAY-01**: Master can finish a visit from web admin with payment method selection (cash/card/SBP)
+- [ ] **APAY-02**: Payment amount pre-filled from service price, editable (discount/extra)
+- [ ] **APAY-03**: Fiscalization option on payment completion (auto/manual/none)
+- [ ] **APAY-04**: Payments page shows total revenue for selected period
+- [ ] **APAY-05**: Payments page has filter by payment method
+- [ ] **APAY-06**: Payments page has CSV export
+- [ ] **APAY-07**: Calendar event shows ₽ icon for quick payment access
+
+### Auto Receipts (ARCT)
+
+- [ ] **ARCT-01**: Master can bind INN in settings for auto-receipt via Robokassa ReceiptAttach
+- [ ] **ARCT-02**: When "auto receipt" selected, system sends receipt data to Robokassa ReceiptAttach
+- [ ] **ARCT-03**: Receipt works for all payment methods (cash, card, SBP) — not just SBP
+- [ ] **ARCT-04**: Client receives receipt link in messenger after payment
+- [ ] **ARCT-05**: Failed receipt attempts retry 3 times via background job; error notification to master on failure
+
+### Portfolio (PORT)
+
+- [ ] **PORT-01**: Master can upload up to 30 photos (max 5MB each, JPEG/PNG/WebP)
+- [ ] **PORT-02**: Photos auto-resized to 1200px and thumbnails generated (300px)
+- [ ] **PORT-03**: Photos displayed as gallery on public profile page with lightbox
+- [ ] **PORT-04**: Master can tag photos with service names for filtering
+- [ ] **PORT-05**: Upload available from both web admin and mini-app settings
+
+### Reviews (REVW)
+
+- [ ] **REVW-01**: Bot sends review request to client 2 hours after completed visit
+- [ ] **REVW-02**: Client rates 1-5 stars + optional text (max 500 chars)
+- [ ] **REVW-03**: Reviews ≥3 stars auto-publish; <3 stars require master reply
+- [ ] **REVW-04**: Negative reviews auto-publish after 7 days if master doesn't reply
+- [ ] **REVW-05**: Reviews displayed on public profile page with average rating
+- [ ] **REVW-06**: Only clients with real completed visits can leave reviews (1 per booking)
+
+### Analytics (ANLT)
+
+- [ ] **ANLT-01**: Dashboard shows revenue, booking count, client count for selected period
+- [ ] **ANLT-02**: Revenue chart (line graph by day)
+- [ ] **ANLT-03**: New vs repeat clients (donut chart)
+- [ ] **ANLT-04**: Utilization rate (booked hours / scheduled hours)
+- [ ] **ANLT-05**: Average check amount
+- [ ] **ANLT-06**: Client retention rate (% returning within 60 days)
+- [ ] **ANLT-07**: Cancellation rate and no-show rate
+- [ ] **ANLT-08**: Top services table (service, count, revenue, % of total)
+- [ ] **ANLT-09**: Daily breakdown table (date, bookings, revenue, utilization)
+- [ ] **ANLT-10**: CSV export for reports
+
+## v3 Requirements (deferred)
 
 ### Client Engagement
 
 - **ENGMT-01**: Client notes and tags
 - **ENGMT-02**: Repeat visit invitations ("You haven't visited in 30 days")
-- **ENGMT-03**: Master photo portfolio in mini-app
 
 ### Finance
 
@@ -143,7 +206,7 @@
 
 - **GRWTH-01**: Subscription model (Free/Pro/Business)
 - **GRWTH-02**: Onboarding wizard for new master
-- **GRWTH-03**: Review collection and display
+- **GRWTH-03**: Direct FNS API integration (after partner agreement)
 
 ## Out of Scope
 
@@ -245,4 +308,4 @@
 
 ---
 *Requirements defined: 2026-03-17*
-*Last updated: 2026-03-19 after v1.1 roadmap creation*
+*Last updated: 2026-03-20 after v2.0 requirements definition*
