@@ -337,7 +337,7 @@ Note: Phases 12-13 and 10-14 have independent dependency chains. Execution follo
 | 14. Portfolio | 3/3 | Complete    | 2026-03-21 | - |
 | 15. Reviews | 2/2 | Complete    | 2026-03-21 | - |
 | 16. Analytics | 2/2 | Complete    | 2026-03-21 | - |
-| 17. Cross-Platform Auth | 2/2 | Complete   | 2026-03-21 | - |
+| 17. Cross-Platform Auth | 2/2 | Complete    | 2026-03-21 | - |
 
 ### Phase 17: Cross-Platform Auth & Role Detection
 **Goal**: Masters have a single account accessible from web, TG, MAX, and VK; the mini-app auto-detects whether the user is a master or client and shows the appropriate interface
