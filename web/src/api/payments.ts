@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "./client";
 
 // --- Interfaces ---
@@ -21,14 +21,29 @@ export interface PaymentRead {
 export interface PaymentListResponse {
   items: PaymentRead[];
   total: number;
+  total_revenue: number; // sum of paid amounts in kopecks
 }
 
 export interface PaymentFilters {
   status?: string;
   date_from?: string;
   date_to?: string;
+  payment_method?: string;
   limit?: number;
   offset?: number;
+}
+
+export interface CreateManualPaymentData {
+  booking_id: string;
+  payment_method: "cash" | "card_to_card" | "sbp";
+  fiscalization_level?: "none" | "manual" | "auto" | null;
+  amount_override?: number | null; // kopecks
+}
+
+export interface CreateRobokassaPaymentData {
+  booking_id: string;
+  fiscalization_level?: "none" | "manual" | "auto" | null;
+  amount_override?: number | null; // kopecks
 }
 
 // --- Hooks ---
@@ -41,6 +56,8 @@ export function usePayments(filters: PaymentFilters = {}) {
       if (filters.status) params.set("status", filters.status);
       if (filters.date_from) params.set("date_from", filters.date_from);
       if (filters.date_to) params.set("date_to", filters.date_to);
+      if (filters.payment_method)
+        params.set("payment_method", filters.payment_method);
       if (filters.limit !== undefined)
         params.set("limit", String(filters.limit));
       if (filters.offset !== undefined)
@@ -51,5 +68,35 @@ export function usePayments(filters: PaymentFilters = {}) {
       );
     },
     staleTime: 30_000,
+  });
+}
+
+export function useCreateManualPayment() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: CreateManualPaymentData) =>
+      apiRequest<PaymentRead>("/payments/manual", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["payments"] });
+      queryClient.invalidateQueries({ queryKey: ["bookings"] });
+    },
+  });
+}
+
+export function useCreateRobokassaPayment() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: CreateRobokassaPaymentData) =>
+      apiRequest<PaymentRead>("/payments/robokassa", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["payments"] });
+      queryClient.invalidateQueries({ queryKey: ["bookings"] });
+    },
   });
 }

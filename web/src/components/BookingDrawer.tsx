@@ -23,11 +23,11 @@ import dayjs from "dayjs";
 import type { BookingRead } from "../api/bookings";
 import {
   useCancelBooking,
-  useCompleteBooking,
   useMarkNoShow,
   useRescheduleBooking,
 } from "../api/bookings";
 import { BookingStatusTag } from "./StatusTag";
+import { CompleteVisitModal } from "./CompleteVisitModal";
 
 interface BookingDrawerProps {
   open: boolean;
@@ -45,11 +45,11 @@ const SOURCE_LABELS: Record<string, string> = {
 
 export function BookingDrawer({ open, booking, onClose }: BookingDrawerProps) {
   const cancelMutation = useCancelBooking();
-  const completeMutation = useCompleteBooking();
   const noShowMutation = useMarkNoShow();
   const rescheduleMutation = useRescheduleBooking();
   const { message: messageApi } = App.useApp();
   const [rescheduleModalOpen, setRescheduleModalOpen] = useState(false);
+  const [completeModalOpen, setCompleteModalOpen] = useState(false);
   const [rescheduleForm] = Form.useForm();
 
   if (!booking) return null;
@@ -69,18 +69,6 @@ export function BookingDrawer({ open, booking, onClose }: BookingDrawerProps) {
       },
       onError: () => {
         messageApi.error("Не удалось отменить запись");
-      },
-    });
-  };
-
-  const handleComplete = () => {
-    completeMutation.mutate(booking.id, {
-      onSuccess: () => {
-        messageApi.success("Запись завершена");
-        onClose();
-      },
-      onError: () => {
-        messageApi.error("Не удалось завершить запись");
       },
     });
   };
@@ -196,11 +184,10 @@ export function BookingDrawer({ open, booking, onClose }: BookingDrawerProps) {
                 type="primary"
                 icon={<CheckOutlined />}
                 block
-                loading={completeMutation.isPending}
-                onClick={handleComplete}
+                onClick={() => setCompleteModalOpen(true)}
                 style={{ background: "#00B894" }}
               >
-                Завершить
+                Завершить визит
               </Button>
             )}
             {canNoShow && (
@@ -286,6 +273,16 @@ export function BookingDrawer({ open, booking, onClose }: BookingDrawerProps) {
           </Form.Item>
         </Form>
       </Modal>
+
+      <CompleteVisitModal
+        open={completeModalOpen}
+        booking={booking}
+        onClose={() => setCompleteModalOpen(false)}
+        onSuccess={() => {
+          setCompleteModalOpen(false);
+          onClose();
+        }}
+      />
     </Drawer>
   );
 }
