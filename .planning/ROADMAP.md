@@ -276,7 +276,12 @@ Plans:
   1. Master can upload up to 30 photos (max 5MB, JPEG/PNG/WebP) from both web admin settings and mini-app settings; photos are auto-resized to 1200px with 300px thumbnails generated
   2. Portfolio photos appear as a horizontal-scroll gallery on the master's public profile page with a lightbox for full-size viewing
   3. Master can tag photos with service names; the public page gallery supports filtering by service tag
-**Plans**: TBD
+**Plans:** 3 plans
+
+Plans:
+- [ ] 14-01-PLAN.md -- Backend portfolio service (Pillow resize/thumbnail), CRUD API, media serving, Docker volume, public portfolio endpoint
+- [ ] 14-02-PLAN.md -- Public page PortfolioSection with horizontal-scroll gallery, lightbox, service tag filtering
+- [ ] 14-03-PLAN.md -- Upload UI in web admin settings (PortfolioTab) and mini-app settings (portfolio section)
 
 ### Phase 15: Reviews
 **Goal**: Completed visits automatically trigger a review request via bot; reviews are moderated and displayed on the master's public profile
@@ -329,6 +334,6 @@ Note: Phases 12-13 and 10-14 have independent dependency chains. Execution follo
 | 11. Client Cabinet | v2.0 | 3/3 | Complete | 2026-03-21 |
 | 12. Admin Payments | v2.0 | 2/2 | Complete | 2026-03-21 |
 | 13. Auto Receipts | v2.0 | 0/2 | Planned | - |
-| 14. Portfolio | v2.0 | 0/? | Not started | - |
+| 14. Portfolio | v2.0 | 0/3 | Planned | - |
 | 15. Reviews | v2.0 | 0/2 | Planned | - |
 | 16. Analytics | v2.0 | 0/2 | Planned | - |
