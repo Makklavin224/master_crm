@@ -245,6 +245,36 @@ export function useUnbindInn() {
   });
 }
 
+// --- Platform status hooks ---
+
+export interface PlatformStatusResponse {
+  tg_linked: boolean;
+  max_linked: boolean;
+  vk_linked: boolean;
+  tg_user_id: string | null;
+  max_user_id: string | null;
+  vk_user_id: string | null;
+}
+
+export function usePlatformStatus() {
+  return useQuery<PlatformStatusResponse>({
+    queryKey: ["platform-status"],
+    queryFn: () => apiRequest<PlatformStatusResponse>("/settings/platforms"),
+    staleTime: 60_000,
+  });
+}
+
+export function useUnlinkPlatform() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (platform: string) =>
+      apiRequest<{ ok: boolean; platform: string }>(`/settings/platforms/${platform}`, {
+        method: "DELETE",
+      }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["platform-status"] }),
+  });
+}
+
 // --- Schedule template hooks ---
 
 export function useScheduleTemplate() {

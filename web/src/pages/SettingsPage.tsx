@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import {
+  Alert,
   App,
   Badge,
   Button,
@@ -44,6 +45,8 @@ import {
   useDeletePhoto,
   useUpdatePhoto,
   useReorderPhotos,
+  usePlatformStatus,
+  useUnlinkPlatform,
   type ScheduleDayEntry,
 } from "../api/settings";
 import { useServices } from "../api/services";
@@ -1106,6 +1109,81 @@ function PortfolioTab() {
 }
 
 // =============================================
+// Tab 6: Platforms ("Платформы")
+// =============================================
+
+function PlatformsTab() {
+  const { data, isLoading } = usePlatformStatus();
+  const unlinkMutation = useUnlinkPlatform();
+  const { message: messageApi } = App.useApp();
+
+  const handleUnlink = async (platform: string, label: string) => {
+    try {
+      await unlinkMutation.mutateAsync(platform);
+      messageApi.success(`${label} отвязан`);
+    } catch {
+      messageApi.error(`Не удалось отвязать ${label}`);
+    }
+  };
+
+  if (isLoading) return <Spin />;
+  if (!data) return null;
+
+  const platforms: { key: string; label: string; linked: boolean; userId: string | null }[] = [
+    { key: "telegram", label: "Telegram", linked: data.tg_linked, userId: data.tg_user_id },
+    { key: "max", label: "MAX", linked: data.max_linked, userId: data.max_user_id },
+    { key: "vk", label: "VK", linked: data.vk_linked, userId: data.vk_user_id },
+  ];
+
+  return (
+    <>
+      <Card title="Подключённые платформы" size="small" style={{ marginBottom: 24 }}>
+        <Descriptions bordered column={1} size="small">
+          {platforms.map((p) => (
+            <Descriptions.Item key={p.key} label={p.label}>
+              {p.linked ? (
+                <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                  <Badge status="success" text="Подключён" />
+                  {p.userId && (
+                    <span style={{ color: "#888", fontSize: 12 }}>ID: {p.userId}</span>
+                  )}
+                  <Popconfirm
+                    title={`Отвязать ${p.label}?`}
+                    description="Вы не сможете войти через эту платформу, пока не привяжете аккаунт заново"
+                    onConfirm={() => handleUnlink(p.key, p.label)}
+                  >
+                    <Button
+                      type="link"
+                      danger
+                      size="small"
+                      loading={unlinkMutation.isPending}
+                    >
+                      Отвязать
+                    </Button>
+                  </Popconfirm>
+                </div>
+              ) : (
+                <div>
+                  <Badge status="default" text="Не подключён" />
+                  <div style={{ color: "#888", fontSize: 12, marginTop: 4 }}>
+                    Откройте бота и нажмите &laquo;Привязать аккаунт&raquo;
+                  </div>
+                </div>
+              )}
+            </Descriptions.Item>
+          ))}
+        </Descriptions>
+      </Card>
+      <Alert
+        type="info"
+        showIcon
+        message="Чтобы привязать платформу, откройте бота в мессенджере и нажмите «Привязать существующий аккаунт». Вам нужно будет ввести email, который вы использовали при регистрации."
+      />
+    </>
+  );
+}
+
+// =============================================
 // Main Settings Page
 // =============================================
 
@@ -1123,6 +1201,7 @@ export function SettingsPage() {
         { key: "notifications", label: "Уведомления", children: <NotificationsTab /> },
         { key: "payments", label: "Платежи", children: <PaymentsTab /> },
         { key: "profile", label: "Профиль", children: <ProfileTab /> },
+        { key: "platforms", label: "Платформы", children: <PlatformsTab /> },
         { key: "portfolio", label: "Мои работы", children: <PortfolioTab /> },
       ]}
     />
