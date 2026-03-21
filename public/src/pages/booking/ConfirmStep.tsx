@@ -31,7 +31,7 @@ export default function ConfirmStep() {
   // Redirect if no booking result
   useEffect(() => {
     if (!bookingResult) {
-      navigate(`/${username}`, { replace: true });
+      navigate(`/m/${username}`, { replace: true });
     }
   }, [bookingResult, navigate, username]);
 
@@ -45,7 +45,7 @@ export default function ConfirmStep() {
 
   const handleReturn = () => {
     reset();
-    navigate(`/${username}`);
+    navigate(`/m/${username}`);
   };
 
   return (

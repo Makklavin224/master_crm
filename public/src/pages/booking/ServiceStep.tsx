@@ -43,7 +43,7 @@ export default function ServiceStep() {
       if (service) {
         setMaster(username, profile.id);
         selectService(service);
-        navigate(`/${username}/book/date`, { replace: true });
+        navigate(`/m/${username}/book/date`, { replace: true });
       }
     }
   }, [searchParams, services, profile?.id, username, setMaster, selectService, navigate]);
@@ -51,7 +51,7 @@ export default function ServiceStep() {
   const handleSelect = (service: ServiceRead) => {
     selectService(service);
     setTimeout(() => {
-      navigate(`/${username}/book/date`);
+      navigate(`/m/${username}/book/date`);
     }, 300);
   };
 
@@ -65,7 +65,7 @@ export default function ServiceStep() {
       <div className="px-4 pt-2 pb-8 flex-1">
         {/* Back to master page */}
         <button
-          onClick={() => navigate(`/${username}`)}
+          onClick={() => navigate(`/m/${username}`)}
           className="flex items-center gap-1 text-sm text-text-secondary mb-4 active:opacity-70"
         >
           <ChevronLeft size={18} />

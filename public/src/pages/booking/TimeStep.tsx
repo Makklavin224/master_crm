@@ -43,9 +43,9 @@ export default function TimeStep() {
   // Redirect if prerequisites missing
   useEffect(() => {
     if (!selectedService) {
-      navigate(`/${username}/book`, { replace: true });
+      navigate(`/m/${username}/book`, { replace: true });
     } else if (!selectedDate) {
-      navigate(`/${username}/book/date`, { replace: true });
+      navigate(`/m/${username}/book/date`, { replace: true });
     }
   }, [selectedService, selectedDate, navigate, username]);
 
@@ -55,7 +55,7 @@ export default function TimeStep() {
 
   const handleNext = () => {
     goToStep(4);
-    navigate(`/${username}/book/info`);
+    navigate(`/m/${username}/book/info`);
   };
 
   const formattedDate = selectedDate ? formatDateLong(selectedDate) : "";
@@ -65,7 +65,7 @@ export default function TimeStep() {
       <BookingStepIndicator currentStep={3} />
       <div className="px-4 pt-2 pb-32 flex-1">
         <button
-          onClick={() => navigate(`/${username}/book/date`)}
+          onClick={() => navigate(`/m/${username}/book/date`)}
           className="flex items-center gap-1 text-sm text-text-secondary mb-4 active:opacity-70"
         >
           <ChevronLeft size={18} />
@@ -104,7 +104,7 @@ export default function TimeStep() {
               На этот день все слоты заняты.
             </p>
             <button
-              onClick={() => navigate(`/${username}/book/date`)}
+              onClick={() => navigate(`/m/${username}/book/date`)}
               className="text-sm font-medium text-accent active:opacity-70"
             >
               Выбрать другую дату

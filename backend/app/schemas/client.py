@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app.schemas.booking import BookingRead
 
@@ -50,3 +50,41 @@ class OTPResponse(BaseModel):
 
 class SessionResponse(BaseModel):
     token: str
+
+
+# --- Client Cabinet Bookings & Reviews Schemas ---
+
+
+class ClientBookingRead(BaseModel):
+    id: uuid.UUID
+    master_id: uuid.UUID
+    master_name: str
+    service_id: uuid.UUID
+    service_name: str
+    starts_at: datetime
+    ends_at: datetime
+    status: str
+    source_platform: str | None = None
+    master_username: str | None = None
+
+    model_config = {"from_attributes": True}
+
+
+class ClientBookingsResponse(BaseModel):
+    upcoming: list[ClientBookingRead]
+    past: list[ClientBookingRead]
+
+
+class ReviewCreate(BaseModel):
+    booking_id: uuid.UUID
+    rating: int = Field(ge=1, le=5)
+    text: str | None = Field(default=None, max_length=500)
+
+
+class ReviewCreateResponse(BaseModel):
+    id: uuid.UUID
+    rating: int
+    text: str | None = None
+    created_at: datetime
+
+    model_config = {"from_attributes": True}

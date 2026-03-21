@@ -59,11 +59,11 @@ export default function InfoStep() {
   // Redirect if prerequisites missing
   useEffect(() => {
     if (!selectedService) {
-      navigate(`/${username}/book`, { replace: true });
+      navigate(`/m/${username}/book`, { replace: true });
     } else if (!selectedDate) {
-      navigate(`/${username}/book/date`, { replace: true });
+      navigate(`/m/${username}/book/date`, { replace: true });
     } else if (!selectedTime) {
-      navigate(`/${username}/book/time`, { replace: true });
+      navigate(`/m/${username}/book/time`, { replace: true });
     }
   }, [selectedService, selectedDate, selectedTime, navigate, username]);
 
@@ -114,12 +114,12 @@ export default function InfoStep() {
       });
 
       setBookingResult(booking);
-      navigate(`/${username}/book/confirm`);
+      navigate(`/m/${username}/book/confirm`);
     } catch (err) {
       if (err instanceof ApiError && err.status === 409) {
         setSubmitError("Это время уже занято. Выберите другой слот.");
         setTimeout(() => {
-          navigate(`/${username}/book/time`);
+          navigate(`/m/${username}/book/time`);
         }, 1500);
       } else {
         setSubmitError("Что-то пошло не так. Попробуйте позже.");
@@ -132,7 +132,7 @@ export default function InfoStep() {
       <BookingStepIndicator currentStep={4} />
       <div className="px-4 pt-2 pb-32 flex-1">
         <button
-          onClick={() => navigate(`/${username}/book/time`)}
+          onClick={() => navigate(`/m/${username}/book/time`)}
           className="flex items-center gap-1 text-sm text-text-secondary mb-4 active:opacity-70"
         >
           <ChevronLeft size={18} />

@@ -3,6 +3,7 @@ from fastapi import APIRouter
 from app.api.v1.auth import router as auth_router
 from app.api.v1.bookings import router as bookings_router
 from app.api.v1.client_auth import router as client_auth_router
+from app.api.v1.client_cabinet import router as client_cabinet_router
 from app.api.v1.clients import router as clients_router
 from app.api.v1.health import router as health_router
 from app.api.v1.masters import router as masters_router
@@ -41,4 +42,7 @@ api_v1_router.include_router(
 )
 api_v1_router.include_router(
     client_auth_router, prefix="/client/auth", tags=["client-auth"]
+)
+api_v1_router.include_router(
+    client_cabinet_router, prefix="/client", tags=["client-cabinet"]
 )

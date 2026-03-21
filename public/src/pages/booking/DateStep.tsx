@@ -37,7 +37,7 @@ export default function DateStep() {
   // Redirect if no service selected
   useEffect(() => {
     if (!selectedService) {
-      navigate(`/${username}/book`, { replace: true });
+      navigate(`/m/${username}/book`, { replace: true });
     }
   }, [selectedService, navigate, username]);
 
@@ -47,7 +47,7 @@ export default function DateStep() {
     const dateStr = toDateString(date);
     selectDate(dateStr);
     setTimeout(() => {
-      navigate(`/${username}/book/time`);
+      navigate(`/m/${username}/book/time`);
     }, 300);
   };
 
@@ -56,7 +56,7 @@ export default function DateStep() {
       <BookingStepIndicator currentStep={2} />
       <div className="px-4 pt-2 pb-8 flex-1">
         <button
-          onClick={() => navigate(`/${username}/book`)}
+          onClick={() => navigate(`/m/${username}/book`)}
           className="flex items-center gap-1 text-sm text-text-secondary mb-4 active:opacity-70"
         >
           <ChevronLeft size={18} />

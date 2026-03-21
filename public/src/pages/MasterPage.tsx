@@ -71,11 +71,11 @@ export default function MasterPage() {
 
   const handleBook = (serviceId?: string) => {
     const params = serviceId ? `?service=${serviceId}` : "";
-    navigate(`/${username}/book${params}`);
+    navigate(`/m/${username}/book${params}`);
   };
 
   const handleSlotClick = (date: string, time: string) => {
-    navigate(`/${username}/book?date=${date}&time=${time}`);
+    navigate(`/m/${username}/book?date=${date}&time=${time}`);
   };
 
   // Loading state
