@@ -5,6 +5,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.config import settings as app_settings
 from app.core.dependencies import get_current_master, get_db_with_rls
 from app.models.master import Master
 from app.schemas.settings import (
@@ -40,6 +41,7 @@ async def get_profile_settings(
         city=master.city,
         avatar_path=master.avatar_path,
         instagram_url=master.instagram_url,
+        bot_username=app_settings.tg_bot_username or None,
     )
 
 
@@ -78,6 +80,7 @@ async def update_profile_settings(
         city=master.city,
         avatar_path=master.avatar_path,
         instagram_url=master.instagram_url,
+        bot_username=app_settings.tg_bot_username or None,
     )
 
 

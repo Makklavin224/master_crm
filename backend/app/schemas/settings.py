@@ -155,6 +155,7 @@ class ProfileSettings(BaseModel):
     city: str | None = None
     avatar_path: str | None = None
     instagram_url: str | None = None
+    bot_username: str | None = None
 
     model_config = {"from_attributes": True}
 

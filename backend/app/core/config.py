@@ -33,6 +33,7 @@ class Settings(BaseSettings):
 
     # Telegram
     tg_bot_token: str = ""
+    tg_bot_username: str = ""  # Bot username without @, e.g. "MoiOkoshkiBot"
     tg_webhook_secret: str = ""
     mini_app_url: str = ""
     base_webhook_url: str = ""
