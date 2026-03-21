@@ -171,10 +171,10 @@
 ### Reviews (REVW)
 
 - [x] **REVW-01**: Bot sends review request to client 2 hours after completed visit
-- [ ] **REVW-02**: Client rates 1-5 stars + optional text (max 500 chars)
-- [ ] **REVW-03**: Reviews >=3 stars auto-publish; <3 stars require master reply
+- [x] **REVW-02**: Client rates 1-5 stars + optional text (max 500 chars)
+- [x] **REVW-03**: Reviews >=3 stars auto-publish; <3 stars require master reply
 - [x] **REVW-04**: Negative reviews auto-publish after 7 days if master doesn't reply
-- [ ] **REVW-05**: Reviews displayed on public profile page with average rating
+- [x] **REVW-05**: Reviews displayed on public profile page with average rating
 - [x] **REVW-06**: Only clients with real completed visits can leave reviews (1 per booking)
 
 ### Analytics (ANLT)
@@ -333,10 +333,10 @@
 | PORT-04 | Phase 14 | Complete |
 | PORT-05 | Phase 14 | Complete |
 | REVW-01 | Phase 15 | Complete |
-| REVW-02 | Phase 15 | Pending |
-| REVW-03 | Phase 15 | Pending |
+| REVW-02 | Phase 15 | Complete |
+| REVW-03 | Phase 15 | Complete |
 | REVW-04 | Phase 15 | Complete |
-| REVW-05 | Phase 15 | Pending |
+| REVW-05 | Phase 15 | Complete |
 | REVW-06 | Phase 15 | Complete |
 | ANLT-01 | Phase 16 | Pending |
 | ANLT-02 | Phase 16 | Pending |
