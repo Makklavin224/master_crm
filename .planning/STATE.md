@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v2.1
 milestone_name: Bugfix & Stabilization
 status: executing
-stopped_at: Completed 18-02-PLAN.md (role detection race fix + analytics null safety)
-last_updated: "2026-03-21T10:31:05.140Z"
-last_activity: 2026-03-21 -- Completed 18-01 (QR code fix)
+stopped_at: Completed 19-01-PLAN.md (client auth dual-path + bot string cleanup)
+last_updated: "2026-03-21T10:37:27.068Z"
+last_activity: 2026-03-21 -- Completed 19-01 (client auth + bot handlers)
 progress:
   total_phases: 3
   completed_phases: 1
   total_plans: 6
-  completed_plans: 2
-  percent: 17
+  completed_plans: 3
+  percent: 50
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-21)
 
 **Core value:** Master taps "Complete" -- client gets SBP payment link -- tax receipt auto-generates. 3 steps instead of 9.
-**Current focus:** v2.1 Bugfix & Stabilization -- Phase 18 (Critical Fixes)
+**Current focus:** v2.1 Bugfix & Stabilization -- Phase 19 (High-Priority Fixes)
 
 ## Current Position
 
-Phase: 18 of 20 (Critical Fixes)
-Plan: 1 of 2 in current phase
+Phase: 19 of 20 (High-Priority Fixes)
+Plan: 1 of 2 in current phase (19-01 complete)
 Status: In progress
-Last activity: 2026-03-21 -- Completed 18-01 (QR code fix)
+Last activity: 2026-03-21 -- Completed 19-01 (client auth + bot handlers)
 
-Progress: [██░░░░░░░░] 17%
+Progress: [█████░░░░░] 50%
 
 ## Performance Metrics
 
@@ -57,6 +57,8 @@ Recent decisions affecting current work:
 - [Phase 18]: QR fix: bot_username from TG_BOT_USERNAME env var, TG deeplink uses master UUID as startapp param
 - [Phase 18]: Module-level _detecting guard for async singleton race prevention (avoids zustand re-renders)
 - [Phase 18]: RoleSwitcher visibility uses isAuthenticated instead of role===master to persist across view toggles
+- [Phase 19]: SameSite=None for cross-origin cookie support in mobile webviews
+- [Phase 19]: Cookie-first, Bearer-fallback auth strategy for get_current_client
 
 ### Pending Todos
 
@@ -68,6 +70,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-21T10:29:38.700Z
-Stopped at: Completed 18-02-PLAN.md (role detection race fix + analytics null safety)
+Last session: 2026-03-21T10:37:27.067Z
+Stopped at: Completed 19-01-PLAN.md (client auth dual-path + bot string cleanup)
 Resume file: None

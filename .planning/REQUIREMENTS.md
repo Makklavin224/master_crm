@@ -214,15 +214,15 @@
 
 ### Bot Registration (BREG)
 
-- [ ] **BREG-01**: Callback "register_master" sozdayot Master i pokazyvaet knopku "Otkryt mini-app"
-- [ ] **BREG-02**: Callback "link_account" privyazyvaet sushchestvuyushchego mastera po email
-- [ ] **BREG-03**: Posle registratsii/privyazki mini-app otkryvayetsya v master-paneli
+- [x] **BREG-01**: Callback "register_master" sozdayot Master i pokazyvaet knopku "Otkryt mini-app"
+- [x] **BREG-02**: Callback "link_account" privyazyvaet sushchestvuyushchego mastera po email
+- [x] **BREG-03**: Posle registratsii/privyazki mini-app otkryvayetsya v master-paneli
 
 ### Client Auth (CAUTH)
 
-- [ ] **CAUTH-01**: verify-code vozvrashchaet token v response body (ne tolko cookie)
+- [x] **CAUTH-01**: verify-code vozvrashchaet token v response body (ne tolko cookie)
 - [ ] **CAUTH-02**: Client cabinet otpravlyaet token cherez Bearer header kak fallback
-- [ ] **CAUTH-03**: get_current_client prinimaet i cookie, i Bearer header
+- [x] **CAUTH-03**: get_current_client prinimaet i cookie, i Bearer header
 
 ### Analytics Robustness (ANLTR)
 
@@ -415,12 +415,12 @@
 | ANLTR-01 | Phase 18 | Complete |
 | ANLTR-02 | Phase 18 | Complete |
 | ANLTR-03 | Phase 18 | Complete |
-| BREG-01 | Phase 19 | Pending |
-| BREG-02 | Phase 19 | Pending |
-| BREG-03 | Phase 19 | Pending |
-| CAUTH-01 | Phase 19 | Pending |
+| BREG-01 | Phase 19 | Complete |
+| BREG-02 | Phase 19 | Complete |
+| BREG-03 | Phase 19 | Complete |
+| CAUTH-01 | Phase 19 | Complete |
 | CAUTH-02 | Phase 19 | Pending |
-| CAUTH-03 | Phase 19 | Pending |
+| CAUTH-03 | Phase 19 | Complete |
 | BVAL-01 | Phase 19 | Pending |
 | BVAL-02 | Phase 19 | Pending |
 | ERRH-01 | Phase 20 | Pending |

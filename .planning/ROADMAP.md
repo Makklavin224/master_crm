@@ -366,7 +366,7 @@ Plans:
   1. A new user sends /start to the TG bot, taps "Register as master", and gets a confirmation with an "Open mini-app" button that launches the master panel; an existing web-registered master can tap "Link account", enter email, and get their TG account linked
   2. Client enters phone at /my, receives OTP, enters code, and sees their bookings; the session works both with httpOnly cookie and with Bearer token fallback (for cross-origin or mobile webview scenarios)
   3. Opening /book/invalid-uuid or /book/nonexistent-uuid in the mini-app shows "Master not found" with a suggestion to check the link; the public page /m/nonexistent-username shows a helpful 404 message
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
 - [ ] 19-01-PLAN.md -- Backend fixes: client_auth dual-path token, get_current_client Bearer fallback, bot registration string cleanup (TG + MAX)
@@ -411,5 +411,5 @@ Phases execute in numeric order: 18 -> 19 -> 20
 | 16. Analytics | v2.0 | 2/2 | Complete | 2026-03-21 |
 | 17. Cross-Platform Auth | v2.0 | 2/2 | Complete | 2026-03-21 |
 | 18. Critical Fixes | 2/2 | Complete    | 2026-03-21 | - |
-| 19. High Priority Fixes | v2.1 | 0/2 | Not started | - |
+| 19. High Priority Fixes | 1/2 | In Progress|  | - |
 | 20. Error Handling & UX Polish | v2.1 | 0/2 | Not started | - |
