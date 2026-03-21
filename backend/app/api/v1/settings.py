@@ -1,4 +1,4 @@
-"""Master settings GET/PUT endpoints + payment settings + profile settings."""
+"""Master settings GET/PUT endpoints + payment settings + profile settings + platform linking."""
 
 from typing import Annotated
 
@@ -15,6 +15,8 @@ from app.schemas.settings import (
     NotificationSettingsUpdate,
     PaymentSettings,
     PaymentSettingsUpdate,
+    PlatformStatus,
+    PlatformUnlinkResponse,
     ProfileSettings,
     ProfileSettingsUpdate,
     RobokassaSetup,
@@ -286,3 +288,48 @@ async def unbind_inn(
     await db.refresh(master)
 
     return _build_payment_settings(master)
+
+
+# --- Platform linking ---
+
+_PLATFORM_COLUMN_MAP = {
+    "telegram": "tg_user_id",
+    "max": "max_user_id",
+    "vk": "vk_user_id",
+}
+
+
+@router.get("/platforms", response_model=PlatformStatus)
+async def get_platform_status(
+    master: Annotated[Master, Depends(get_current_master)],
+):
+    """Return connected platform statuses for the authenticated master."""
+    return PlatformStatus(
+        tg_linked=master.tg_user_id is not None,
+        max_linked=master.max_user_id is not None,
+        vk_linked=master.vk_user_id is not None,
+        tg_user_id=master.tg_user_id,
+        max_user_id=master.max_user_id,
+        vk_user_id=master.vk_user_id,
+    )
+
+
+@router.delete("/platforms/{platform}", response_model=PlatformUnlinkResponse)
+async def unlink_platform(
+    platform: str,
+    master: Annotated[Master, Depends(get_current_master)],
+    db: Annotated[AsyncSession, Depends(get_db_with_rls)],
+):
+    """Unlink a messenger platform from the master's account."""
+    column_name = _PLATFORM_COLUMN_MAP.get(platform)
+    if not column_name:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid platform: {platform}. Must be one of: telegram, max, vk",
+        )
+
+    setattr(master, column_name, None)
+    await db.flush()
+    await db.refresh(master)
+
+    return PlatformUnlinkResponse(platform=platform)

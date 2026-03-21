@@ -120,6 +120,27 @@ class InnSetup(BaseModel):
     inn: str = Field(min_length=12, max_length=12, pattern=r"^\d{12}$")
 
 
+# --- Platform linking ---
+
+
+class PlatformStatus(BaseModel):
+    """Current platform connection statuses for a master."""
+
+    tg_linked: bool = False
+    max_linked: bool = False
+    vk_linked: bool = False
+    tg_user_id: str | None = None
+    max_user_id: str | None = None
+    vk_user_id: str | None = None
+
+
+class PlatformUnlinkResponse(BaseModel):
+    """Response after unlinking a platform account."""
+
+    ok: bool = True
+    platform: str
+
+
 # --- Profile settings ---
 
 RESERVED_USERNAMES = {"admin", "api", "app", "my", "webhook", "m", "static"}

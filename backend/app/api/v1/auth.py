@@ -17,6 +17,8 @@ from app.core.security import (
 from app.models.master import Master
 from app.models.qr_session import QrSession
 from app.schemas.auth import (
+    BotRegisterRequest,
+    LinkAccountRequest,
     LoginRequest,
     MagicLinkVerifyRequest,
     MaxAuthRequest,
@@ -29,7 +31,12 @@ from app.schemas.auth import (
     VkAuthRequest,
 )
 from app.schemas.master import MasterRead
-from app.services.auth_service import authenticate_master, register_master
+from app.services.auth_service import (
+    PLATFORM_COLUMN_MAP,
+    authenticate_master,
+    register_master,
+    register_master_from_bot,
+)
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -326,6 +333,92 @@ async def qr_confirm(
 
 
 # --- Magic Link Login Flow ---
+
+
+@router.post("/bot-register", response_model=TokenResponse, status_code=201)
+async def bot_register(
+    data: BotRegisterRequest,
+    db: Annotated[AsyncSession, Depends(get_db)],
+):
+    """Register a new master from a bot interaction (no password required).
+
+    Creates a Master with name, email, and the platform_user_id column
+    set based on the platform field.
+    """
+    master, token = await register_master_from_bot(
+        db, data.name, data.email, data.platform, data.platform_user_id
+    )
+    return TokenResponse(access_token=token)
+
+
+@router.post("/link-account", response_model=TokenResponse)
+async def link_account(
+    data: LinkAccountRequest,
+    db: Annotated[AsyncSession, Depends(get_db)],
+):
+    """Link an existing master account to a messenger platform.
+
+    Looks up the master by email, sets the platform_user_id column,
+    and returns a JWT for the linked master.
+    """
+    email_lower = data.email.lower().strip()
+
+    # Look up master by email
+    result = await db.execute(
+        select(Master).where(Master.email == email_lower)
+    )
+    master = result.scalar_one_or_none()
+    if master is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Account not found",
+        )
+
+    if not master.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Account is deactivated",
+        )
+
+    # Determine which column to set
+    column_name = PLATFORM_COLUMN_MAP.get(data.platform)
+    if not column_name:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Unsupported platform: {data.platform}",
+        )
+
+    current_value = getattr(master, column_name)
+
+    # Already linked to this same user -- just return a token
+    if current_value == data.platform_user_id:
+        token = create_access_token(data={"sub": str(master.id)})
+        return TokenResponse(access_token=token)
+
+    # Already linked to a DIFFERENT user
+    if current_value is not None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Account already linked to a different platform user",
+        )
+
+    # Check that platform_user_id is not used by another master
+    column = getattr(Master, column_name)
+    existing = await db.execute(
+        select(Master).where(column == data.platform_user_id)
+    )
+    if existing.scalar_one_or_none() is not None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Platform account already linked to another master",
+        )
+
+    # Link the platform
+    setattr(master, column_name, data.platform_user_id)
+    await db.flush()
+
+    token = create_access_token(data={"sub": str(master.id)})
+    return TokenResponse(access_token=token)
 
 
 @router.post("/magic/verify", response_model=TokenResponse)

@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pydantic import BaseModel
 
 
@@ -5,6 +7,23 @@ class RegisterRequest(BaseModel):
     email: str
     password: str
     name: str
+
+
+class BotRegisterRequest(BaseModel):
+    """Register a new master from a bot (no password required)."""
+
+    name: str
+    email: str
+    platform: Literal["telegram", "max", "vk"]
+    platform_user_id: str
+
+
+class LinkAccountRequest(BaseModel):
+    """Link an existing master account to a messenger platform."""
+
+    email: str
+    platform: Literal["telegram", "max", "vk"]
+    platform_user_id: str
 
 
 class LoginRequest(BaseModel):

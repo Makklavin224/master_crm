@@ -51,6 +51,72 @@ async def register_master(
     return master, token
 
 
+PLATFORM_COLUMN_MAP = {
+    "telegram": "tg_user_id",
+    "max": "max_user_id",
+    "vk": "vk_user_id",
+}
+
+
+async def register_master_from_bot(
+    db: AsyncSession,
+    name: str,
+    email: str,
+    platform: str,
+    platform_user_id: str,
+) -> tuple[Master, str]:
+    """Register a new master from a bot interaction (no password).
+
+    Returns (master, access_token).
+    """
+    email_lower = email.lower().strip()
+    if not email_lower or "@" not in email_lower:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid email address",
+        )
+
+    # Check email uniqueness
+    result = await db.execute(
+        select(Master).where(Master.email == email_lower)
+    )
+    if result.scalar_one_or_none() is not None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Email already registered",
+        )
+
+    # Check platform_user_id uniqueness
+    column_name = PLATFORM_COLUMN_MAP.get(platform)
+    if not column_name:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Unsupported platform: {platform}",
+        )
+
+    column = getattr(Master, column_name)
+    result = await db.execute(
+        select(Master).where(column == platform_user_id)
+    )
+    if result.scalar_one_or_none() is not None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Platform account already linked to another master",
+        )
+
+    # Create master with platform binding (no password)
+    master = Master(
+        email=email_lower,
+        name=name.strip(),
+        **{column_name: platform_user_id},
+    )
+    db.add(master)
+    await db.flush()
+
+    token = create_access_token(data={"sub": str(master.id)})
+    return master, token
+
+
 async def authenticate_master(
     db: AsyncSession, email: str, password: str
 ) -> tuple[Master, str]:
