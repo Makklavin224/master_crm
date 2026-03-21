@@ -6,6 +6,7 @@ from app.api.v1.clients import router as clients_router
 from app.api.v1.health import router as health_router
 from app.api.v1.masters import router as masters_router
 from app.api.v1.payments import router as payments_router
+from app.api.v1.public import router as public_router
 from app.api.v1.schedule import router as schedule_router
 from app.api.v1.services import router as services_router
 from app.api.v1.settings import router as settings_router
@@ -30,6 +31,9 @@ api_v1_router.include_router(
 )
 api_v1_router.include_router(
     masters_router, prefix="/masters", tags=["masters"]
+)
+api_v1_router.include_router(
+    public_router, prefix="/masters", tags=["public"]
 )
 api_v1_router.include_router(
     payments_router, prefix="/payments", tags=["payments"]
