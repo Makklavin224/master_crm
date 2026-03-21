@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Feature Expansion
 status: completed
-stopped_at: Completed 14-01-PLAN.md
-last_updated: "2026-03-21T06:42:08.935Z"
-last_activity: 2026-03-21 -- Completed 14-01 Portfolio Backend
+stopped_at: Completed 14-03-PLAN.md
+last_updated: "2026-03-21T06:55:02.031Z"
+last_activity: 2026-03-21 -- Completed 14-03 Portfolio Management UI
 progress:
   total_phases: 8
-  completed_phases: 5
+  completed_phases: 7
   total_plans: 20
-  completed_plans: 14
-  percent: 70
+  completed_plans: 17
+  percent: 85
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-03-20)
 ## Current Position
 
 Phase: 14 of 16 (Portfolio)
-Plan: 1 of 3 -- DONE
-Status: Plan 14-01 complete, ready for 14-02
-Last activity: 2026-03-21 -- Completed 14-01 Portfolio Backend
+Plan: 3 of 3 -- DONE
+Status: Phase 14 complete, ready for Phase 15
+Last activity: 2026-03-21 -- Completed 14-03 Portfolio Management UI
 
-Progress: [███████░░░] 70%
+Progress: [████████░░] 85%
 
 ## Performance Metrics
 
@@ -67,6 +67,8 @@ Progress: [███████░░░] 70%
 | Phase 13 P01 | 7min | 2 tasks | 9 files |
 | Phase 13 P02 | 3min | 2 tasks | 4 files |
 | Phase 14 P01 | 3min | 2 tasks | 8 files |
+| Phase 14 P02 | 9min | 2 tasks | 4 files |
+| Phase 14 P03 | 9min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -121,6 +123,11 @@ Recent decisions affecting current work:
 - [Phase 14-01]: Image resize via Pillow with LANCZOS, max 1200px full / 300px thumb
 - [Phase 14-01]: Media serving as separate router (no auth) for public photo access
 - [Phase 14-01]: Reorder endpoint placed before /{photo_id} to avoid FastAPI path conflict
+- [Phase 14-02]: Inline lightbox implementation (no external library) with keyboard nav and touch swipe
+- [Phase 14-02]: Tag filter pills match existing codebase pill styling (bg-surface inactive, bg-accent active)
+- [Phase 14-03]: Upload uses raw fetch (not apiRequest) to avoid Content-Type header on multipart form data
+- [Phase 14-03]: Mini-app uses native select for service tag (mobile-friendly, no extra dep)
+- [Phase 14-03]: Web admin uses Ant Design Upload.Dragger for drag-and-drop UX
 
 ### Pending Todos
 
@@ -132,6 +139,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-21T06:42:08.933Z
-Stopped at: Completed 14-01-PLAN.md
+Last session: 2026-03-21T06:52:17Z
+Stopped at: Completed 14-03-PLAN.md
 Resume file: None

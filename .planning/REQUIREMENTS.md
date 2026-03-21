@@ -164,9 +164,9 @@
 
 - [x] **PORT-01**: Master can upload up to 30 photos (max 5MB each, JPEG/PNG/WebP)
 - [x] **PORT-02**: Photos auto-resized to 1200px and thumbnails generated (300px)
-- [ ] **PORT-03**: Photos displayed as gallery on public profile page with lightbox
+- [x] **PORT-03**: Photos displayed as gallery on public profile page with lightbox
 - [x] **PORT-04**: Master can tag photos with service names for filtering
-- [ ] **PORT-05**: Upload available from both web admin and mini-app settings
+- [x] **PORT-05**: Upload available from both web admin and mini-app settings
 
 ### Reviews (REVW)
 
@@ -329,9 +329,9 @@
 | ARCT-05 | Phase 13 | Complete |
 | PORT-01 | Phase 14 | Complete |
 | PORT-02 | Phase 14 | Complete |
-| PORT-03 | Phase 14 | Pending |
+| PORT-03 | Phase 14 | Complete |
 | PORT-04 | Phase 14 | Complete |
-| PORT-05 | Phase 14 | Pending |
+| PORT-05 | Phase 14 | Complete |
 | REVW-01 | Phase 15 | Pending |
 | REVW-02 | Phase 15 | Pending |
 | REVW-03 | Phase 15 | Pending |
