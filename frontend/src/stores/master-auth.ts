@@ -4,6 +4,10 @@ import type { PlatformBridge } from "../platform/types.ts";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "/api/v1";
 const TOKEN_KEY = "master_token";
+const ROLE_PREF_KEY = "master_role_preference";
+
+/** Guard to prevent concurrent autoDetectRole calls */
+let _detecting = false;
 
 function safeGetItem(key: string): string | null {
   try {
@@ -123,66 +127,81 @@ export const useMasterAuth = create<MasterAuthState>((set, get) => ({
   },
 
   setRole: (role: "master" | "client") => {
+    safeSetItem(ROLE_PREF_KEY, role);
     set({ role });
   },
 
   autoDetectRole: async (bridge: PlatformBridge) => {
-    set({ role: "detecting", isLoading: true });
+    // Guard: prevent concurrent calls (race condition fix)
+    if (_detecting) return;
+    _detecting = true;
 
-    // 1. Check localStorage for existing token
-    const existingToken = safeGetItem(TOKEN_KEY);
-    if (existingToken) {
-      set({ token: existingToken, isAuthenticated: true, role: "master", isLoading: false });
-      return;
-    }
-
-    // 2. Get init data from platform bridge
-    const initDataRaw = bridge.getInitDataRaw();
-    if (!initDataRaw) {
-      // Web platform or no init data -- treat as client
-      set({ role: "client", isAuthenticated: false, isLoading: false });
-      return;
-    }
-
-    // 3. Determine auth endpoint based on platform
-    const authConfig = getAuthConfig(bridge.platform, initDataRaw);
-    if (!authConfig) {
-      set({ role: "client", isAuthenticated: false, isLoading: false });
-      return;
-    }
-
-    // 4. Try to authenticate
     try {
-      const response = await fetch(`${API_BASE}${authConfig.endpoint}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(authConfig.body),
-      });
+      set({ role: "detecting", isLoading: true });
 
-      if (response.ok) {
-        const data = await response.json();
-        safeSetItem(TOKEN_KEY, data.access_token);
-        set({
-          token: data.access_token,
-          isAuthenticated: true,
-          role: "master",
-          isLoading: false,
-          error: null,
-        });
+      // Helper: read saved role preference from localStorage
+      const getSavedRole = (): "master" | "client" => {
+        const savedPref = safeGetItem(ROLE_PREF_KEY);
+        return savedPref === "client" ? "client" : "master";
+      };
+
+      // 1. Check localStorage for existing token
+      const existingToken = safeGetItem(TOKEN_KEY);
+      if (existingToken) {
+        set({ token: existingToken, isAuthenticated: true, role: getSavedRole(), isLoading: false });
         return;
       }
 
-      // 401/404 = not a master, this is normal
-      if (response.status === 401 || response.status === 404) {
+      // 2. Get init data from platform bridge
+      const initDataRaw = bridge.getInitDataRaw();
+      if (!initDataRaw) {
+        // Web platform or no init data -- treat as client
         set({ role: "client", isAuthenticated: false, isLoading: false });
         return;
       }
 
-      // Other errors -- default to client
-      set({ role: "client", isAuthenticated: false, isLoading: false });
-    } catch {
-      // Network error -- default to client
-      set({ role: "client", isAuthenticated: false, isLoading: false });
+      // 3. Determine auth endpoint based on platform
+      const authConfig = getAuthConfig(bridge.platform, initDataRaw);
+      if (!authConfig) {
+        set({ role: "client", isAuthenticated: false, isLoading: false });
+        return;
+      }
+
+      // 4. Try to authenticate
+      try {
+        const response = await fetch(`${API_BASE}${authConfig.endpoint}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(authConfig.body),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          safeSetItem(TOKEN_KEY, data.access_token);
+          set({
+            token: data.access_token,
+            isAuthenticated: true,
+            role: getSavedRole(),
+            isLoading: false,
+            error: null,
+          });
+          return;
+        }
+
+        // 401/404 = not a master, this is normal
+        if (response.status === 401 || response.status === 404) {
+          set({ role: "client", isAuthenticated: false, isLoading: false });
+          return;
+        }
+
+        // Other errors -- default to client
+        set({ role: "client", isAuthenticated: false, isLoading: false });
+      } catch {
+        // Network error -- default to client
+        set({ role: "client", isAuthenticated: false, isLoading: false });
+      }
+    } finally {
+      _detecting = false;
     }
   },
 }));

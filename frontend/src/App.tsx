@@ -62,6 +62,7 @@ function RoleDetector() {
   const role = useMasterAuth((s) => s.role);
 
   useEffect(() => {
+    bridge.ready();
     useMasterAuth.getState().autoDetectRole(bridge);
   }, [bridge]);
 

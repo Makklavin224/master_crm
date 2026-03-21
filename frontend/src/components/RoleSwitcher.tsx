@@ -7,12 +7,13 @@ import { useMasterAuth } from "../stores/master-auth.ts";
  */
 export function RoleSwitcher() {
   const role = useMasterAuth((s) => s.role);
+  const isAuthenticated = useMasterAuth((s) => s.isAuthenticated);
   const setRole = useMasterAuth((s) => s.setRole);
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Only masters see the toggle
-  if (role !== "master") return null;
+  // Only authenticated masters see the toggle (visible in both master and client views)
+  if (!isAuthenticated || role === "detecting") return null;
 
   const isInMasterPanel = location.pathname.startsWith("/master");
 
