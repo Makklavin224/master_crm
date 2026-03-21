@@ -4,7 +4,7 @@ milestone: v2.1
 milestone_name: Bugfix & Stabilization
 status: executing
 stopped_at: Completed 18-02-PLAN.md (role detection race fix + analytics null safety)
-last_updated: "2026-03-21T10:29:38.701Z"
+last_updated: "2026-03-21T10:31:05.140Z"
 last_activity: 2026-03-21 -- Completed 18-01 (QR code fix)
 progress:
   total_phases: 3
