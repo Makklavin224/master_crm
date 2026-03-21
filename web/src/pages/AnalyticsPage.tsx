@@ -81,20 +81,40 @@ function formatRubles(value: number) {
 
 // --- Dashboard Tab ---
 
+/** Null-safe numeric coercion: undefined/null/NaN -> 0 */
+const n = (v: unknown): number => Number(v) || 0;
+
 function DashboardTab({ dateRange }: { dateRange: { date_from: string; date_to: string } }) {
-  const { data: summary, isLoading: summaryLoading } = useAnalyticsSummary(dateRange);
-  const { data: chartData, isLoading: chartLoading } = useRevenueChart(dateRange);
+  const { data: summary, isLoading: summaryLoading, isError: summaryError, refetch: refetchSummary } = useAnalyticsSummary(dateRange);
+  const { data: chartData, isLoading: chartLoading, isError: chartError, refetch: refetchChart } = useRevenueChart(dateRange);
 
   if (summaryLoading || chartLoading) {
     return <Spin size="large" style={{ display: "block", margin: "48px auto" }} />;
   }
 
-  if (!summary) return null;
+  if (summaryError || chartError) {
+    return (
+      <div style={{ textAlign: "center", padding: "48px 0" }}>
+        <p style={{ fontSize: 16, marginBottom: 16 }}>Ошибка загрузки данных</p>
+        <Button onClick={() => { refetchSummary(); refetchChart(); }}>Повторить</Button>
+      </div>
+    );
+  }
+
+  if (!summary) {
+    return (
+      <div style={{ textAlign: "center", padding: "48px 0", color: "rgba(0,0,0,0.45)" }}>
+        <p style={{ fontSize: 16 }}>Нет данных за выбранный период</p>
+      </div>
+    );
+  }
 
   const pieData = [
-    { name: "Новые", value: summary.new_clients },
-    { name: "Повторные", value: summary.repeat_clients },
+    { name: "Новые", value: n(summary.new_clients) },
+    { name: "Повторные", value: n(summary.repeat_clients) },
   ];
+  const hasPieData = n(summary.new_clients) + n(summary.repeat_clients) > 0;
+  const safeChartData = chartData ?? [];
 
   return (
     <Space direction="vertical" size="large" style={{ width: "100%" }}>
@@ -104,7 +124,7 @@ function DashboardTab({ dateRange }: { dateRange: { date_from: string; date_to: 
           <Card>
             <Statistic
               title="Доход"
-              value={summary.revenue / 100}
+              value={n(summary.revenue) / 100}
               suffix="₽"
               formatter={(val) => Number(val).toLocaleString("ru-RU")}
             />
@@ -112,12 +132,12 @@ function DashboardTab({ dateRange }: { dateRange: { date_from: string; date_to: 
         </Col>
         <Col span={8}>
           <Card>
-            <Statistic title="Записей" value={summary.booking_count} />
+            <Statistic title="Записей" value={n(summary.booking_count)} />
           </Card>
         </Col>
         <Col span={8}>
           <Card>
-            <Statistic title="Клиентов" value={summary.client_count} />
+            <Statistic title="Клиентов" value={n(summary.client_count)} />
           </Card>
         </Col>
       </Row>
@@ -126,45 +146,57 @@ function DashboardTab({ dateRange }: { dateRange: { date_from: string; date_to: 
       <Row gutter={16}>
         <Col span={16}>
           <Card title="Динамика дохода">
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={chartData ?? []}>
-                <XAxis dataKey="date" tickFormatter={formatDateTick} />
-                <YAxis tickFormatter={(v) => formatRubles(v)} />
-                <Tooltip
-                  formatter={(value: unknown) => [`${formatRubles(Number(value))} ₽`, "Доход"]}
-                  labelFormatter={(label: unknown) => dayjs(String(label)).format("DD.MM.YYYY")}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="revenue"
-                  stroke="#6C5CE7"
-                  strokeWidth={2}
-                  dot={false}
-                />
-              </LineChart>
-            </ResponsiveContainer>
+            {safeChartData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={safeChartData}>
+                  <XAxis dataKey="date" tickFormatter={formatDateTick} />
+                  <YAxis tickFormatter={(v) => formatRubles(v)} />
+                  <Tooltip
+                    formatter={(value: unknown) => [`${formatRubles(Number(value))} ₽`, "Доход"]}
+                    labelFormatter={(label: unknown) => dayjs(String(label)).format("DD.MM.YYYY")}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="revenue"
+                    stroke="#6C5CE7"
+                    strokeWidth={2}
+                    dot={false}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            ) : (
+              <div style={{ textAlign: "center", padding: "48px 0", color: "rgba(0,0,0,0.45)" }}>
+                Нет данных
+              </div>
+            )}
           </Card>
         </Col>
         <Col span={8}>
           <Card title="Новые / Повторные">
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={pieData}
-                  dataKey="value"
-                  nameKey="name"
-                  innerRadius={60}
-                  outerRadius={80}
-                  paddingAngle={2}
-                >
-                  {pieData.map((_, i) => (
-                    <Cell key={i} fill={PIE_COLORS[i]} />
-                  ))}
-                </Pie>
-                <Legend />
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
+            {hasPieData ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={pieData}
+                    dataKey="value"
+                    nameKey="name"
+                    innerRadius={60}
+                    outerRadius={80}
+                    paddingAngle={2}
+                  >
+                    {pieData.map((_, i) => (
+                      <Cell key={i} fill={PIE_COLORS[i]} />
+                    ))}
+                  </Pie>
+                  <Legend />
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            ) : (
+              <div style={{ textAlign: "center", padding: "48px 0", color: "rgba(0,0,0,0.45)" }}>
+                Нет данных
+              </div>
+            )}
           </Card>
         </Col>
       </Row>
@@ -179,7 +211,7 @@ function DashboardTab({ dateRange }: { dateRange: { date_from: string; date_to: 
               </div>
               <Progress
                 type="dashboard"
-                percent={Math.round(summary.utilization)}
+                percent={Math.round(n(summary.utilization))}
                 format={(p) => `${p}%`}
                 size={100}
               />
@@ -190,7 +222,7 @@ function DashboardTab({ dateRange }: { dateRange: { date_from: string; date_to: 
           <Card>
             <Statistic
               title="Средний чек"
-              value={summary.avg_check / 100}
+              value={n(summary.avg_check) / 100}
               suffix="₽"
               formatter={(val) => Number(val).toLocaleString("ru-RU")}
             />
@@ -200,7 +232,7 @@ function DashboardTab({ dateRange }: { dateRange: { date_from: string; date_to: 
           <Card>
             <Statistic
               title="Возвращаемость"
-              value={summary.retention_rate.toFixed(1)}
+              value={n(summary.retention_rate).toFixed(1)}
               suffix="%"
             />
           </Card>
@@ -209,7 +241,7 @@ function DashboardTab({ dateRange }: { dateRange: { date_from: string; date_to: 
           <Card>
             <Statistic
               title="Отмены / Неявки"
-              value={`${summary.cancel_rate.toFixed(1)}% / ${summary.noshow_rate.toFixed(1)}%`}
+              value={`${n(summary.cancel_rate).toFixed(1)}% / ${n(summary.noshow_rate).toFixed(1)}%`}
             />
           </Card>
         </Col>
@@ -270,9 +302,18 @@ const dailyColumns: ColumnsType<DailyBreakdownRow> = [
 ];
 
 function ReportsTab({ dateRange }: { dateRange: { date_from: string; date_to: string } }) {
-  const { data: topServices, isLoading: topLoading } = useTopServices(dateRange);
-  const { data: daily, isLoading: dailyLoading } = useDailyBreakdown(dateRange);
+  const { data: topServices, isLoading: topLoading, isError: topError, refetch: refetchTop } = useTopServices(dateRange);
+  const { data: daily, isLoading: dailyLoading, isError: dailyError, refetch: refetchDaily } = useDailyBreakdown(dateRange);
   const [exporting, setExporting] = useState(false);
+
+  if (topError || dailyError) {
+    return (
+      <div style={{ textAlign: "center", padding: "48px 0" }}>
+        <p style={{ fontSize: 16, marginBottom: 16 }}>Ошибка загрузки данных</p>
+        <Button onClick={() => { refetchTop(); refetchDaily(); }}>Повторить</Button>
+      </div>
+    );
+  }
 
   return (
     <Space direction="vertical" size="large" style={{ width: "100%" }}>
