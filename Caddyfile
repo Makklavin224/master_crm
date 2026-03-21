@@ -14,6 +14,7 @@
     # Redirect /admin and /app without trailing slash
     redir /admin /admin/ 308
     redir /app /app/ 308
+    redir /m /m/ 308
 
     # Admin panel
     handle /admin/* {
@@ -25,6 +26,12 @@
     handle /app/* {
         uri strip_prefix /app
         reverse_proxy frontend:3000
+    }
+
+    # Public master pages
+    handle /m/* {
+        uri strip_prefix /m
+        reverse_proxy public:3002
     }
 
     # API
