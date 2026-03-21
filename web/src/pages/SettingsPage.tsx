@@ -26,6 +26,8 @@ import {
   useNotificationSettings,
   useUpdateNotificationSettings,
   usePaymentSettings,
+  useBindInn,
+  useUnbindInn,
   useProfileSettings,
   useScheduleTemplate,
   useUpdateScheduleTemplate,
@@ -587,6 +589,29 @@ const fiscalizationLabels: Record<string, { status: "default" | "processing" | "
 
 function PaymentsTab() {
   const { data, isLoading } = usePaymentSettings();
+  const bindInn = useBindInn();
+  const unbindInn = useUnbindInn();
+  const [innInput, setInnInput] = useState("");
+  const { message: messageApi } = App.useApp();
+
+  const handleBindInn = useCallback(async () => {
+    try {
+      await bindInn.mutateAsync(innInput);
+      messageApi.success("Авточеки подключены");
+      setInnInput("");
+    } catch {
+      messageApi.error("Не удалось подключить авточеки");
+    }
+  }, [bindInn, innInput, messageApi]);
+
+  const handleUnbindInn = useCallback(async () => {
+    try {
+      await unbindInn.mutateAsync();
+      messageApi.success("Авточеки отключены");
+    } catch {
+      messageApi.error("Не удалось отключить авточеки");
+    }
+  }, [unbindInn, messageApi]);
 
   if (isLoading) return <Spin />;
   if (!data) return null;
@@ -622,6 +647,46 @@ function PaymentsTab() {
         </Descriptions.Item>
         <Descriptions.Item label="Фискализация">
           <Badge status={fisc.status} text={fisc.text} />
+        </Descriptions.Item>
+        <Descriptions.Item label="Авточеки (ФНС)">
+          {data.fns_connected ? (
+            <>
+              <Badge status="success" text="Подключены" />
+              <span style={{ marginLeft: 8 }}>ИНН: {data.inn}</span>
+              <Popconfirm
+                title="Отключить авточеки?"
+                description="Чеки не будут автоматически отправляться в ФНС"
+                onConfirm={handleUnbindInn}
+              >
+                <Button type="link" danger size="small" style={{ marginLeft: 8 }}>
+                  Отключить
+                </Button>
+              </Popconfirm>
+            </>
+          ) : data.has_robokassa ? (
+            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+              <Input
+                value={innInput}
+                onChange={(e) =>
+                  setInnInput(e.target.value.replace(/\D/g, "").slice(0, 12))
+                }
+                placeholder="ИНН (12 цифр)"
+                maxLength={12}
+                style={{ width: 180 }}
+              />
+              <Button
+                type="primary"
+                size="small"
+                onClick={handleBindInn}
+                loading={bindInn.isPending}
+                disabled={innInput.length !== 12}
+              >
+                Подключить
+              </Button>
+            </div>
+          ) : (
+            <span style={{ color: "#888" }}>Требуется подключение Робокассы</span>
+          )}
         </Descriptions.Item>
       </Descriptions>
       <p style={{ marginTop: 16, color: "#888" }}>

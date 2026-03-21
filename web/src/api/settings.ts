@@ -38,6 +38,8 @@ export interface PaymentSettings {
   fiscalization_level: string;
   has_seen_grey_warning: boolean;
   receipt_sno: string;
+  inn: string | null;
+  fns_connected: boolean;
 }
 
 export interface PaymentSettingsUpdate {
@@ -162,6 +164,29 @@ export function useUpdatePaymentSettings() {
       }),
     onSuccess: () =>
       qc.invalidateQueries({ queryKey: ["payment-settings"] }),
+  });
+}
+
+export function useBindInn() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (inn: string) =>
+      apiRequest<PaymentSettings>("/settings/payment/inn", {
+        method: "POST",
+        body: JSON.stringify({ inn }),
+      }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["payment-settings"] }),
+  });
+}
+
+export function useUnbindInn() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: () =>
+      apiRequest<PaymentSettings>("/settings/payment/inn", {
+        method: "DELETE",
+      }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["payment-settings"] }),
   });
 }
 
