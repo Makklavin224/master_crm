@@ -13,6 +13,7 @@ class PaymentCreate(BaseModel):
     booking_id: uuid.UUID
     payment_method: Literal["cash", "card_to_card", "transfer", "sbp"]
     fiscalization_level: Literal["none", "manual", "auto"] | None = None  # override
+    amount_override: int | None = None  # If set, overrides service price (for discounts/extras), kopecks
 
 
 class RobokassaPaymentCreate(BaseModel):
@@ -20,6 +21,7 @@ class RobokassaPaymentCreate(BaseModel):
 
     booking_id: uuid.UUID
     fiscalization_level: Literal["none", "manual", "auto"] | None = None  # override
+    amount_override: int | None = None  # If set, overrides service price (for discounts/extras), kopecks
 
 
 class RequisitesPaymentCreate(BaseModel):
@@ -61,6 +63,7 @@ class PaymentListResponse(BaseModel):
 
     items: list[PaymentRead]
     total: int
+    total_revenue: int = 0  # Sum of paid payment amounts in kopecks for the filtered query
 
 
 class PaymentHistoryFilters(BaseModel):

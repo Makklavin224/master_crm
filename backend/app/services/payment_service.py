@@ -119,11 +119,13 @@ class PaymentService:
         booking_id: uuid.UUID,
         payment_method: str,
         fiscalization_override: str | None = None,
+        amount_override: int | None = None,
     ) -> Payment:
         """Create a manual payment: master records payment received.
 
         Flow: validate booking -> create Payment(status=paid) -> mark booking completed.
         If fiscalization is 'manual', populates receipt_data JSON.
+        If amount_override is set, uses it instead of the service price.
         """
         booking = await PaymentService._load_booking(db, master.id, booking_id)
 
@@ -132,13 +134,16 @@ class PaymentService:
         )
         now = datetime.now(timezone.utc)
 
+        # Determine final amount
+        final_amount = amount_override if amount_override is not None else booking.service.price
+
         # Build receipt data for manual fiscalization
         receipt_data_json = None
         receipt_status = "not_applicable"
         if effective_fisc == "manual":
             receipt_data_json = json.dumps(
                 PaymentService.format_receipt_data(
-                    amount_kopecks=booking.service.price,
+                    amount_kopecks=final_amount,
                     service_name=booking.service.name,
                     client_name=booking.client.name if booking.client else "Client",
                 ),
@@ -149,7 +154,7 @@ class PaymentService:
         payment = Payment(
             master_id=master.id,
             booking_id=booking.id,
-            amount=booking.service.price,
+            amount=final_amount,
             status="paid",
             payment_method=payment_method,
             receipt_status=receipt_status,
@@ -172,11 +177,13 @@ class PaymentService:
         master: Master,
         booking_id: uuid.UUID,
         fiscalization_override: str | None = None,
+        amount_override: int | None = None,
     ) -> Payment:
         """Create a Robokassa payment: generate signed payment URL.
 
         Flow: validate booking -> decrypt credentials -> get InvId from sequence ->
         build receipt JSON if auto -> generate URL -> create Payment(status=pending).
+        If amount_override is set, uses it instead of the service price.
         """
         booking = await PaymentService._load_booking(db, master.id, booking_id)
 
@@ -208,12 +215,15 @@ class PaymentService:
             master, fiscalization_override
         )
 
+        # Determine final amount
+        final_amount = amount_override if amount_override is not None else booking.service.price
+
         # Get next InvId from sequence
         result = await db.execute(text("SELECT nextval('robokassa_inv_id_seq')"))
         inv_id = result.scalar_one()
 
         # Amount in rubles (from kopecks)
-        amount_rub = f"{booking.service.price / 100:.2f}"
+        amount_rub = f"{final_amount / 100:.2f}"
 
         # Build receipt JSON if auto fiscalization
         receipt_json = None
@@ -246,7 +256,7 @@ class PaymentService:
         payment = Payment(
             master_id=master.id,
             booking_id=booking.id,
-            amount=booking.service.price,
+            amount=final_amount,
             status="pending",
             payment_method="sbp_robokassa",
             receipt_status=receipt_status,
@@ -514,40 +524,41 @@ class PaymentService:
         status_filter: str | None = None,
         date_from: date | None = None,
         date_to: date | None = None,
+        payment_method: str | None = None,
         limit: int = 50,
         offset: int = 0,
-    ) -> tuple[list[dict], int]:
+    ) -> tuple[list[dict], int, int]:
         """Query payment history with filters and pagination.
 
         Joins with booking -> service, booking -> client for display names.
 
         Returns:
-            Tuple of (payment_dicts, total_count).
+            Tuple of (payment_dicts, total_count, total_revenue).
+            total_revenue is the sum of amounts for paid payments matching the filters.
         """
         from app.models.client import Client
         from app.models.service import Service
 
+        # Base conditions (shared between main query and revenue query)
+        conditions = [Payment.master_id == master_id]
+        if status_filter:
+            conditions.append(Payment.status == status_filter)
+        if date_from:
+            conditions.append(func.date(Payment.created_at) >= date_from)
+        if date_to:
+            conditions.append(func.date(Payment.created_at) <= date_to)
+        if payment_method:
+            conditions.append(Payment.payment_method == payment_method)
+
         # Base query with joins
         base_query = (
             select(Payment)
-            .where(Payment.master_id == master_id)
+            .where(and_(*conditions))
             .options(
                 selectinload(Payment.booking).selectinload(Booking.service),
                 selectinload(Payment.booking).selectinload(Booking.client),
             )
         )
-
-        # Apply filters
-        if status_filter:
-            base_query = base_query.where(Payment.status == status_filter)
-        if date_from:
-            base_query = base_query.where(
-                func.date(Payment.created_at) >= date_from
-            )
-        if date_to:
-            base_query = base_query.where(
-                func.date(Payment.created_at) <= date_to
-            )
 
         # Count total
         count_query = select(func.count()).select_from(
@@ -555,6 +566,23 @@ class PaymentService:
         )
         total_result = await db.execute(count_query)
         total = total_result.scalar_one()
+
+        # Total revenue: sum of paid payment amounts matching the same filters
+        revenue_conditions = [
+            Payment.master_id == master_id,
+            Payment.status == "paid",
+        ]
+        if date_from:
+            revenue_conditions.append(func.date(Payment.created_at) >= date_from)
+        if date_to:
+            revenue_conditions.append(func.date(Payment.created_at) <= date_to)
+        if payment_method:
+            revenue_conditions.append(Payment.payment_method == payment_method)
+        revenue_query = select(
+            func.coalesce(func.sum(Payment.amount), 0)
+        ).where(and_(*revenue_conditions))
+        revenue_result = await db.execute(revenue_query)
+        total_revenue = revenue_result.scalar_one()
 
         # Fetch paginated results
         data_query = (
@@ -590,7 +618,7 @@ class PaymentService:
                     item["client_name"] = payment.booking.client.name
             items.append(item)
 
-        return items, total
+        return items, total, total_revenue
 
     @staticmethod
     async def cancel_payment(

@@ -62,6 +62,7 @@ async def create_manual_payment(
         booking_id=data.booking_id,
         payment_method=data.payment_method,
         fiscalization_override=data.fiscalization_level,
+        amount_override=data.amount_override,
     )
     return _payment_to_read(payment)
 
@@ -78,6 +79,7 @@ async def create_robokassa_payment(
         master=master,
         booking_id=data.booking_id,
         fiscalization_override=data.fiscalization_level,
+        amount_override=data.amount_override,
     )
 
     # Fire-and-forget: send payment link to client via notification
@@ -189,22 +191,25 @@ async def get_payment_history(
     status_filter: str | None = Query(default=None, alias="status"),
     date_from: date | None = Query(default=None),
     date_to: date | None = Query(default=None),
+    payment_method: str | None = Query(default=None),
     limit: int = Query(default=50, ge=1, le=100),
     offset: int = Query(default=0, ge=0),
 ):
     """List payments with optional filters and pagination."""
-    items, total = await PaymentService.get_payment_history(
+    items, total, total_revenue = await PaymentService.get_payment_history(
         db=db,
         master_id=master.id,
         status_filter=status_filter,
         date_from=date_from,
         date_to=date_to,
+        payment_method=payment_method,
         limit=limit,
         offset=offset,
     )
     return PaymentListResponse(
         items=[PaymentRead(**item) for item in items],
         total=total,
+        total_revenue=total_revenue,
     )
 
 
