@@ -337,3 +337,15 @@ Note: Phases 12-13 and 10-14 have independent dependency chains. Execution follo
 | 14. Portfolio | 3/3 | Complete    | 2026-03-21 | - |
 | 15. Reviews | 2/2 | Complete    | 2026-03-21 | - |
 | 16. Analytics | 2/2 | Complete    | 2026-03-21 | - |
+
+### Phase 17: Cross-Platform Auth & Role Detection
+**Goal**: Masters have a single account accessible from web, TG, MAX, and VK; the mini-app auto-detects whether the user is a master or client and shows the appropriate interface
+**Depends on**: Phase 16
+**Requirements**: XAUTH-01, XAUTH-02, XAUTH-03, XAUTH-04, XAUTH-05
+**Success Criteria** (what must be TRUE):
+  1. Master registered via web can open TG bot, and the bot recognizes them by phone/email and links tg_user_id to their account
+  2. Mini-app opened by a registered master shows the master panel (dashboard, services, schedule); opened by a client shows the booking flow
+  3. Master can link/unlink TG, MAX, VK accounts from the web admin settings page
+  4. Master in mini-app can switch between "Панель мастера" and "Мои записи" views
+  5. New master can register through the bot by providing email and phone, creating a full Master account with platform binding
+**Plans:** TBD

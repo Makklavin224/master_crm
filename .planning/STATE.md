@@ -148,12 +148,16 @@ Recent decisions affecting current work:
 
 None yet.
 
+### Roadmap Evolution
+
+- Phase 17 added: Cross-Platform Auth & Role Detection (critical missing feature — master/client role detection in mini-app)
+
 ### Blockers/Concerns
 
 None.
 
 ## Session Continuity
 
-Last session: 2026-03-21T07:44:48Z
-Stopped at: Completed 16-02-PLAN.md -- v2.0 milestone complete
+Last session: 2026-03-21
+Stopped at: Phase 17 added, ready to plan
 Resume file: None
