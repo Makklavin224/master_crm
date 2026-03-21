@@ -52,6 +52,12 @@ class Payment(Base):
         Text
     )  # Robokassa payment URL
 
+    # Phase 9: FNS receipt tracking
+    fns_receipt_url: Mapped[str | None] = mapped_column(String(500))
+    fns_receipt_attempts: Mapped[int] = mapped_column(
+        Integer, default=0, server_default=text("0")
+    )
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=text("now()")
     )

@@ -97,6 +97,24 @@ class Master(Base):
     )
     address_note: Mapped[str | None] = mapped_column(Text, nullable=True)
 
+    # Phase 9: Public profile fields
+    username: Mapped[str | None] = mapped_column(
+        String(30), unique=True, index=True
+    )
+    specialization: Mapped[str | None] = mapped_column(String(255))
+    city: Mapped[str | None] = mapped_column(String(255))
+    avatar_path: Mapped[str | None] = mapped_column(String(500))
+    instagram_url: Mapped[str | None] = mapped_column(String(500))
+
+    # Phase 9: FNS / tax receipt fields
+    inn: Mapped[str | None] = mapped_column(String(12))
+    fns_token_encrypted: Mapped[str | None] = mapped_column(
+        Text
+    )  # Fernet encrypted
+    fns_connected: Mapped[bool] = mapped_column(
+        Boolean, default=False, server_default=text("false")
+    )
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=text("now()")
     )
@@ -118,5 +136,11 @@ class Master(Base):
         back_populates="master", lazy="raise_on_sql"
     )
     master_clients: Mapped[list["MasterClient"]] = relationship(  # noqa: F821
+        back_populates="master", lazy="raise_on_sql"
+    )
+    portfolio_photos: Mapped[list["PortfolioPhoto"]] = relationship(  # noqa: F821
+        back_populates="master", lazy="raise_on_sql"
+    )
+    reviews: Mapped[list["Review"]] = relationship(  # noqa: F821
         back_populates="master", lazy="raise_on_sql"
     )
