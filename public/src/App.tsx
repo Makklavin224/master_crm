@@ -6,6 +6,8 @@ import DateStep from "./pages/booking/DateStep.tsx";
 import TimeStep from "./pages/booking/TimeStep.tsx";
 import InfoStep from "./pages/booking/InfoStep.tsx";
 import ConfirmStep from "./pages/booking/ConfirmStep.tsx";
+import LoginPage from "./pages/cabinet/LoginPage.tsx";
+import BookingsPage from "./pages/cabinet/BookingsPage.tsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,15 +27,6 @@ function NotFound() {
   );
 }
 
-function ClientCabinetPlaceholder() {
-  return (
-    <div className="flex flex-col items-center justify-center min-h-full p-8 text-center">
-      <h1 className="text-2xl font-bold text-text-primary mb-2">Личный кабинет</h1>
-      <p className="text-text-secondary">Скоро здесь появится ваш личный кабинет</p>
-    </div>
-  );
-}
-
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -48,9 +41,9 @@ export default function App() {
             <Route path="/m/:username/book/info" element={<InfoStep />} />
             <Route path="/m/:username/book/confirm" element={<ConfirmStep />} />
 
-            {/* Client cabinet (placeholder -- implemented in Plan 03) */}
-            <Route path="/my" element={<ClientCabinetPlaceholder />} />
-            <Route path="/my/*" element={<ClientCabinetPlaceholder />} />
+            {/* Client cabinet */}
+            <Route path="/my" element={<LoginPage />} />
+            <Route path="/my/bookings" element={<BookingsPage />} />
 
             <Route path="*" element={<NotFound />} />
           </Routes>
