@@ -11,6 +11,7 @@ from app.api.v1.payments import router as payments_router
 from app.api.v1.portfolio import media_router
 from app.api.v1.portfolio import router as portfolio_router
 from app.api.v1.public import router as public_router
+from app.api.v1.reviews import router as reviews_router
 from app.api.v1.schedule import router as schedule_router
 from app.api.v1.services import router as services_router
 from app.api.v1.settings import router as settings_router
@@ -41,6 +42,9 @@ api_v1_router.include_router(
 )
 api_v1_router.include_router(
     payments_router, prefix="/payments", tags=["payments"]
+)
+api_v1_router.include_router(
+    reviews_router, prefix="/reviews", tags=["reviews"]
 )
 api_v1_router.include_router(
     portfolio_router, prefix="/portfolio", tags=["portfolio"]
