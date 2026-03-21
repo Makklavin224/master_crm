@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Feature Expansion
 status: in_progress
-stopped_at: Completed 09-01-PLAN.md
-last_updated: "2026-03-21T03:37:41.000Z"
-last_activity: 2026-03-21 -- Completed 09-01 Database Migrations & Models
+stopped_at: Completed 09-02-PLAN.md
+last_updated: "2026-03-21T03:44:03.000Z"
+last_activity: 2026-03-21 -- Completed 09-02 Public API & Profile Settings
 progress:
   total_phases: 8
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 2
-  completed_plans: 1
-  percent: 50
+  completed_plans: 2
+  percent: 100
 ---
 
 # Project State
@@ -21,23 +21,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-20)
 
 **Core value:** Master taps "Complete" -- client gets SBP payment link -- tax receipt auto-generates. 3 steps instead of 9.
-**Current focus:** v2.0 Feature Expansion -- Phase 9 (Backend Foundation) Plan 1 complete
+**Current focus:** v2.0 Feature Expansion -- Phase 9 (Backend Foundation) COMPLETE
 
 ## Current Position
 
-Phase: 9 of 16 (Backend Foundation)
-Plan: 2 of 2
-Status: In progress
-Last activity: 2026-03-21 -- Completed 09-01 Database Migrations & Models (5 migrations, 3 new models)
+Phase: 9 of 16 (Backend Foundation) -- COMPLETE
+Plan: 2 of 2 -- DONE
+Status: Phase 9 complete
+Last activity: 2026-03-21 -- Completed 09-02 Public API & Profile Settings
 
-Progress: [█████░░░░░] 50%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 26
+- Total plans completed: 27
 - Average duration: 6min
-- Total execution time: ~2.65 hours
+- Total execution time: ~2.7 hours
 
 **By Phase (v1.0 + v1.1):**
 
@@ -53,7 +53,7 @@ Progress: [█████░░░░░] 50%
 | 8. Web Admin UX Polish | 3/3 | 6min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 2min, 1min, 2min, 3min, 1min
+- Last 5 plans: 1min, 2min, 3min, 1min, 3min
 - Trend: consistent
 
 ## Accumulated Context
@@ -72,6 +72,8 @@ Recent decisions affecting current work:
 - Used sa.text() in Review model to avoid 'text' column shadowing SQLAlchemy text() function
 - client_sessions has no RLS (cross-master table by design)
 - Rating CHECK constraint (1-5) added at DB level in reviews migration
+- Public API uses dual-identifier pattern: UUID parsed first, username fallback
+- Review stats computed on-the-fly via SQL aggregates (not denormalized)
 
 ### Pending Todos
 
@@ -84,5 +86,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-21
-Stopped at: Completed 09-01-PLAN.md
+Stopped at: Completed 09-02-PLAN.md (Phase 9 complete)
 Resume file: None
