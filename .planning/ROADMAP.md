@@ -215,7 +215,13 @@ Plans:
   2. The public page lists all services with prices and durations; clicking "Zapisatsya" on a service pre-selects it and starts the booking flow (service -> date -> time -> phone+name -> confirm)
   3. The public page shows nearest available slots (3-5 days ahead); a client completes a web booking without any messenger and receives a confirmation
   4. The page has proper SEO meta tags (title, description, OpenGraph with avatar); master can copy their booking link and auto-generated QR code from settings
-**Plans**: TBD
+**Plans:** 4 plans
+
+Plans:
+- [ ] 10-01-PLAN.md -- Scaffold public/ React SPA (Vite+TS+Tailwind), API client, types, Dockerfile, Docker Compose + Caddy integration
+- [ ] 10-02-PLAN.md -- Master profile page: hero, services, nearest slots, reviews, contacts, sticky booking button
+- [ ] 10-03-PLAN.md -- 5-step web booking flow: service -> date -> time -> phone+name -> confirmation
+- [ ] 10-04-PLAN.md -- Admin settings "Моя страница" tab (copy link + QR code) + SEO meta tags on public page
 
 ### Phase 11: Client Cabinet
 **Goal**: Clients can log in to a personal cabinet at /my, see all their bookings across masters, rebook past services, and leave reviews after completed visits
@@ -298,7 +304,7 @@ Note: Phases 12-13 and 10-14 have independent dependency chains. Execution follo
 | 7. Mini-App UX Polish | v1.1 | 5/5 | Complete | 2026-03-19 |
 | 8. Web Admin UX Polish | v1.1 | 3/3 | Complete | 2026-03-19 |
 | 9. Backend Foundation | v2.0 | 2/2 | Complete | 2026-03-21 |
-| 10. Public Master Page | v2.0 | 0/? | Not started | - |
+| 10. Public Master Page | v2.0 | 0/4 | Not started | - |
 | 11. Client Cabinet | v2.0 | 0/? | Not started | - |
 | 12. Admin Payments | v2.0 | 0/? | Not started | - |
 | 13. Auto Receipts | v2.0 | 0/? | Not started | - |
