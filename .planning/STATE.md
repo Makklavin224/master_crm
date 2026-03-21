@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v2.1
 milestone_name: Bugfix & Stabilization
-status: complete
+status: completed
 stopped_at: Completed 20-02-PLAN.md (error handling UX -- reviews, card formatting, Robokassa alert)
-last_updated: "2026-03-21T10:48:14Z"
+last_updated: "2026-03-21T10:49:28.066Z"
 last_activity: 2026-03-21 -- Completed 20-02 (ReviewsPage error state, card formatting, Robokassa Alert)
 progress:
   total_phases: 3
