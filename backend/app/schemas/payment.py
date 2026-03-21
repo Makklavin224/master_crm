@@ -50,6 +50,7 @@ class PaymentRead(BaseModel):
     paid_at: datetime | None
     created_at: datetime
     payment_url: str | None = None
+    fns_receipt_url: str | None = None
 
     # Display fields (joined from booking -> service, booking -> client)
     service_name: str | None = None

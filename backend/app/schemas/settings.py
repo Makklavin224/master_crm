@@ -39,6 +39,8 @@ class PaymentSettings(BaseModel):
     fiscalization_level: str = "none"  # none, manual, auto
     has_seen_grey_warning: bool = False
     receipt_sno: str = "patent"
+    inn: str | None = None
+    fns_connected: bool = False
 
     model_config = {"from_attributes": True}
 
@@ -110,6 +112,12 @@ class RobokassaDisconnect(BaseModel):
     """Confirmation model for disconnecting Robokassa (empty body)."""
 
     pass
+
+
+class InnSetup(BaseModel):
+    """Bind master's INN for auto-receipt generation."""
+
+    inn: str = Field(min_length=12, max_length=12, pattern=r"^\d{12}$")
 
 
 # --- Profile settings ---

@@ -41,6 +41,7 @@ def _payment_to_read(payment, **extra) -> PaymentRead:
         "paid_at": payment.paid_at,
         "created_at": payment.created_at,
         "payment_url": payment.payment_url,
+        "fns_receipt_url": payment.fns_receipt_url,
     }
     # Add display fields from booking relationships if loaded
     if hasattr(payment, "booking") and payment.booking:
@@ -67,6 +68,39 @@ async def create_manual_payment(
         fiscalization_override=data.fiscalization_level,
         amount_override=data.amount_override,
     )
+
+    # Fire-and-forget: ReceiptAttach for auto fiscalization
+    if payment.receipt_status == "pending" and payment.fiscalization_level == "auto":
+        try:
+            from app.bots.common.notification import notification_service
+            from app.services.receipt_service import ReceiptService
+
+            success = await ReceiptService.send_receipt_attach(db, payment.id)
+            if success and payment.fns_receipt_url:
+                # Reload payment to get updated fns_receipt_url
+                await db.refresh(payment)
+                # Send receipt link to client
+                platform_info = await ReceiptService.get_client_platform_for_notification(
+                    db, payment
+                )
+                if platform_info:
+                    platform, platform_user_id = platform_info
+                    service_name = "Service"
+                    if hasattr(payment, "booking") and payment.booking:
+                        if payment.booking.service:
+                            service_name = payment.booking.service.name
+                    await notification_service.send_message(
+                        platform=platform,
+                        platform_user_id=platform_user_id,
+                        text=f'Чек по услуге "{service_name}":\n{payment.fns_receipt_url}',
+                    )
+        except Exception:
+            import logging
+
+            logging.getLogger(__name__).exception(
+                "Failed to send ReceiptAttach for manual payment"
+            )
+
     return _payment_to_read(payment)
 
 

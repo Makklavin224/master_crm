@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.dependencies import get_current_master, get_db_with_rls
 from app.models.master import Master
 from app.schemas.settings import (
+    InnSetup,
     MasterSettings,
     MasterSettingsUpdate,
     NotificationSettings,
@@ -167,6 +168,8 @@ def _build_payment_settings(master: Master) -> PaymentSettings:
         fiscalization_level=master.fiscalization_level,
         has_seen_grey_warning=master.has_seen_grey_warning,
         receipt_sno=master.receipt_sno,
+        inn=master.inn,
+        fns_connected=master.fns_connected,
     )
 
 
@@ -243,3 +246,43 @@ async def mark_grey_warning_seen(
     master.has_seen_grey_warning = True
     await db.flush()
     return Response(status_code=204)
+
+
+@router.post("/payment/inn", response_model=PaymentSettings)
+async def bind_inn(
+    data: InnSetup,
+    master: Annotated[Master, Depends(get_current_master)],
+    db: Annotated[AsyncSession, Depends(get_db_with_rls)],
+):
+    """Bind master's INN for auto-receipt generation via Robokassa ReceiptAttach.
+
+    Requires Robokassa to be connected first.
+    """
+    if not master.robokassa_merchant_login:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Robokassa is not connected. Connect Robokassa first.",
+        )
+
+    master.inn = data.inn
+    master.fns_connected = True
+
+    await db.flush()
+    await db.refresh(master)
+
+    return _build_payment_settings(master)
+
+
+@router.delete("/payment/inn", response_model=PaymentSettings)
+async def unbind_inn(
+    master: Annotated[Master, Depends(get_current_master)],
+    db: Annotated[AsyncSession, Depends(get_db_with_rls)],
+):
+    """Unbind master's INN and disable auto-receipt generation."""
+    master.inn = None
+    master.fns_connected = False
+
+    await db.flush()
+    await db.refresh(master)
+
+    return _build_payment_settings(master)

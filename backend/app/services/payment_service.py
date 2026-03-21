@@ -150,6 +150,8 @@ class PaymentService:
                 ensure_ascii=False,
             )
             receipt_status = "pending"  # awaiting manual entry in "Moy Nalog"
+        elif effective_fisc == "auto" and master.fns_connected:
+            receipt_status = "pending"  # will be sent via ReceiptAttach
 
         payment = Payment(
             master_id=master.id,

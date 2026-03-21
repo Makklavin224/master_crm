@@ -1,11 +1,13 @@
 """Robokassa payment integration service.
 
 Handles payment URL generation with HMAC signatures, ResultURL callback
-verification, and Receipt JSON construction for 54-FZ fiscalization.
+verification, Receipt JSON construction for 54-FZ fiscalization, and
+ReceiptAttach payload building for fiscal receipts on cash/card payments.
 
 Signature formulas (from official docs):
-- Initiation: hash(MerchantLogin:OutSum:InvId[:Receipt]:Password#1[:Shp_*])
-- Callback:   hash(OutSum:InvId:Password#2[:Shp_*])
+- Initiation:     hash(MerchantLogin:OutSum:InvId[:Receipt]:Password#1[:Shp_*])
+- Callback:       hash(OutSum:InvId:Password#2[:Shp_*])
+- ReceiptAttach:  hash(MerchantLogin:Total:ReceiptJSON_urlencoded:Password#1)
 - Shp_ params sorted alphabetically by key name.
 """
 
@@ -177,3 +179,68 @@ class RobokassaService:
                 }
             ],
         }
+
+    @staticmethod
+    def build_receipt_attach_payload(
+        creds: "RobokassaCredentials",
+        service_name: str,
+        amount_rub: str,  # "1500.00"
+        sno: str = "patent",
+        client_phone: str | None = None,
+    ) -> dict:
+        """Build the full payload for Robokassa ReceiptAttach API.
+
+        ReceiptAttach issues a fiscal receipt for payments made outside
+        Robokassa (cash, card-to-card) via the RoboFiscal endpoint.
+
+        Signature: hash(MerchantLogin:Total:Receipt_JSON_urlencoded:Password#1)
+
+        Args:
+            creds: Decrypted Robokassa credentials.
+            service_name: Name of the service (truncated to 128 chars).
+            amount_rub: Amount in rubles as string ("1500.00").
+            sno: Tax system (default "patent").
+            client_phone: Client phone in E.164 format (optional).
+
+        Returns:
+            Dict payload ready for HTTP POST to ReceiptAttach endpoint.
+        """
+        total = float(amount_rub)
+
+        receipt = {
+            "sno": sno,
+            "items": [
+                {
+                    "name": service_name[:128],
+                    "quantity": 1,
+                    "sum": total,
+                    "payment_method": "full_payment",
+                    "payment_object": "service",
+                    "tax": "none",
+                }
+            ],
+        }
+
+        # Receipt JSON: compact, no spaces, ensure_ascii=False, then URL-encoded
+        receipt_json_str = json.dumps(receipt, ensure_ascii=False, separators=(",", ":"))
+        receipt_encoded = urllib.parse.quote(receipt_json_str)
+
+        # Signature: hash(MerchantLogin:Total:Receipt_urlencoded:Password#1)
+        sig_data = f"{creds.merchant_login}:{total}:{receipt_encoded}:{creds.password1}"
+        signature = RobokassaService._compute_hash(sig_data, creds.hash_algorithm)
+
+        payload: dict = {
+            "MerchantLogin": creds.merchant_login,
+            "Receipt": receipt,
+            "Signature": signature,
+            "Type": "Income",
+            "Total": total,
+        }
+
+        if client_phone:
+            payload["CustomerPhone"] = client_phone
+
+        if creds.is_test:
+            payload["IsTest"] = 1
+
+        return payload
