@@ -110,12 +110,8 @@ async def _cb_register_master(
         await _send(
             token,
             max_user_id,
-            f"\u0412\u044b \u0443\u0436\u0435 "
-            f"\u0437\u0430\u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0438\u0440\u043e\u0432\u0430\u043d\u044b, "
-            f"{existing.name}! "
-            f"\u041e\u0442\u043f\u0440\u0430\u0432\u044c\u0442\u0435 /start "
-            f"\u0434\u043b\u044f \u0434\u043e\u0441\u0442\u0443\u043f\u0430 "
-            f"\u043a \u043f\u0430\u043d\u0435\u043b\u0438.",
+            f"Вы уже зарегистрированы, {existing.name}! "
+            f"Отправьте /start для доступа к панели.",
         )
         return
 
@@ -134,7 +130,7 @@ async def _cb_register_master(
             [
                 {
                     "type": "open_app",
-                    "text": "\U0001f4f1 \u041e\u0442\u043a\u0440\u044b\u0442\u044c \u043f\u0430\u043d\u0435\u043b\u044c",
+                    "text": "\U0001f4f1 Открыть панель",
                     "url": settings.mini_app_url,
                 }
             ]
@@ -149,22 +145,12 @@ async def _cb_register_master(
     await _send(
         token,
         max_user_id,
-        "<b>\u0414\u043e\u0431\u0440\u043e "
-        "\u043f\u043e\u0436\u0430\u043b\u043e\u0432\u0430\u0442\u044c "
-        "\u0432 \u041c\u043e\u0438\u041e\u043a\u043e\u0448\u043a\u0438!</b>\n\n"
-        "\u0412\u0430\u0448 \u0430\u043a\u043a\u0430\u0443\u043d\u0442 "
-        "\u0441\u043e\u0437\u0434\u0430\u043d.\n\n"
-        "\u041d\u0430\u0441\u0442\u0440\u043e\u0439\u0442\u0435 "
-        "\u0443\u0441\u043b\u0443\u0433\u0438 \u0438 "
-        "\u0440\u0430\u0441\u043f\u0438\u0441\u0430\u043d\u0438\u0435, "
-        "\u0447\u0442\u043e\u0431\u044b \u043a\u043b\u0438\u0435\u043d\u0442\u044b "
-        "\u043c\u043e\u0433\u043b\u0438 "
-        "\u0437\u0430\u043f\u0438\u0441\u044b\u0432\u0430\u0442\u044c\u0441\u044f.\n\n"
-        "\u0420\u0435\u043a\u043e\u043c\u0435\u043d\u0434\u0443\u0435\u043c "
-        "\u0434\u043e\u0431\u0430\u0432\u0438\u0442\u044c email "
-        "\u0432 \u043d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0430\u0445 "
-        "\u0434\u043b\u044f \u0432\u0445\u043e\u0434\u0430 "
-        "\u0447\u0435\u0440\u0435\u0437 \u0432\u0435\u0431-\u043f\u0430\u043d\u0435\u043b\u044c.",
+        "<b>Добро пожаловать в МоиОкошки!</b>\n\n"
+        "Ваш аккаунт создан.\n\n"
+        "Настройте услуги и расписание, "
+        "чтобы клиенты могли записываться.\n\n"
+        "Рекомендуем добавить email "
+        "в настройках для входа через веб-панель.",
         attachments=attachments,
     )
     logger.info(
@@ -187,10 +173,8 @@ async def _cb_link_account(
         await _send(
             token,
             max_user_id,
-            f"\u0412\u0430\u0448 MAX \u0443\u0436\u0435 \u043f\u0440\u0438\u0432\u044f\u0437\u0430\u043d "
-            f"\u043a \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0443 {existing.name}! "
-            f"\u041e\u0442\u043f\u0440\u0430\u0432\u044c\u0442\u0435 /start "
-            f"\u0434\u043b\u044f \u0434\u043e\u0441\u0442\u0443\u043f\u0430 \u043a \u043f\u0430\u043d\u0435\u043b\u0438.",
+            f"Ваш MAX уже привязан к аккаунту {existing.name}! "
+            f"Отправьте /start для доступа к панели.",
         )
         return
 
@@ -198,10 +182,7 @@ async def _cb_link_account(
     await _send(
         token,
         max_user_id,
-        "\u0412\u0432\u0435\u0434\u0438\u0442\u0435 email, "
-        "\u043a\u043e\u0442\u043e\u0440\u044b\u0439 \u0432\u044b "
-        "\u0443\u043a\u0430\u0437\u0430\u043b\u0438 "
-        "\u043f\u0440\u0438 \u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u0438:",
+        "Введите email, который вы указали при регистрации:",
     )
 
 
@@ -229,11 +210,8 @@ async def handle_link_email_message(
         await _send(
             token,
             max_user_id,
-            "\u0410\u043a\u043a\u0430\u0443\u043d\u0442 \u0441 \u0442\u0430\u043a\u0438\u043c email "
-            "\u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d. "
-            "\u041f\u0440\u043e\u0432\u0435\u0440\u044c\u0442\u0435 email "
-            "\u0438\u043b\u0438 \u0437\u0430\u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0438\u0440\u0443\u0439\u0442\u0435\u0441\u044c "
-            "\u0437\u0430\u043d\u043e\u0432\u043e \u0447\u0435\u0440\u0435\u0437 /start.",
+            "Аккаунт с таким email не найден. "
+            "Проверьте email или зарегистрируйтесь заново через /start.",
         )
         return True
 
@@ -241,9 +219,7 @@ async def handle_link_email_message(
         await _send(
             token,
             max_user_id,
-            "\u042d\u0442\u043e\u0442 \u0430\u043a\u043a\u0430\u0443\u043d\u0442 "
-            "\u0443\u0436\u0435 \u043f\u0440\u0438\u0432\u044f\u0437\u0430\u043d "
-            "\u043a \u0434\u0440\u0443\u0433\u043e\u043c\u0443 MAX.",
+            "Этот аккаунт уже привязан к другому MAX.",
         )
         return True
 
@@ -253,9 +229,7 @@ async def handle_link_email_message(
         await _send(
             token,
             max_user_id,
-            "\u042d\u0442\u043e\u0442 \u0430\u043a\u043a\u0430\u0443\u043d\u0442 "
-            "\u0443\u0436\u0435 \u043f\u0440\u0438\u0432\u044f\u0437\u0430\u043d "
-            "\u043a \u0432\u0430\u0448\u0435\u043c\u0443 MAX!",
+            "Этот аккаунт уже привязан к вашему MAX!",
             [{"type": "inline_keyboard", "payload": {"buttons": buttons}}],
         )
         return True
@@ -268,9 +242,7 @@ async def handle_link_email_message(
     await _send(
         token,
         max_user_id,
-        f"\u0410\u043a\u043a\u0430\u0443\u043d\u0442 \u043f\u0440\u0438\u0432\u044f\u0437\u0430\u043d! "
-        f"\u0414\u043e\u0431\u0440\u043e \u043f\u043e\u0436\u0430\u043b\u043e\u0432\u0430\u0442\u044c, "
-        f"{master.name}!",
+        f"Аккаунт привязан! Добро пожаловать, {master.name}!",
         [{"type": "inline_keyboard", "payload": {"buttons": buttons}}],
     )
     logger.info(
@@ -287,12 +259,12 @@ def _master_buttons_for_linked() -> list[list[dict]]:
         [
             {
                 "type": "callback",
-                "text": "\U0001f4c5 \u0417\u0430\u043f\u0438\u0441\u0438 \u043d\u0430 \u0441\u0435\u0433\u043e\u0434\u043d\u044f",
+                "text": "\U0001f4c5 Записи на сегодня",
                 "payload": "today",
             },
             {
                 "type": "callback",
-                "text": "\U0001f517 \u041c\u043e\u044f \u0441\u0441\u044b\u043b\u043a\u0430",
+                "text": "\U0001f517 Моя ссылка",
                 "payload": "link",
             },
         ],
@@ -302,7 +274,7 @@ def _master_buttons_for_linked() -> list[list[dict]]:
             [
                 {
                     "type": "open_app",
-                    "text": "\U0001f4f1 \u041e\u0442\u043a\u0440\u044b\u0442\u044c \u043f\u0430\u043d\u0435\u043b\u044c",
+                    "text": "\U0001f4f1 Открыть панель",
                     "url": settings.mini_app_url,
                 }
             ]
