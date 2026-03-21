@@ -10,6 +10,8 @@ import {
   useMarkGreyWarningSeen,
   useNotificationSettings,
   useUpdateNotificationSettings,
+  useBindInn,
+  useUnbindInn,
 } from "../../api/master-settings.ts";
 import { Card } from "../../components/ui/Card.tsx";
 import { Badge } from "../../components/ui/Badge.tsx";
@@ -94,6 +96,12 @@ export function Settings() {
   const [reminder1Hours, setReminder1Hours] = useState(24);
   const [reminder2Hours, setReminder2Hours] = useState<number | null>(2);
   const [addressNote, setAddressNote] = useState("");
+
+  // INN / auto-receipts state
+  const [innInput, setInnInput] = useState("");
+  const [showUnbindDialog, setShowUnbindDialog] = useState(false);
+  const bindInn = useBindInn();
+  const unbindInn = useUnbindInn();
 
   // Robokassa state
   const [showWizard, setShowWizard] = useState(false);
@@ -211,6 +219,29 @@ export function Settings() {
     });
   };
 
+  const handleBindInn = () => {
+    bindInn.mutate(innInput, {
+      onSuccess: () => {
+        toast.success("Авточеки подключены");
+        setInnInput("");
+      },
+      onError: () => toast.error("Не удалось подключить авточеки"),
+    });
+  };
+
+  const handleUnbindInn = () => {
+    unbindInn.mutate(undefined, {
+      onSuccess: () => {
+        toast.success("Авточеки отключены");
+        setShowUnbindDialog(false);
+      },
+      onError: () => {
+        toast.error("Не удалось отключить авточеки");
+        setShowUnbindDialog(false);
+      },
+    });
+  };
+
   const handleSaveNotifications = () => {
     updateNotificationSettings.mutate(
       {
@@ -230,6 +261,8 @@ export function Settings() {
   const isLoadingAny = isLoading || paymentLoading || notifLoading;
   const hasError = !!settingsError || !!paymentError || !!notifError;
   const hasRobokassa = paymentSettings?.has_robokassa ?? false;
+  const fnsConnected = paymentSettings?.fns_connected ?? false;
+  const masterInn = paymentSettings?.inn ?? null;
 
   return (
     <div className="flex flex-col min-h-full">
@@ -620,6 +653,65 @@ export function Settings() {
               </p>
             </Card>
 
+            {/* Section: INN / Auto-receipts */}
+            <Card className="flex flex-col gap-3">
+              <h2 className="text-[16px] font-semibold text-text-primary">
+                Налоги и чеки
+              </h2>
+
+              {fnsConnected ? (
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center gap-2">
+                    <Badge variant="confirmed">Авточеки подключены</Badge>
+                  </div>
+                  <p className="text-[14px] text-text-secondary">
+                    ИНН: {masterInn}
+                  </p>
+                  <Button
+                    variant="destructive"
+                    onClick={() => setShowUnbindDialog(true)}
+                  >
+                    Отключить
+                  </Button>
+                </div>
+              ) : !hasRobokassa ? (
+                <p className="text-[14px] text-text-secondary">
+                  Для автоматических чеков подключите Робокассу
+                </p>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  <div>
+                    <label className="text-[12px] text-text-secondary mb-1 block">
+                      ИНН (12 цифр)
+                    </label>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      value={innInput}
+                      onChange={(e) =>
+                        setInnInput(
+                          e.target.value.replace(/\D/g, "").slice(0, 12),
+                        )
+                      }
+                      maxLength={12}
+                      placeholder="123456789012"
+                      className="w-full h-[44px] rounded-[10px] border border-border px-3 text-[14px] text-text-primary outline-none focus:ring-2 focus:ring-accent/30"
+                    />
+                  </div>
+                  <Button
+                    onClick={handleBindInn}
+                    loading={bindInn.isPending}
+                    disabled={innInput.length !== 12}
+                  >
+                    Подключить авточеки
+                  </Button>
+                  <p className="text-[12px] text-text-secondary">
+                    Чеки будут автоматически отправляться в ФНС через Робокассу
+                  </p>
+                </div>
+              )}
+            </Card>
+
             {/* Payment history link */}
             <button
               onClick={() => navigate("/master/payments")}
@@ -646,6 +738,18 @@ export function Settings() {
         variant="destructive"
         onConfirm={handleDisconnectRobokassa}
         onCancel={() => setShowDisconnectDialog(false)}
+      />
+
+      {/* Unbind INN dialog */}
+      <ConfirmDialog
+        isOpen={showUnbindDialog}
+        title="Отключить авточеки?"
+        message="Чеки не будут автоматически отправляться в ФНС."
+        confirmLabel="Отключить"
+        cancelLabel="Отмена"
+        variant="destructive"
+        onConfirm={handleUnbindInn}
+        onCancel={() => setShowUnbindDialog(false)}
       />
     </div>
   );

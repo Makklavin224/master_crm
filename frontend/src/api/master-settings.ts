@@ -90,6 +90,8 @@ export interface PaymentSettings {
   fiscalization_level: string;
   has_seen_grey_warning: boolean;
   receipt_sno: string;
+  inn: string | null;
+  fns_connected: boolean;
 }
 
 export interface PaymentSettingsUpdate {
@@ -174,6 +176,39 @@ export function useMarkGreyWarningSeen() {
     mutationFn: () =>
       masterApiRequest<undefined>("/settings/payment/grey-warning-seen", {
         method: "POST",
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["master", "paymentSettings"],
+      });
+    },
+  });
+}
+
+export function useBindInn() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (inn: string) =>
+      masterApiRequest<PaymentSettings>("/settings/payment/inn", {
+        method: "POST",
+        body: JSON.stringify({ inn }),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["master", "paymentSettings"],
+      });
+    },
+  });
+}
+
+export function useUnbindInn() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () =>
+      masterApiRequest<PaymentSettings>("/settings/payment/inn", {
+        method: "DELETE",
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({
