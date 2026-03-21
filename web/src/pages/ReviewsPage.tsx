@@ -6,6 +6,7 @@ import {
   Input,
   Modal,
   Rate,
+  Result,
   Segmented,
   Table,
   Tag,
@@ -45,7 +46,7 @@ export function ReviewsPage() {
 
   const { message } = App.useApp();
 
-  const { data, isLoading } = useReviews({
+  const { data, isLoading, isError, refetch } = useReviews({
     status: statusFilter,
     page,
     page_size: PAGE_SIZE,
@@ -152,6 +153,23 @@ export function ReviewsPage() {
       },
     },
   ];
+
+  if (isError) {
+    return (
+      <Card title="Отзывы">
+        <Result
+          status="error"
+          title="Ошибка загрузки"
+          subTitle="Не удалось загрузить отзывы. Попробуйте ещё раз."
+          extra={
+            <Button type="primary" onClick={() => refetch()}>
+              Повторить
+            </Button>
+          }
+        />
+      </Card>
+    );
+  }
 
   return (
     <Card title="Отзывы">
