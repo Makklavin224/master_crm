@@ -214,25 +214,42 @@ export async function masterApiRequest<T>(
   path: string,
   options: RequestInit = {},
 ): Promise<T> {
-  const { token } = useMasterAuth.getState();
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-    ...(options.headers as Record<string, string>),
-  };
-  if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
-  }
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 30_000);
 
-  const response = await fetch(`${API_BASE}${path}`, { ...options, headers });
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({ detail: "Network error" }));
-    throw new ApiError(response.status, error.detail || `HTTP ${response.status}`);
-  }
+  try {
+    const { token } = useMasterAuth.getState();
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      ...(options.headers as Record<string, string>),
+    };
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
 
-  // Handle 204 No Content
-  if (response.status === 204) {
-    return undefined as T;
-  }
+    const signal =
+      options.signal && typeof AbortSignal.any === "function"
+        ? AbortSignal.any([options.signal, controller.signal])
+        : controller.signal;
 
-  return response.json();
+    const response = await fetch(`${API_BASE}${path}`, { ...options, headers, signal });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ detail: "Ошибка сети" }));
+      throw new ApiError(response.status, error.detail || `HTTP ${response.status}`);
+    }
+
+    // Handle 204 No Content
+    if (response.status === 204) {
+      return undefined as T;
+    }
+
+    return response.json();
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "AbortError") {
+      throw new ApiError(0, "Превышено время ожидания. Попробуйте позже.");
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeoutId);
+  }
 }
