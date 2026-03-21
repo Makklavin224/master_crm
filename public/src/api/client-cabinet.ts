@@ -19,11 +19,16 @@ export async function verifyOTP(
   phone: string,
   code: string,
 ): Promise<SessionResponse> {
-  return apiRequest<SessionResponse>("/client/auth/verify-code", {
+  const result = await apiRequest<SessionResponse>("/client/auth/verify-code", {
     method: "POST",
     body: JSON.stringify({ phone, code }),
     credentials: "include",
   });
+  // Store token for Bearer fallback when cookies don't work
+  if (result.token) {
+    localStorage.setItem("client_token", result.token);
+  }
+  return result;
 }
 
 export async function getClientBookings(): Promise<ClientBookingsResponse> {

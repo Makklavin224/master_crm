@@ -20,6 +20,13 @@ export async function apiRequest<T>(
     "Content-Type": "application/json",
     ...(options.headers as Record<string, string>),
   };
+
+  // Add Bearer token from localStorage if available (fallback when cookies fail)
+  const token = localStorage.getItem("client_token");
+  if (token && !headers["Authorization"]) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
   const response = await fetch(`${API_BASE}${path}`, { ...options, headers });
   if (!response.ok) {
     const error = await response.json().catch(() => ({ detail: "Ошибка сети" }));
