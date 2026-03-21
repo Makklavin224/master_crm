@@ -184,6 +184,34 @@ class NotificationService:
             text=text,
         )
 
+    async def send_review_request(
+        self,
+        platform: str,
+        platform_user_id: str,
+        master_name: str,
+        service_name: str,
+        booking_id: str,
+    ) -> bool:
+        """Send a review request with star buttons via the appropriate platform adapter."""
+        adapter = self._adapters.get(platform)
+        if not adapter:
+            logger.warning(
+                "No adapter registered for platform '%s'", platform
+            )
+            return False
+        try:
+            return await adapter.send_review_request(
+                platform_user_id=platform_user_id,
+                master_name=master_name,
+                service_name=service_name,
+                booking_id=booking_id,
+            )
+        except Exception:
+            logger.exception(
+                "Failed to send review request via %s", platform
+            )
+            return False
+
     async def send_booking_confirmation(
         self,
         platform: str,

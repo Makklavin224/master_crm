@@ -13,7 +13,9 @@ from app.bots.telegram.bot import bot, dp
 from app.bots.vk.bot import vk_token
 from app.core.config import settings
 from app.core.database import async_session_factory, engine
+from app.services.auto_publish_service import auto_publish_scheduler
 from app.services.reminder_service import scheduler
+from app.services.review_request_service import review_request_scheduler
 
 logger = logging.getLogger(__name__)
 
@@ -75,7 +77,23 @@ async def lifespan(app: FastAPI):
     scheduler.start()
     logger.info("Reminder scheduler started")
 
+    # Start review request scheduler
+    review_request_scheduler.start()
+    logger.info("Review request scheduler started")
+
+    # Start auto-publish scheduler
+    auto_publish_scheduler.start()
+    logger.info("Auto-publish scheduler started")
+
     yield
+
+    # Stop review request scheduler
+    review_request_scheduler.shutdown(wait=False)
+    logger.info("Review request scheduler stopped")
+
+    # Stop auto-publish scheduler
+    auto_publish_scheduler.shutdown(wait=False)
+    logger.info("Auto-publish scheduler stopped")
 
     # Stop reminder scheduler
     scheduler.shutdown(wait=False)

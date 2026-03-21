@@ -215,6 +215,35 @@ class VkAdapter(MessengerAdapter):
         }
         return await self._send(platform_user_id, text, keyboard)
 
+    async def send_review_request(
+        self,
+        platform_user_id: str,
+        master_name: str,
+        service_name: str,
+        booking_id: str,
+    ) -> bool:
+        """Send a review request with star rating buttons via VK."""
+        text = (
+            f"\u2728 \u0421\u043f\u0430\u0441\u0438\u0431\u043e \u0437\u0430 \u0432\u0438\u0437\u0438\u0442!\n\n"
+            f"\u041a\u0430\u043a \u0432\u0430\u043c \u0443\u0441\u043b\u0443\u0433\u0430 {service_name} "
+            f"\u0443 \u043c\u0430\u0441\u0442\u0435\u0440\u0430 {master_name}?\n\n"
+            f"\u041e\u0446\u0435\u043d\u0438\u0442\u0435 \u043e\u0442 1 \u0434\u043e 5:"
+        )
+        keyboard = {
+            "inline": True,
+            "buttons": [[
+                {
+                    "action": {
+                        "type": "callback",
+                        "label": f"{n}\u2b50",
+                        "payload": json.dumps({"cmd": f"review_star:{booking_id}:{n}"}),
+                    }
+                }
+                for n in range(1, 6)
+            ]],
+        }
+        return await self._send(platform_user_id, text, keyboard)
+
     @staticmethod
     def _format_notification(notif: BookingNotification) -> str:
         """Build plain text notification based on notification type (Russian).

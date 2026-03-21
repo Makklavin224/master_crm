@@ -241,6 +241,36 @@ class MaxAdapter(MessengerAdapter):
             attachments=self._inline_keyboard(buttons),
         )
 
+    async def send_review_request(
+        self,
+        platform_user_id: str,
+        master_name: str,
+        service_name: str,
+        booking_id: str,
+    ) -> bool:
+        """Send a review request with star rating buttons via MAX."""
+        text = (
+            f"\u2728 <b>\u0421\u043f\u0430\u0441\u0438\u0431\u043e \u0437\u0430 \u0432\u0438\u0437\u0438\u0442!</b>\n\n"
+            f"\u041a\u0430\u043a \u0432\u0430\u043c \u0443\u0441\u043b\u0443\u0433\u0430 <b>{service_name}</b> "
+            f"\u0443 \u043c\u0430\u0441\u0442\u0435\u0440\u0430 {master_name}?\n\n"
+            f"\u041e\u0446\u0435\u043d\u0438\u0442\u0435 \u043e\u0442 1 \u0434\u043e 5:"
+        )
+        buttons = [
+            [
+                {
+                    "type": "callback",
+                    "text": f"{n}\u2b50",
+                    "payload": f"review_star:{booking_id}:{n}",
+                }
+                for n in range(1, 6)
+            ]
+        ]
+        return await self._send(
+            chat_id=platform_user_id,
+            text=text,
+            attachments=self._inline_keyboard(buttons),
+        )
+
     @staticmethod
     def _format_notification(notif: BookingNotification) -> str:
         """Build HTML notification text based on notification type (Russian)."""

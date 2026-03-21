@@ -92,3 +92,14 @@ class MessengerAdapter(ABC):
     ) -> bool:
         """Send a booking confirmation to a client. Returns True on success."""
         ...
+
+    @abstractmethod
+    async def send_review_request(
+        self,
+        platform_user_id: str,
+        master_name: str,
+        service_name: str,
+        booking_id: str,
+    ) -> bool:
+        """Send a review request with star rating buttons to a client."""
+        ...
