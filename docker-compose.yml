@@ -10,6 +10,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - portfolio_data:/data/portfolio
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "uv run python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/health')\""]
@@ -96,3 +98,4 @@ volumes:
   pgdata:
   caddy_data:
   caddy_config:
+  portfolio_data:

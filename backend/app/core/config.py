@@ -61,6 +61,13 @@ class Settings(BaseSettings):
     # Robokassa
     robokassa_result_url: str = ""  # e.g. https://yourdomain.com/webhook/robokassa/result
 
+    # Portfolio storage
+    portfolio_base_path: str = "/data/portfolio"
+    portfolio_max_photos: int = 30
+    portfolio_max_file_size: int = 5 * 1024 * 1024  # 5MB
+    portfolio_full_size: int = 1200  # max dimension in px
+    portfolio_thumb_size: int = 300  # thumbnail max dimension in px
+
 
 @lru_cache
 def get_settings() -> Settings:
