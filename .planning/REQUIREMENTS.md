@@ -198,6 +198,51 @@
 - [x] **XAUTH-04**: Master in mini-app has toggle to switch between "Панель мастера" and "Мои записи"
 - [x] **XAUTH-05**: New master can register through bot: enter email + phone → create Master → bind platform → JWT
 
+## v2.1 Requirements — Bugfix & Stabilization
+
+### QR & Booking Link (QRFIX)
+
+- [ ] **QRFIX-01**: QR-код в админке кодирует TG deeplink (t.me/BOT?startapp=MASTER_ID), не просто URL сайта
+- [ ] **QRFIX-02**: Страница "Моя страница" показывает оба варианта: ссылка на сайт + QR для Telegram
+- [ ] **QRFIX-03**: BOT_USERNAME приходит из backend API, не hardcoded
+
+### Role Detection (ROLE)
+
+- [ ] **ROLE-01**: autoDetectRole имеет guard против race condition (debounce/lock)
+- [ ] **ROLE-02**: RoleDetector ждёт bridge.ready() и показывает spinner пока detecting
+- [ ] **ROLE-03**: Переключатель ролей сохраняется в localStorage между перезагрузками
+
+### Bot Registration (BREG)
+
+- [ ] **BREG-01**: Callback "register_master" создаёт Master и показывает кнопку "Открыть мини-апп"
+- [ ] **BREG-02**: Callback "link_account" привязывает существующего мастера по email
+- [ ] **BREG-03**: После регистрации/привязки мини-апп открывается в мастер-панели
+
+### Client Auth (CAUTH)
+
+- [ ] **CAUTH-01**: verify-code возвращает token в response body (не только cookie)
+- [ ] **CAUTH-02**: Client cabinet отправляет token через Bearer header как fallback
+- [ ] **CAUTH-03**: get_current_client принимает и cookie, и Bearer header
+
+### Analytics Robustness (ANLTR)
+
+- [ ] **ANLTR-01**: Пустые данные показывают "Нет данных за период", не ломают charts
+- [ ] **ANLTR-02**: API ошибка показывает EmptyState с кнопкой "Повторить"
+- [ ] **ANLTR-03**: Все числовые значения защищены от undefined/null
+
+### Booking Validation (BVAL)
+
+- [ ] **BVAL-01**: Невалидный masterId в URL показывает "Мастер не найден"
+- [ ] **BVAL-02**: 404 на публичной странице показывает полезное сообщение с предложением проверить ссылку
+
+### Error Handling (ERRH)
+
+- [ ] **ERRH-01**: ReviewsPage имеет error handling с EmptyState
+- [ ] **ERRH-02**: Все API клиенты имеют 30s timeout через AbortController
+- [ ] **ERRH-03**: Все error messages на русском языке
+- [ ] **ERRH-04**: Card number в настройках имеет форматирование
+- [ ] **ERRH-05**: Robokassa test mode показывает предупреждение
+
 ## v3 Requirements (deferred)
 
 ### Client Engagement
