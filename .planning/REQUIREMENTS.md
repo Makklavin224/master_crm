@@ -126,8 +126,8 @@
 
 - [x] **PBUK-01**: Master has a public profile page at /m/{username} with avatar, name, specialization, city, rating
 - [x] **PBUK-02**: Master can set a unique username (latin lowercase + digits + underscore, 3-30 chars, reserved words blocked)
-- [ ] **PBUK-03**: Public page shows list of services with prices and "Zapisatsya" button
-- [ ] **PBUK-04**: Public page shows nearest available slots (3-5 days ahead)
+- [x] **PBUK-03**: Public page shows list of services with prices and "Zapisatsya" button
+- [x] **PBUK-04**: Public page shows nearest available slots (3-5 days ahead)
 - [ ] **PBUK-05**: Client can book through web browser without a messenger (service -> date -> time -> phone+name -> confirm)
 - [ ] **PBUK-06**: Master can copy booking link and auto-generated QR code from settings
 - [ ] **PBUK-07**: Public page has SEO meta tags (title, description, OpenGraph with avatar)
@@ -303,8 +303,8 @@
 | WAUX-10 | Phase 8 | Complete |
 | PBUK-02 | Phase 9 | Complete |
 | PBUK-01 | Phase 10 | Complete |
-| PBUK-03 | Phase 10 | Pending |
-| PBUK-04 | Phase 10 | Pending |
+| PBUK-03 | Phase 10 | Complete |
+| PBUK-04 | Phase 10 | Complete |
 | PBUK-05 | Phase 10 | Pending |
 | PBUK-06 | Phase 10 | Pending |
 | PBUK-07 | Phase 10 | Pending |

@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Feature Expansion
 status: executing
-stopped_at: Completed 10-01-PLAN.md
-last_updated: "2026-03-21T04:36:08.264Z"
-last_activity: 2026-03-21 -- Completed 10-01 Public SPA Scaffold
+stopped_at: Completed 10-02-PLAN.md
+last_updated: "2026-03-21T04:39:38Z"
+last_activity: 2026-03-21 -- Completed 10-02 Master Profile Page
 progress:
   total_phases: 8
   completed_phases: 1
   total_plans: 6
-  completed_plans: 3
-  percent: 50
+  completed_plans: 4
+  percent: 67
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-03-20)
 ## Current Position
 
 Phase: 10 of 16 (Public Master Page)
-Plan: 1 of 4 -- DONE
+Plan: 2 of 4 -- DONE
 Status: Executing phase 10
-Last activity: 2026-03-21 -- Completed 10-01 Public SPA Scaffold
+Last activity: 2026-03-21 -- Completed 10-02 Master Profile Page
 
-Progress: [█████░░░░░] 50%
+Progress: [███████░░░] 67%
 
 ## Performance Metrics
 
@@ -56,6 +56,7 @@ Progress: [█████░░░░░] 50%
 - Last 5 plans: 2min, 3min, 1min, 3min, 3min
 - Trend: consistent
 | Phase 10 P01 | 3min | 2 tasks | 17 files |
+| Phase 10 P02 | 2min | 2 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -78,6 +79,9 @@ Recent decisions affecting current work:
 - Public SPA uses same dep versions as frontend/ for consistency, omits Telegram-specific packages
 - Base path convention: /app/ (mini-app), /admin/ (web admin), /m/ (public master pages)
 - [Phase 10]: Public SPA uses same dep versions as frontend/ for consistency, omits Telegram-specific packages
+- [Phase 10-02]: SlotsSection fetches slots for first service only to limit API calls
+- [Phase 10-02]: StarRating uses opacity-60 for half-star approximation
+- [Phase 10-02]: StickyBookButton always visible (no scroll observer) for MVP
 
 ### Pending Todos
 
@@ -89,6 +93,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-21T04:36:03.231Z
-Stopped at: Completed 10-01-PLAN.md
+Last session: 2026-03-21T04:39:38Z
+Stopped at: Completed 10-02-PLAN.md
 Resume file: None
