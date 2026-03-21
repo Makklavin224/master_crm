@@ -48,6 +48,14 @@ async def process_vk_event(body: dict, db: AsyncSession) -> None:
             from app.bots.vk.handlers.link import handle_link
 
             await handle_link(body, db)
+        else:
+            # Check if this is a pending review text response
+            user_id = str(message.get("from_id", ""))
+            original_text = message.get("text", "").strip()
+            if user_id and original_text:
+                from app.bots.vk.handlers.callbacks import handle_review_text_message
+
+                await handle_review_text_message(user_id, original_text, db)
 
     elif event_type == "message_event":
         from app.bots.vk.handlers.callbacks import handle_callback

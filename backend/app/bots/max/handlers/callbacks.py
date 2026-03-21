@@ -1,11 +1,13 @@
 """Handlers for callback button presses in MAX.
 
 Handles: today (schedule view), booking:{id} (detail), cancel:{id} (master cancel),
-cancel_client:{id} (client cancel), link (booking link), my_bookings:{master_id}.
+cancel_client:{id} (client cancel), link (booking link), my_bookings:{master_id},
+and review_star/review_text/review_done flows.
 """
 
 import logging
 import uuid
+from datetime import datetime, timezone
 
 import httpx
 from sqlalchemy import select
@@ -16,6 +18,7 @@ from app.core.config import settings
 from app.models.booking import Booking
 from app.models.client import ClientPlatform
 from app.models.master import Master
+from app.models.review import Review
 from app.services.booking_service import cancel_booking
 
 from fastapi import HTTPException
@@ -23,6 +26,9 @@ from fastapi import HTTPException
 logger = logging.getLogger(__name__)
 
 BASE_URL = "https://platform-api.max.ru"
+
+# Module-level dict for pending review text input: max_user_id -> booking_id
+_pending_review_text: dict[str, uuid.UUID] = {}
 
 
 async def handle_callback(
@@ -57,6 +63,13 @@ async def handle_callback(
     elif payload.startswith("my_bookings:"):
         master_id_str = payload.split(":", 1)[1]
         await _cb_my_bookings(max_user_id, master_id_str, token)
+    elif payload.startswith("review_star:"):
+        await _cb_review_star(max_user_id, payload, db, token)
+    elif payload.startswith("review_text:"):
+        booking_id_str = payload.split(":", 1)[1]
+        await _cb_review_text(max_user_id, booking_id_str, token)
+    elif payload.startswith("review_done:"):
+        await _cb_review_done(max_user_id, token)
 
 
 async def _answer_callback(token: str, callback_id: str) -> None:
@@ -404,6 +417,159 @@ async def _cb_my_bookings(
         "\u041e\u0442\u043a\u0440\u043e\u0439\u0442\u0435 \u043c\u0438\u043d\u0438-\u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u0434\u043b\u044f \u043f\u0440\u043e\u0441\u043c\u043e\u0442\u0440\u0430 \u0437\u0430\u043f\u0438\u0441\u0435\u0439:",
         [{"type": "inline_keyboard", "payload": {"buttons": buttons}}],
     )
+
+
+async def _cb_review_star(
+    max_user_id: str, payload: str, db: AsyncSession, token: str
+) -> None:
+    """Handle star rating callback from review request."""
+    parts = payload.split(":")
+    if len(parts) != 3:
+        return
+
+    booking_id_str = parts[1]
+    try:
+        booking_id = uuid.UUID(booking_id_str)
+        rating = int(parts[2])
+    except (ValueError, IndexError):
+        return
+
+    if rating < 1 or rating > 5:
+        return
+
+    # Security: verify sender is the booking's client
+    booking_result = await db.execute(
+        select(Booking).where(Booking.id == booking_id)
+    )
+    booking = booking_result.scalar_one_or_none()
+    if not booking:
+        await _send(token, max_user_id, "\u0417\u0430\u043f\u0438\u0441\u044c \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u0430.")
+        return
+
+    client_platform_result = await db.execute(
+        select(ClientPlatform).where(
+            ClientPlatform.client_id == booking.client_id,
+            ClientPlatform.platform == "max",
+        )
+    )
+    client_platform = client_platform_result.scalar_one_or_none()
+    if not client_platform or client_platform.platform_user_id != max_user_id:
+        await _send(
+            token, max_user_id,
+            "\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u043e\u0431\u0440\u0430\u0431\u043e\u0442\u0430\u0442\u044c \u043e\u0446\u0435\u043d\u043a\u0443.",
+        )
+        return
+
+    # Find existing Review row
+    review_result = await db.execute(
+        select(Review).where(Review.booking_id == booking_id)
+    )
+    review = review_result.scalar_one_or_none()
+
+    now = datetime.now(timezone.utc)
+
+    if review and review.rating > 0:
+        await _send(
+            token, max_user_id,
+            "\u0412\u044b \u0443\u0436\u0435 \u043e\u0441\u0442\u0430\u0432\u0438\u043b\u0438 \u043e\u0442\u0437\u044b\u0432. \u0421\u043f\u0430\u0441\u0438\u0431\u043e!",
+        )
+        return
+
+    status = "published" if rating >= 3 else "pending_reply"
+
+    if review:
+        review.rating = rating
+        review.status = status
+        review.updated_at = now
+    else:
+        review = Review(
+            booking_id=booking_id,
+            master_id=booking.master_id,
+            client_id=booking.client_id,
+            rating=rating,
+            status=status,
+        )
+        db.add(review)
+
+    await db.flush()
+
+    stars = "\u2b50" * rating
+    buttons = [
+        [
+            {
+                "type": "callback",
+                "text": "\u0414\u0430, \u043d\u0430\u043f\u0438\u0441\u0430\u0442\u044c",
+                "payload": f"review_text:{booking_id}",
+            },
+            {
+                "type": "callback",
+                "text": "\u041d\u0435\u0442, \u0441\u043f\u0430\u0441\u0438\u0431\u043e",
+                "payload": f"review_done:{booking_id}",
+            },
+        ]
+    ]
+    await _send(
+        token,
+        max_user_id,
+        f"\u0421\u043f\u0430\u0441\u0438\u0431\u043e! \u0412\u0430\u0448\u0430 \u043e\u0446\u0435\u043d\u043a\u0430: {stars}\n\n"
+        f"\u0425\u043e\u0442\u0438\u0442\u0435 \u0434\u043e\u0431\u0430\u0432\u0438\u0442\u044c \u043a\u043e\u043c\u043c\u0435\u043d\u0442\u0430\u0440\u0438\u0439?",
+        [{"type": "inline_keyboard", "payload": {"buttons": buttons}}],
+    )
+
+
+async def _cb_review_text(
+    max_user_id: str, booking_id_str: str, token: str
+) -> None:
+    """Handle 'write comment' button -- prompt user for text."""
+    try:
+        booking_id = uuid.UUID(booking_id_str)
+    except ValueError:
+        return
+
+    _pending_review_text[max_user_id] = booking_id
+    await _send(
+        token,
+        max_user_id,
+        "\u041d\u0430\u043f\u0438\u0448\u0438\u0442\u0435 \u0432\u0430\u0448 \u043a\u043e\u043c\u043c\u0435\u043d\u0442\u0430\u0440\u0438\u0439 (\u0434\u043e 500 \u0441\u0438\u043c\u0432\u043e\u043b\u043e\u0432):",
+    )
+
+
+async def _cb_review_done(max_user_id: str, token: str) -> None:
+    """Handle 'no thanks' button -- confirm review."""
+    _pending_review_text.pop(max_user_id, None)
+    await _send(
+        token,
+        max_user_id,
+        "\u0421\u043f\u0430\u0441\u0438\u0431\u043e \u0437\u0430 \u043e\u0442\u0437\u044b\u0432! \U0001f64f",
+    )
+
+
+async def handle_review_text_message(
+    max_user_id: str, text: str, db: AsyncSession, token: str
+) -> bool:
+    """Handle incoming text message if user is in pending review text state.
+
+    Returns True if the message was handled (was a review text), False otherwise.
+    """
+    booking_id = _pending_review_text.pop(max_user_id, None)
+    if not booking_id:
+        return False
+
+    review_result = await db.execute(
+        select(Review).where(Review.booking_id == booking_id)
+    )
+    review = review_result.scalar_one_or_none()
+    if review:
+        review.text = text[:500]
+        review.updated_at = datetime.now(timezone.utc)
+        await db.flush()
+
+    await _send(
+        token,
+        max_user_id,
+        "\u0421\u043f\u0430\u0441\u0438\u0431\u043e \u0437\u0430 \u043e\u0442\u0437\u044b\u0432! \U0001f64f",
+    )
+    return True
 
 
 async def _send(

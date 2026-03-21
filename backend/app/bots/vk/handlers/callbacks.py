@@ -1,12 +1,14 @@
 """Handler for VK message_event (callback button clicks).
 
-Handles: today, link, booking:{id}, cancel:{id}, cancel_client:{id}
+Handles: today, link, booking:{id}, cancel:{id}, cancel_client:{id},
+and review_star/review_text/review_done flows.
 Acknowledges callbacks with messages.sendMessageEventAnswer.
 """
 
 import json
 import logging
 import uuid
+from datetime import datetime, timezone
 
 import httpx
 from sqlalchemy import select
@@ -17,6 +19,7 @@ from app.core.config import settings
 from app.models.booking import Booking
 from app.models.client import ClientPlatform
 from app.models.master import Master
+from app.models.review import Review
 from app.services.booking_service import cancel_booking
 
 from fastapi import HTTPException
@@ -25,6 +28,9 @@ logger = logging.getLogger(__name__)
 
 VK_API_URL = "https://api.vk.com/method/"
 VK_API_VERSION = "5.199"
+
+# Module-level dict for pending review text input: vk_user_id -> booking_id
+_pending_review_text: dict[str, uuid.UUID] = {}
 
 
 async def handle_callback(body: dict, db: AsyncSession) -> None:
@@ -57,6 +63,13 @@ async def handle_callback(body: dict, db: AsyncSession) -> None:
     elif cmd.startswith("cancel_client:"):
         booking_id_str = cmd.split(":", 1)[1]
         await _handle_cancel_client(user_id, booking_id_str, vk_token, db)
+    elif cmd.startswith("review_star:"):
+        await _handle_review_star(user_id, cmd, vk_token, db)
+    elif cmd.startswith("review_text:"):
+        booking_id_str = cmd.split(":", 1)[1]
+        await _handle_review_text(user_id, booking_id_str, vk_token)
+    elif cmd.startswith("review_done:"):
+        await _handle_review_done(user_id, vk_token)
 
     # Acknowledge callback event
     await _acknowledge_event(vk_token, event_id, user_id, peer_id)
@@ -401,3 +414,171 @@ async def _handle_cancel_client(
             "\u043e\u0442\u043c\u0435\u043d\u0438\u0442\u044c "
             "\u0437\u0430\u043f\u0438\u0441\u044c.",
         )
+
+
+# ---- Review flow handlers ----
+
+
+async def _handle_review_star(
+    user_id: str, cmd: str, token: str, db: AsyncSession
+) -> None:
+    """Handle star rating callback from review request."""
+    parts = cmd.split(":")
+    if len(parts) != 3:
+        return
+
+    booking_id_str = parts[1]
+    try:
+        booking_id = uuid.UUID(booking_id_str)
+        rating = int(parts[2])
+    except (ValueError, IndexError):
+        return
+
+    if rating < 1 or rating > 5:
+        return
+
+    # Security: verify sender is the booking's client
+    booking_result = await db.execute(
+        select(Booking).where(Booking.id == booking_id)
+    )
+    booking = booking_result.scalar_one_or_none()
+    if not booking:
+        await _send_message(
+            token, user_id,
+            "\u0417\u0430\u043f\u0438\u0441\u044c \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u0430.",
+        )
+        return
+
+    client_platform_result = await db.execute(
+        select(ClientPlatform).where(
+            ClientPlatform.client_id == booking.client_id,
+            ClientPlatform.platform == "vk",
+        )
+    )
+    client_platform = client_platform_result.scalar_one_or_none()
+    if not client_platform or client_platform.platform_user_id != user_id:
+        await _send_message(
+            token, user_id,
+            "\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c "
+            "\u043e\u0431\u0440\u0430\u0431\u043e\u0442\u0430\u0442\u044c \u043e\u0446\u0435\u043d\u043a\u0443.",
+        )
+        return
+
+    # Find existing Review row
+    review_result = await db.execute(
+        select(Review).where(Review.booking_id == booking_id)
+    )
+    review = review_result.scalar_one_or_none()
+
+    now = datetime.now(timezone.utc)
+
+    if review and review.rating > 0:
+        await _send_message(
+            token, user_id,
+            "\u0412\u044b \u0443\u0436\u0435 \u043e\u0441\u0442\u0430\u0432\u0438\u043b\u0438 "
+            "\u043e\u0442\u0437\u044b\u0432. \u0421\u043f\u0430\u0441\u0438\u0431\u043e!",
+        )
+        return
+
+    status = "published" if rating >= 3 else "pending_reply"
+
+    if review:
+        review.rating = rating
+        review.status = status
+        review.updated_at = now
+    else:
+        review = Review(
+            booking_id=booking_id,
+            master_id=booking.master_id,
+            client_id=booking.client_id,
+            rating=rating,
+            status=status,
+        )
+        db.add(review)
+
+    await db.flush()
+
+    stars = "\u2b50" * rating
+    keyboard = {
+        "inline": True,
+        "buttons": [[
+            {
+                "action": {
+                    "type": "callback",
+                    "label": "\u0414\u0430, \u043d\u0430\u043f\u0438\u0441\u0430\u0442\u044c",
+                    "payload": json.dumps({"cmd": f"review_text:{booking_id}"}),
+                }
+            },
+            {
+                "action": {
+                    "type": "callback",
+                    "label": "\u041d\u0435\u0442, \u0441\u043f\u0430\u0441\u0438\u0431\u043e",
+                    "payload": json.dumps({"cmd": f"review_done:{booking_id}"}),
+                }
+            },
+        ]],
+    }
+    await _send_message(
+        token, user_id,
+        f"\u0421\u043f\u0430\u0441\u0438\u0431\u043e! \u0412\u0430\u0448\u0430 "
+        f"\u043e\u0446\u0435\u043d\u043a\u0430: {stars}\n\n"
+        f"\u0425\u043e\u0442\u0438\u0442\u0435 \u0434\u043e\u0431\u0430\u0432\u0438\u0442\u044c "
+        f"\u043a\u043e\u043c\u043c\u0435\u043d\u0442\u0430\u0440\u0438\u0439?",
+        keyboard,
+    )
+
+
+async def _handle_review_text(
+    user_id: str, booking_id_str: str, token: str
+) -> None:
+    """Handle 'write comment' button -- prompt user for text."""
+    try:
+        booking_id = uuid.UUID(booking_id_str)
+    except ValueError:
+        return
+
+    _pending_review_text[user_id] = booking_id
+    await _send_message(
+        token, user_id,
+        "\u041d\u0430\u043f\u0438\u0448\u0438\u0442\u0435 \u0432\u0430\u0448 "
+        "\u043a\u043e\u043c\u043c\u0435\u043d\u0442\u0430\u0440\u0438\u0439 "
+        "(\u0434\u043e 500 \u0441\u0438\u043c\u0432\u043e\u043b\u043e\u0432):",
+    )
+
+
+async def _handle_review_done(user_id: str, token: str) -> None:
+    """Handle 'no thanks' button -- confirm review."""
+    _pending_review_text.pop(user_id, None)
+    await _send_message(
+        token, user_id,
+        "\u0421\u043f\u0430\u0441\u0438\u0431\u043e \u0437\u0430 \u043e\u0442\u0437\u044b\u0432! \U0001f64f",
+    )
+
+
+async def handle_review_text_message(
+    user_id: str, text: str, db: AsyncSession
+) -> bool:
+    """Handle incoming text message if user is in pending review text state.
+
+    Returns True if the message was handled (was a review text), False otherwise.
+    """
+    booking_id = _pending_review_text.pop(user_id, None)
+    if not booking_id:
+        return False
+
+    vk_token = settings.vk_group_token
+
+    review_result = await db.execute(
+        select(Review).where(Review.booking_id == booking_id)
+    )
+    review = review_result.scalar_one_or_none()
+    if review:
+        review.text = text[:500]
+        review.updated_at = datetime.now(timezone.utc)
+        await db.flush()
+
+    await _send_message(
+        vk_token, user_id,
+        "\u0421\u043f\u0430\u0441\u0438\u0431\u043e \u0437\u0430 \u043e\u0442\u0437\u044b\u0432! \U0001f64f",
+    )
+    return True

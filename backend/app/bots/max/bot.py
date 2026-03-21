@@ -67,7 +67,19 @@ async def process_max_update(body: dict, db: AsyncSession) -> None:
 
             await handle_link(body, db, bot_token)
         else:
-            logger.debug("Unhandled MAX message: %s", text[:50] if text else "(empty)")
+            # Check if this is a pending review text response
+            sender = message.get("sender", {})
+            max_user_id = str(sender.get("user_id", ""))
+            if max_user_id and text:
+                from app.bots.max.handlers.callbacks import handle_review_text_message
+
+                handled = await handle_review_text_message(
+                    max_user_id, text, db, bot_token
+                )
+                if not handled:
+                    logger.debug("Unhandled MAX message: %s", text[:50])
+            else:
+                logger.debug("Unhandled MAX message: %s", text[:50] if text else "(empty)")
 
     elif update_type == "message_callback":
         from app.bots.max.handlers.callbacks import handle_callback
