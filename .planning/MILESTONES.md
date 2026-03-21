@@ -19,7 +19,7 @@
 
 ### v1.1 — UX Polish (completed 2026-03-19)
 
-**Goal:** Шлифовка UI/UX Mini-App и Web Admin Panel до production-ready качества по результатам аудита
+**Goal:** UI/UX polish of Mini-App and Web Admin Panel to production-ready quality
 
 **Phases:**
 7. Mini-App UX Polish — accessibility, touch targets, error states, TG theme, design tokens
@@ -28,21 +28,22 @@
 **Stats:** 2 phases, 8 plans
 **Last phase number:** 8
 
-## Current Milestone
+### v2.0 — Feature Expansion (completed 2026-03-21)
 
-### v2.0 — Feature Expansion (started 2026-03-20)
-
-**Goal:** Публичная страница мастера, кабинет клиента, платежи в админке, авточеки, портфолио, отзывы, аналитика
+**Goal:** Public master page, client cabinet, admin payments, auto-receipts, portfolio, reviews, analytics, cross-platform auth
 
 **Design spec:** docs/superpowers/specs/2026-03-20-v2-master-crm-design.md
 **Phases:** 9-17
-**Stats:** 9 phases, 22 plans
+**Stats:** 9 phases, 25 plans
+
+**Last phase number:** 17
 
 ## Current Milestone
 
 ### v2.1 — Bugfix & Stabilization (started 2026-03-21)
 
-**Goal:** Фиксы 27 багов найденных на проде. QR deeplink, role detection, bot registration, client auth, analytics, error handling.
+**Goal:** Fix 27 production bugs. QR deeplink, role detection, bot registration, client auth, analytics, error handling.
 
 **Design spec:** docs/superpowers/specs/2026-03-21-v2-bugfix-spec.md
-**Planned phases:** 18-20
+**Phases:** 18-20
+**Stats:** 3 phases, TBD plans

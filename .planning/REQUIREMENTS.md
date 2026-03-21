@@ -193,55 +193,55 @@
 ### Cross-Platform Auth (XAUTH)
 
 - [x] **XAUTH-01**: Bot /start recognizes existing master by phone/email, links platform user_id and issues JWT
-- [x] **XAUTH-02**: Mini-app auto-detects role: master → panel, client → booking flow (based on platform user_id in masters table)
+- [x] **XAUTH-02**: Mini-app auto-detects role: master -> panel, client -> booking flow (based on platform user_id in masters table)
 - [x] **XAUTH-03**: Master can link/unlink TG, MAX, VK accounts from web admin settings
-- [x] **XAUTH-04**: Master in mini-app has toggle to switch between "Панель мастера" and "Мои записи"
-- [x] **XAUTH-05**: New master can register through bot: enter email + phone → create Master → bind platform → JWT
+- [x] **XAUTH-04**: Master in mini-app has toggle to switch between "Panel mastera" and "Moi zapisi"
+- [x] **XAUTH-05**: New master can register through bot: enter email + phone -> create Master -> bind platform -> JWT
 
 ## v2.1 Requirements — Bugfix & Stabilization
 
 ### QR & Booking Link (QRFIX)
 
-- [ ] **QRFIX-01**: QR-код в админке кодирует TG deeplink (t.me/BOT?startapp=MASTER_ID), не просто URL сайта
-- [ ] **QRFIX-02**: Страница "Моя страница" показывает оба варианта: ссылка на сайт + QR для Telegram
-- [ ] **QRFIX-03**: BOT_USERNAME приходит из backend API, не hardcoded
+- [ ] **QRFIX-01**: QR-kod v adminke kodiruet TG deeplink (t.me/BOT?startapp=MASTER_ID), ne prosto URL sayta
+- [ ] **QRFIX-02**: Stranitsa "Moya stranitsa" pokazyvaet oba varianta: ssylka na sayt + QR dlya Telegram
+- [ ] **QRFIX-03**: BOT_USERNAME prikhodit iz backend API, ne hardcoded
 
 ### Role Detection (ROLE)
 
-- [ ] **ROLE-01**: autoDetectRole имеет guard против race condition (debounce/lock)
-- [ ] **ROLE-02**: RoleDetector ждёт bridge.ready() и показывает spinner пока detecting
-- [ ] **ROLE-03**: Переключатель ролей сохраняется в localStorage между перезагрузками
+- [ ] **ROLE-01**: autoDetectRole imeet guard protiv race condition (debounce/lock)
+- [ ] **ROLE-02**: RoleDetector zhdet bridge.ready() i pokazyvaet spinner poka detecting
+- [ ] **ROLE-03**: Pereklyuchatel roley sokhranayetsya v localStorage mezhdu perezagruzkami
 
 ### Bot Registration (BREG)
 
-- [ ] **BREG-01**: Callback "register_master" создаёт Master и показывает кнопку "Открыть мини-апп"
-- [ ] **BREG-02**: Callback "link_account" привязывает существующего мастера по email
-- [ ] **BREG-03**: После регистрации/привязки мини-апп открывается в мастер-панели
+- [ ] **BREG-01**: Callback "register_master" sozdayot Master i pokazyvaet knopku "Otkryt mini-app"
+- [ ] **BREG-02**: Callback "link_account" privyazyvaet sushchestvuyushchego mastera po email
+- [ ] **BREG-03**: Posle registratsii/privyazki mini-app otkryvayetsya v master-paneli
 
 ### Client Auth (CAUTH)
 
-- [ ] **CAUTH-01**: verify-code возвращает token в response body (не только cookie)
-- [ ] **CAUTH-02**: Client cabinet отправляет token через Bearer header как fallback
-- [ ] **CAUTH-03**: get_current_client принимает и cookie, и Bearer header
+- [ ] **CAUTH-01**: verify-code vozvrashchaet token v response body (ne tolko cookie)
+- [ ] **CAUTH-02**: Client cabinet otpravlyaet token cherez Bearer header kak fallback
+- [ ] **CAUTH-03**: get_current_client prinimaet i cookie, i Bearer header
 
 ### Analytics Robustness (ANLTR)
 
-- [ ] **ANLTR-01**: Пустые данные показывают "Нет данных за период", не ломают charts
-- [ ] **ANLTR-02**: API ошибка показывает EmptyState с кнопкой "Повторить"
-- [ ] **ANLTR-03**: Все числовые значения защищены от undefined/null
+- [ ] **ANLTR-01**: Pustyye dannyye pokazyvayut "Net dannykh za period", ne lomayut charts
+- [ ] **ANLTR-02**: API oshibka pokazyvaet EmptyState s knopkoy "Povtorit"
+- [ ] **ANLTR-03**: Vse chislovyye znacheniya zashchishcheny ot undefined/null
 
 ### Booking Validation (BVAL)
 
-- [ ] **BVAL-01**: Невалидный masterId в URL показывает "Мастер не найден"
-- [ ] **BVAL-02**: 404 на публичной странице показывает полезное сообщение с предложением проверить ссылку
+- [ ] **BVAL-01**: Nevalidnyy masterId v URL pokazyvaet "Master ne nayden"
+- [ ] **BVAL-02**: 404 na publichnoy stranitse pokazyvaet poleznoye soobshcheniye s predlozheniyem proverit ssylku
 
 ### Error Handling (ERRH)
 
-- [ ] **ERRH-01**: ReviewsPage имеет error handling с EmptyState
-- [ ] **ERRH-02**: Все API клиенты имеют 30s timeout через AbortController
-- [ ] **ERRH-03**: Все error messages на русском языке
-- [ ] **ERRH-04**: Card number в настройках имеет форматирование
-- [ ] **ERRH-05**: Robokassa test mode показывает предупреждение
+- [ ] **ERRH-01**: ReviewsPage imeet error handling s EmptyState
+- [ ] **ERRH-02**: Vse API klienty imeyut 30s timeout cherez AbortController
+- [ ] **ERRH-03**: Vse error messages na russkom yazyke
+- [ ] **ERRH-04**: Card number v nastroykakh imeet formatirovaniye
+- [ ] **ERRH-05**: Robokassa test mode pokazyvaet preduprezhdeniye
 
 ## v3 Requirements (deferred)
 
@@ -401,12 +401,40 @@
 | ANLT-08 | Phase 16 | Complete |
 | ANLT-09 | Phase 16 | Complete |
 | ANLT-10 | Phase 16 | Complete |
+| XAUTH-01 | Phase 17 | Complete |
+| XAUTH-02 | Phase 17 | Complete |
+| XAUTH-03 | Phase 17 | Complete |
+| XAUTH-04 | Phase 17 | Complete |
+| XAUTH-05 | Phase 17 | Complete |
+| QRFIX-01 | Phase 18 | Pending |
+| QRFIX-02 | Phase 18 | Pending |
+| QRFIX-03 | Phase 18 | Pending |
+| ROLE-01 | Phase 18 | Pending |
+| ROLE-02 | Phase 18 | Pending |
+| ROLE-03 | Phase 18 | Pending |
+| ANLTR-01 | Phase 18 | Pending |
+| ANLTR-02 | Phase 18 | Pending |
+| ANLTR-03 | Phase 18 | Pending |
+| BREG-01 | Phase 19 | Pending |
+| BREG-02 | Phase 19 | Pending |
+| BREG-03 | Phase 19 | Pending |
+| CAUTH-01 | Phase 19 | Pending |
+| CAUTH-02 | Phase 19 | Pending |
+| CAUTH-03 | Phase 19 | Pending |
+| BVAL-01 | Phase 19 | Pending |
+| BVAL-02 | Phase 19 | Pending |
+| ERRH-01 | Phase 20 | Pending |
+| ERRH-02 | Phase 20 | Pending |
+| ERRH-03 | Phase 20 | Pending |
+| ERRH-04 | Phase 20 | Pending |
+| ERRH-05 | Phase 20 | Pending |
 
 **Coverage:**
 - v1.0 requirements: 40 total, mapped: 40, unmapped: 0
 - v1.1 requirements: 34 total, mapped: 34, unmapped: 0
-- v2.0 requirements: 47 total, mapped: 47, unmapped: 0
+- v2.0 requirements: 52 total, mapped: 52, unmapped: 0
+- v2.1 requirements: 22 total, mapped: 22, unmapped: 0
 
 ---
 *Requirements defined: 2026-03-17*
-*Last updated: 2026-03-20 after v2.0 roadmap creation*
+*Last updated: 2026-03-21 after v2.1 roadmap creation*

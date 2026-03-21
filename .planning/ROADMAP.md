@@ -4,7 +4,8 @@
 
 - **v1.0 MVP** - Phases 1-6 (shipped 2026-03-18)
 - **v1.1 UX Polish** - Phases 7-8 (shipped 2026-03-19)
-- **v2.0 Feature Expansion** - Phases 9-16 (in progress)
+- **v2.0 Feature Expansion** - Phases 9-17 (shipped 2026-03-21)
+- **v2.1 Bugfix & Stabilization** - Phases 18-20 (in progress)
 
 ## Phases
 
@@ -34,16 +35,26 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 </details>
 
-### v2.0 Feature Expansion (In Progress)
+<details>
+<summary>v2.0 Feature Expansion (Phases 9-17) -- SHIPPED 2026-03-21</summary>
 
-- [ ] **Phase 9: Backend Foundation** - DB migrations, new models, master profile API, username system
-- [ ] **Phase 10: Public Master Page** - Public profile page at /m/{username} with web booking flow
-- [ ] **Phase 11: Client Cabinet** - OTP authentication at /my, booking history, rebook, leave reviews
-- [ ] **Phase 12: Admin Payments** - Visit completion flow with payment method selection and enhanced payments page
-- [ ] **Phase 13: Auto Receipts** - Robokassa ReceiptAttach for cash/card payments, INN binding, retry logic
-- [ ] **Phase 14: Portfolio** - Photo upload, auto-resize, gallery on public page, service tags
-- [ ] **Phase 15: Reviews** - Auto-collect via bot after visit, moderation rules, public display
-- [ ] **Phase 16: Analytics** - Revenue dashboard, charts, retention metrics, detailed reports, CSV export
+- [x] **Phase 9: Backend Foundation** - DB migrations, new models, master profile API, username system (completed 2026-03-21)
+- [x] **Phase 10: Public Master Page** - Public profile page at /m/{username} with web booking flow (completed 2026-03-21)
+- [x] **Phase 11: Client Cabinet** - OTP authentication at /my, booking history, rebook, leave reviews (completed 2026-03-21)
+- [x] **Phase 12: Admin Payments** - Visit completion flow with payment method selection and enhanced payments page (completed 2026-03-21)
+- [x] **Phase 13: Auto Receipts** - Robokassa ReceiptAttach for cash/card payments, INN binding, retry logic (completed 2026-03-21)
+- [x] **Phase 14: Portfolio** - Photo upload, auto-resize, gallery on public page, service tags (completed 2026-03-21)
+- [x] **Phase 15: Reviews** - Auto-collect via bot after visit, moderation rules, public display (completed 2026-03-21)
+- [x] **Phase 16: Analytics** - Revenue dashboard, charts, retention metrics, detailed reports, CSV export (completed 2026-03-21)
+- [x] **Phase 17: Cross-Platform Auth** - Bot registration, role detection, platform link/unlink, master/client toggle (completed 2026-03-21)
+
+</details>
+
+### v2.1 Bugfix & Stabilization (In Progress)
+
+- [ ] **Phase 18: Critical Fixes** - QR deeplink encoding, role detection race condition, analytics null safety
+- [ ] **Phase 19: High Priority Fixes** - Bot registration flow, client cabinet auth, booking validation
+- [ ] **Phase 20: Error Handling & UX Polish** - Reviews error handling, API timeouts, Russian error messages, settings polish
 
 ## Phase Details
 
@@ -191,6 +202,9 @@ Plans:
 
 </details>
 
+<details>
+<summary>v2.0 Feature Expansion Phase Details (Phases 9-17)</summary>
+
 ### Phase 9: Backend Foundation
 **Goal**: The database schema, models, and API endpoints are extended with all v2.0 entities so that frontend phases can build on a stable backend
 **Depends on**: Phase 8 (v1.1 complete)
@@ -221,7 +235,7 @@ Plans:
 - [x] 10-01-PLAN.md -- Scaffold public/ React SPA (Vite+TS+Tailwind), API client, types, Dockerfile, Docker Compose + Caddy integration
 - [x] 10-02-PLAN.md -- Master profile page: hero, services, nearest slots, reviews, contacts, sticky booking button
 - [x] 10-03-PLAN.md -- 5-step web booking flow: service -> date -> time -> phone+name -> confirmation
-- [x] 10-04-PLAN.md -- Admin settings "Моя страница" tab (copy link + QR code) + SEO meta tags on public page
+- [x] 10-04-PLAN.md -- Admin settings "Moya stranitsa" tab (copy link + QR code) + SEO meta tags on public page
 
 ### Phase 11: Client Cabinet
 **Goal**: Clients can log in to a personal cabinet at /my, see all their bookings across masters, rebook past services, and leave reviews after completed visits
@@ -266,7 +280,7 @@ Plans:
 
 Plans:
 - [x] 13-01-PLAN.md -- Backend ReceiptAttach service, INN binding endpoints, PaymentService integration, retry scheduler
-- [ ] 13-02-PLAN.md -- Frontend INN binding UI in mini-app and web admin settings pages
+- [x] 13-02-PLAN.md -- Frontend INN binding UI in mini-app and web admin settings pages
 
 ### Phase 14: Portfolio
 **Goal**: Masters can upload photos of their work and clients see them as a gallery on the public profile page
@@ -279,9 +293,9 @@ Plans:
 **Plans:** 3/3 plans complete
 
 Plans:
-- [ ] 14-01-PLAN.md -- Backend portfolio service (Pillow resize/thumbnail), CRUD API, media serving, Docker volume, public portfolio endpoint
-- [ ] 14-02-PLAN.md -- Public page PortfolioSection with horizontal-scroll gallery, lightbox, service tag filtering
-- [ ] 14-03-PLAN.md -- Upload UI in web admin settings (PortfolioTab) and mini-app settings (portfolio section)
+- [x] 14-01-PLAN.md -- Backend portfolio service (Pillow resize/thumbnail), CRUD API, media serving, Docker volume, public portfolio endpoint
+- [x] 14-02-PLAN.md -- Public page PortfolioSection with horizontal-scroll gallery, lightbox, service tag filtering
+- [x] 14-03-PLAN.md -- Upload UI in web admin settings (PortfolioTab) and mini-app settings (portfolio section)
 
 ### Phase 15: Reviews
 **Goal**: Completed visits automatically trigger a review request via bot; reviews are moderated and displayed on the master's public profile
@@ -294,8 +308,8 @@ Plans:
 **Plans:** 2/2 plans complete
 
 Plans:
-- [ ] 15-01-PLAN.md -- Backend review collection: APScheduler review request service, auto-publish service, adapter send_review_request methods, bot callback handlers for star rating + text flow
-- [ ] 15-02-PLAN.md -- Admin reviews management: reviews API (list + reply), ReviewsPage in web admin with table, status filter, reply modal
+- [x] 15-01-PLAN.md -- Backend review collection: APScheduler review request service, auto-publish service, adapter send_review_request methods, bot callback handlers for star rating + text flow
+- [x] 15-02-PLAN.md -- Admin reviews management: reviews API (list + reply), ReviewsPage in web admin with table, status filter, reply modal
 
 ### Phase 16: Analytics
 **Goal**: Masters can see their business performance at a glance -- revenue, utilization, client retention, top services -- and export detailed reports
@@ -309,15 +323,61 @@ Plans:
 **Plans:** 2/2 plans complete
 
 Plans:
-- [ ] 16-01-PLAN.md -- Backend analytics service + Pydantic schemas + 4 API endpoints (summary, revenue-chart, top-services, daily)
-- [ ] 16-02-PLAN.md -- Frontend AnalyticsPage (dashboard + reports tabs, recharts, CSV export) + sidebar/routing integration
+- [x] 16-01-PLAN.md -- Backend analytics service + Pydantic schemas + 4 API endpoints (summary, revenue-chart, top-services, daily)
+- [x] 16-02-PLAN.md -- Frontend AnalyticsPage (dashboard + reports tabs, recharts, CSV export) + sidebar/routing integration
+
+### Phase 17: Cross-Platform Auth & Role Detection
+**Goal**: Masters have a single account accessible from web, TG, MAX, and VK; the mini-app auto-detects whether the user is a master or client and shows the appropriate interface
+**Depends on**: Phase 16
+**Requirements**: XAUTH-01, XAUTH-02, XAUTH-03, XAUTH-04, XAUTH-05
+**Success Criteria** (what must be TRUE):
+  1. Master registered via web can open TG bot, and the bot recognizes them by phone/email and links tg_user_id to their account
+  2. Mini-app opened by a registered master shows the master panel (dashboard, services, schedule); opened by a client shows the booking flow
+  3. Master can link/unlink TG, MAX, VK accounts from the web admin settings page
+  4. Master in mini-app can switch between "Panel mastera" and "Moi zapisi" views
+  5. New master can register through the bot by providing email and phone, creating a full Master account with platform binding
+**Plans:** 2/2 plans complete
+
+Plans:
+- [x] 17-01-PLAN.md -- Backend platform link/unlink API, bot /start enhancement, account linking flow, bot registration
+- [x] 17-02-PLAN.md -- Mini-app role auto-detection, master/client toggle, web admin platforms tab
+
+</details>
+
+### Phase 18: Critical Fixes
+**Goal**: The three critical production issues are resolved -- QR codes open the mini-app (not a website), role detection works reliably without race conditions, and analytics does not crash on empty data
+**Depends on**: Phase 17 (v2.0 complete)
+**Requirements**: QRFIX-01, QRFIX-02, QRFIX-03, ROLE-01, ROLE-02, ROLE-03, ANLTR-01, ANLTR-02, ANLTR-03
+**Success Criteria** (what must be TRUE):
+  1. Master scans the QR code from admin settings with the Telegram camera and it opens the mini-app booking flow (not a web page); the settings page shows both a web link and a Telegram deeplink with separate QR codes
+  2. Master opens the mini-app and immediately sees the master panel without flicker or double-loading; role preference persists across app restarts via localStorage
+  3. A newly registered master with zero bookings/payments opens the analytics page and sees "No data for selected period" placeholder instead of a crash or blank charts; an API error shows a retry button
+**Plans**: TBD
+
+### Phase 19: High Priority Fixes
+**Goal**: Bot registration creates a real master account end-to-end, client cabinet authentication works reliably via both cookie and Bearer token, and invalid booking URLs show helpful error messages
+**Depends on**: Phase 18
+**Requirements**: BREG-01, BREG-02, BREG-03, CAUTH-01, CAUTH-02, CAUTH-03, BVAL-01, BVAL-02
+**Success Criteria** (what must be TRUE):
+  1. A new user sends /start to the TG bot, taps "Register as master", and gets a confirmation with an "Open mini-app" button that launches the master panel; an existing web-registered master can tap "Link account", enter email, and get their TG account linked
+  2. Client enters phone at /my, receives OTP, enters code, and sees their bookings; the session works both with httpOnly cookie and with Bearer token fallback (for cross-origin or mobile webview scenarios)
+  3. Opening /book/invalid-uuid or /book/nonexistent-uuid in the mini-app shows "Master not found" with a suggestion to check the link; the public page /m/nonexistent-username shows a helpful 404 message
+**Plans**: TBD
+
+### Phase 20: Error Handling & UX Polish
+**Goal**: All remaining rough edges are smoothed -- every page handles errors gracefully, API calls have timeouts, all user-facing messages are in Russian, and settings inputs are properly formatted
+**Depends on**: Phase 19
+**Requirements**: ERRH-01, ERRH-02, ERRH-03, ERRH-04, ERRH-05
+**Success Criteria** (what must be TRUE):
+  1. ReviewsPage in web admin shows an error state with retry button when the API fails (not a blank page or unhandled exception)
+  2. Every API client (frontend, public, web admin) has a 30-second timeout via AbortController; slow or unresponsive backend does not leave the user staring at an infinite spinner
+  3. All error messages, validation messages, and empty states across all three frontends display in Russian; card number input in settings has digit formatting (XXXX XXXX XXXX XXXX); Robokassa test mode shows a visible warning banner
+**Plans**: TBD
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 9 -> 10 -> 11 -> 12 -> 13 -> 14 -> 15 -> 16 -> 17
-
-Note: Phases 12-13 and 10-14 have independent dependency chains. Execution follows numeric order for simplicity, but 12 does not depend on 11.
+Phases execute in numeric order: 18 -> 19 -> 20
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -333,24 +393,11 @@ Note: Phases 12-13 and 10-14 have independent dependency chains. Execution follo
 | 10. Public Master Page | v2.0 | 4/4 | Complete | 2026-03-21 |
 | 11. Client Cabinet | v2.0 | 3/3 | Complete | 2026-03-21 |
 | 12. Admin Payments | v2.0 | 2/2 | Complete | 2026-03-21 |
-| 13. Auto Receipts | 2/2 | Complete    | 2026-03-21 | - |
-| 14. Portfolio | 3/3 | Complete    | 2026-03-21 | - |
-| 15. Reviews | 2/2 | Complete    | 2026-03-21 | - |
-| 16. Analytics | 2/2 | Complete    | 2026-03-21 | - |
-| 17. Cross-Platform Auth | 2/2 | Complete    | 2026-03-21 | - |
-
-### Phase 17: Cross-Platform Auth & Role Detection
-**Goal**: Masters have a single account accessible from web, TG, MAX, and VK; the mini-app auto-detects whether the user is a master or client and shows the appropriate interface
-**Depends on**: Phase 16
-**Requirements**: XAUTH-01, XAUTH-02, XAUTH-03, XAUTH-04, XAUTH-05
-**Success Criteria** (what must be TRUE):
-  1. Master registered via web can open TG bot, and the bot recognizes them by phone/email and links tg_user_id to their account
-  2. Mini-app opened by a registered master shows the master panel (dashboard, services, schedule); opened by a client shows the booking flow
-  3. Master can link/unlink TG, MAX, VK accounts from the web admin settings page
-  4. Master in mini-app can switch between "Панель мастера" and "Мои записи" views
-  5. New master can register through the bot by providing email and phone, creating a full Master account with platform binding
-**Plans:** 2/2 plans complete
-
-Plans:
-- [ ] 17-01-PLAN.md -- Backend platform link/unlink API, bot /start enhancement, account linking flow, bot registration
-- [ ] 17-02-PLAN.md -- Mini-app role auto-detection, master/client toggle, web admin platforms tab
+| 13. Auto Receipts | v2.0 | 2/2 | Complete | 2026-03-21 |
+| 14. Portfolio | v2.0 | 3/3 | Complete | 2026-03-21 |
+| 15. Reviews | v2.0 | 2/2 | Complete | 2026-03-21 |
+| 16. Analytics | v2.0 | 2/2 | Complete | 2026-03-21 |
+| 17. Cross-Platform Auth | v2.0 | 2/2 | Complete | 2026-03-21 |
+| 18. Critical Fixes | v2.1 | 0/0 | Not started | - |
+| 19. High Priority Fixes | v2.1 | 0/0 | Not started | - |
+| 20. Error Handling & UX Polish | v2.1 | 0/0 | Not started | - |
