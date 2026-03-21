@@ -11,6 +11,7 @@ import { CalendarPage } from "./pages/CalendarPage";
 import { ClientsPage } from "./pages/ClientsPage";
 import { ClientDetailPage } from "./pages/ClientDetailPage";
 import { PaymentsPage } from "./pages/PaymentsPage";
+import { ReviewsPage } from "./pages/ReviewsPage";
 import { ServicesPage } from "./pages/ServicesPage";
 import { SettingsPage } from "./pages/SettingsPage";
 
@@ -86,6 +87,7 @@ export default function App() {
                   <Route path="/clients/:id" element={<ClientDetailPage />} />
                   <Route path="/services" element={<ServicesPage />} />
                   <Route path="/payments" element={<PaymentsPage />} />
+                  <Route path="/reviews" element={<ReviewsPage />} />
                   <Route path="/settings" element={<SettingsPage />} />
                 </Route>
               </Route>
