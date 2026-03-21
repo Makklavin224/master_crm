@@ -26,6 +26,7 @@ import {
   useNotificationSettings,
   useUpdateNotificationSettings,
   usePaymentSettings,
+  useProfileSettings,
   useScheduleTemplate,
   useUpdateScheduleTemplate,
   useScheduleExceptions,
@@ -33,11 +34,98 @@ import {
   useDeleteScheduleException,
   type ScheduleDayEntry,
 } from "../api/settings";
+import { QRCodeSVG } from "qrcode.react";
 import { useAuth } from "../stores/auth";
 import type { ColumnsType } from "antd/es/table";
 
 // --- Day names ---
 const DAY_NAMES = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+
+const PUBLIC_DOMAIN = "https://moiokoshki.ru";
+
+// =============================================
+// Tab 0: My Page (booking link + QR code)
+// =============================================
+
+function MyPageTab() {
+  const { data: profileSettings, isLoading } = useProfileSettings();
+  const profile = useAuth((s) => s.profile);
+  const { message: messageApi } = App.useApp();
+
+  if (isLoading) return <Spin />;
+
+  const username = profileSettings?.username;
+
+  if (!username) {
+    return (
+      <Card>
+        <div style={{ textAlign: "center", padding: "32px 0" }}>
+          <p style={{ fontSize: 16, marginBottom: 16 }}>
+            Задайте имя пользователя в разделе &laquo;Профиль&raquo; чтобы получить ссылку на вашу страницу
+          </p>
+          <Button type="primary">Перейти в Профиль</Button>
+        </div>
+      </Card>
+    );
+  }
+
+  const bookingUrl = `${PUBLIC_DOMAIN}/m/${username}`;
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(bookingUrl);
+      messageApi.success("Ссылка скопирована");
+    } catch {
+      messageApi.error("Не удалось скопировать");
+    }
+  };
+
+  return (
+    <>
+      {/* Booking link */}
+      <Card title="Ссылка для записи" size="small" style={{ marginBottom: 24 }}>
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <Input
+            value={bookingUrl}
+            readOnly
+            style={{ flex: 1 }}
+          />
+          <Button type="primary" onClick={handleCopy}>
+            Скопировать
+          </Button>
+        </div>
+      </Card>
+
+      {/* QR Code */}
+      <Card title="QR-код" size="small" style={{ marginBottom: 24 }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
+          <QRCodeSVG value={bookingUrl} size={200} />
+          <p style={{ color: "#888", textAlign: "center", margin: 0 }}>
+            Распечатайте и повесьте в салоне или добавьте на визитку
+          </p>
+        </div>
+      </Card>
+
+      {/* Preview */}
+      <Card title="Предпросмотр" size="small">
+        <Descriptions bordered column={1} size="small">
+          <Descriptions.Item label="Имя">
+            {profile?.name ?? profileSettings?.name ?? "—"}
+          </Descriptions.Item>
+          <Descriptions.Item label="Специализация">
+            {profileSettings?.specialization ?? "Не указана"}
+          </Descriptions.Item>
+          <Descriptions.Item label="Город">
+            {profileSettings?.city ?? "Не указан"}
+          </Descriptions.Item>
+          <Descriptions.Item label="URL">
+            {`moiokoshki.ru/m/${username}`}
+          </Descriptions.Item>
+        </Descriptions>
+      </Card>
+    </>
+  );
+}
 
 // =============================================
 // Tab 1: Schedule
@@ -584,6 +672,7 @@ export function SettingsPage() {
     <Tabs
       tabPosition="left"
       items={[
+        { key: "my-page", label: "Моя страница", children: <MyPageTab /> },
         { key: "schedule", label: "Расписание", children: <ScheduleTab /> },
         { key: "notifications", label: "Уведомления", children: <NotificationsTab /> },
         { key: "payments", label: "Платежи", children: <PaymentsTab /> },

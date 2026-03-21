@@ -80,6 +80,25 @@ export interface ScheduleExceptionCreate {
   reason?: string | null;
 }
 
+// --- Profile settings ---
+
+export interface ProfileSettings {
+  name: string;
+  username: string | null;
+  specialization: string | null;
+  city: string | null;
+  avatar_path: string | null;
+  instagram_url: string | null;
+}
+
+export function useProfileSettings() {
+  return useQuery<ProfileSettings>({
+    queryKey: ["settings", "profile"],
+    queryFn: () => apiRequest<ProfileSettings>("/settings/profile"),
+    staleTime: 60_000,
+  });
+}
+
 // --- Settings hooks ---
 
 export function useSettings() {
