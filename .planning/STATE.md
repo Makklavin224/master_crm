@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Feature Expansion
-status: completed
-stopped_at: Completed 16-02-PLAN.md -- v2.0 milestone complete
-last_updated: "2026-03-21T07:47:09.766Z"
-last_activity: 2026-03-21 -- Completed 16-02 Analytics Frontend Page
+status: in_progress
+stopped_at: Completed 17-01-PLAN.md
+last_updated: "2026-03-21T09:22:36.765Z"
+last_activity: 2026-03-21 -- Completed 17-01 Backend Platform Linking API
 progress:
-  total_phases: 8
+  total_phases: 9
   completed_phases: 8
-  total_plans: 20
-  completed_plans: 20
-  percent: 100
+  total_plans: 22
+  completed_plans: 21
+  percent: 95
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-20)
 
 **Core value:** Master taps "Complete" -- client gets SBP payment link -- tax receipt auto-generates. 3 steps instead of 9.
-**Current focus:** v2.0 Feature Expansion -- COMPLETE
+**Current focus:** v2.0 Feature Expansion -- Phase 17 in progress
 
 ## Current Position
 
-Phase: 16 of 16 (Analytics)
-Plan: 2 of 2
-Status: Phase 16 complete, v2.0 milestone complete
-Last activity: 2026-03-21 -- Completed 16-02 Analytics Frontend Page
+Phase: 17 of 17 (Cross-Platform Auth & Role Detection)
+Plan: 1 of 2
+Status: Plan 17-01 complete, 17-02 next
+Last activity: 2026-03-21 -- Completed 17-01 Backend Platform Linking API
 
-Progress: [██████████] 100%
+Progress: [██████████] 95%
 
 ## Performance Metrics
 
@@ -73,6 +73,7 @@ Progress: [██████████] 100%
 | Phase 15 P02 | 4min | 2 tasks | 7 files |
 | Phase 16 P01 | 4min | 2 tasks | 4 files |
 | Phase 16 P02 | 10min | 2 tasks | 6 files |
+| Phase 17 P01 | 6min | 2 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -143,6 +144,9 @@ Recent decisions affecting current work:
 - [Phase 16-02]: Used recharts (not chart.js) for LineChart and PieChart visualizations
 - [Phase 16-02]: Client-side CSV generation with BOM prefix (no backend endpoint needed)
 - [Phase 16-02]: Analytics staleTime 60s (vs 30s for payments) since data changes less frequently
+- [Phase 17]: Bot registration creates Master without password (can set password later via web admin)
+- [Phase 17]: Account linking uses email lookup (not phone) since web-registered masters always have email
+- [Phase 17]: Link-email handler checked before review-text handler in MAX router to prevent state conflict
 
 ### Pending Todos
 
@@ -158,6 +162,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-21
-Stopped at: Phase 17 added, ready to plan
+Last session: 2026-03-21T09:22:36.762Z
+Stopped at: Completed 17-01-PLAN.md
 Resume file: None

@@ -192,11 +192,11 @@
 
 ### Cross-Platform Auth (XAUTH)
 
-- [ ] **XAUTH-01**: Bot /start recognizes existing master by phone/email, links platform user_id and issues JWT
+- [x] **XAUTH-01**: Bot /start recognizes existing master by phone/email, links platform user_id and issues JWT
 - [ ] **XAUTH-02**: Mini-app auto-detects role: master → panel, client → booking flow (based on platform user_id in masters table)
-- [ ] **XAUTH-03**: Master can link/unlink TG, MAX, VK accounts from web admin settings
+- [x] **XAUTH-03**: Master can link/unlink TG, MAX, VK accounts from web admin settings
 - [ ] **XAUTH-04**: Master in mini-app has toggle to switch between "Панель мастера" and "Мои записи"
-- [ ] **XAUTH-05**: New master can register through bot: enter email + phone → create Master → bind platform → JWT
+- [x] **XAUTH-05**: New master can register through bot: enter email + phone → create Master → bind platform → JWT
 
 ## v3 Requirements (deferred)
 
