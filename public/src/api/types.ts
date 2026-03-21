@@ -67,6 +67,16 @@ export interface BookingRead {
   client_phone: string;
 }
 
+export interface PortfolioPhoto {
+  id: string;
+  file_path: string;
+  thumbnail_path: string;
+  caption: string | null;
+  service_tag: string | null;
+  sort_order: number;
+  created_at: string;
+}
+
 // Client cabinet types
 
 export interface OTPResponse {

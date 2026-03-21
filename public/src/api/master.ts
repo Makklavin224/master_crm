@@ -5,6 +5,7 @@ import type {
   ServiceRead,
   AvailableSlotsResponse,
   ReviewRead,
+  PortfolioPhoto,
 } from "./types.ts";
 
 export function useMasterProfile(username: string) {
@@ -45,6 +46,16 @@ export function useMasterReviews(username: string) {
   return useQuery<ReviewRead[]>({
     queryKey: ["masterReviews", username],
     queryFn: () => apiRequest<ReviewRead[]>(`/masters/${username}/reviews`),
+    enabled: !!username,
+    staleTime: 120_000,
+  });
+}
+
+export function useMasterPortfolio(username: string) {
+  return useQuery<PortfolioPhoto[]>({
+    queryKey: ["masterPortfolio", username],
+    queryFn: () =>
+      apiRequest<PortfolioPhoto[]>(`/masters/${username}/portfolio`),
     enabled: !!username,
     staleTime: 120_000,
   });
