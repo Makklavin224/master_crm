@@ -208,9 +208,9 @@
 
 ### Role Detection (ROLE)
 
-- [ ] **ROLE-01**: autoDetectRole imeet guard protiv race condition (debounce/lock)
-- [ ] **ROLE-02**: RoleDetector zhdet bridge.ready() i pokazyvaet spinner poka detecting
-- [ ] **ROLE-03**: Pereklyuchatel roley sokhranayetsya v localStorage mezhdu perezagruzkami
+- [x] **ROLE-01**: autoDetectRole imeet guard protiv race condition (debounce/lock)
+- [x] **ROLE-02**: RoleDetector zhdet bridge.ready() i pokazyvaet spinner poka detecting
+- [x] **ROLE-03**: Pereklyuchatel roley sokhranayetsya v localStorage mezhdu perezagruzkami
 
 ### Bot Registration (BREG)
 
@@ -226,9 +226,9 @@
 
 ### Analytics Robustness (ANLTR)
 
-- [ ] **ANLTR-01**: Pustyye dannyye pokazyvayut "Net dannykh za period", ne lomayut charts
-- [ ] **ANLTR-02**: API oshibka pokazyvaet EmptyState s knopkoy "Povtorit"
-- [ ] **ANLTR-03**: Vse chislovyye znacheniya zashchishcheny ot undefined/null
+- [x] **ANLTR-01**: Pustyye dannyye pokazyvayut "Net dannykh za period", ne lomayut charts
+- [x] **ANLTR-02**: API oshibka pokazyvaet EmptyState s knopkoy "Povtorit"
+- [x] **ANLTR-03**: Vse chislovyye znacheniya zashchishcheny ot undefined/null
 
 ### Booking Validation (BVAL)
 
@@ -409,12 +409,12 @@
 | QRFIX-01 | Phase 18 | Complete |
 | QRFIX-02 | Phase 18 | Complete |
 | QRFIX-03 | Phase 18 | Complete |
-| ROLE-01 | Phase 18 | Pending |
-| ROLE-02 | Phase 18 | Pending |
-| ROLE-03 | Phase 18 | Pending |
-| ANLTR-01 | Phase 18 | Pending |
-| ANLTR-02 | Phase 18 | Pending |
-| ANLTR-03 | Phase 18 | Pending |
+| ROLE-01 | Phase 18 | Complete |
+| ROLE-02 | Phase 18 | Complete |
+| ROLE-03 | Phase 18 | Complete |
+| ANLTR-01 | Phase 18 | Complete |
+| ANLTR-02 | Phase 18 | Complete |
+| ANLTR-03 | Phase 18 | Complete |
 | BREG-01 | Phase 19 | Pending |
 | BREG-02 | Phase 19 | Pending |
 | BREG-03 | Phase 19 | Pending |

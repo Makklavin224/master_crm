@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.1
 milestone_name: Bugfix & Stabilization
 status: executing
-stopped_at: Completed 18-01-PLAN.md (QR code fix)
-last_updated: "2026-03-21T10:28:53.727Z"
+stopped_at: Completed 18-02-PLAN.md (role detection race fix + analytics null safety)
+last_updated: "2026-03-21T10:29:38.701Z"
 last_activity: 2026-03-21 -- Completed 18-01 (QR code fix)
 progress:
   total_phases: 3
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 6
-  completed_plans: 1
+  completed_plans: 2
   percent: 17
 ---
 
@@ -55,6 +55,8 @@ Recent decisions affecting current work:
 - Role detection: debounce guard + localStorage persistence + bridge.ready() wait
 - Client auth: dual-path (cookie + Bearer token fallback)
 - [Phase 18]: QR fix: bot_username from TG_BOT_USERNAME env var, TG deeplink uses master UUID as startapp param
+- [Phase 18]: Module-level _detecting guard for async singleton race prevention (avoids zustand re-renders)
+- [Phase 18]: RoleSwitcher visibility uses isAuthenticated instead of role===master to persist across view toggles
 
 ### Pending Todos
 
@@ -66,6 +68,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-21T10:28:53.725Z
-Stopped at: Completed 18-01-PLAN.md (QR code fix)
+Last session: 2026-03-21T10:29:38.700Z
+Stopped at: Completed 18-02-PLAN.md (role detection race fix + analytics null safety)
 Resume file: None
