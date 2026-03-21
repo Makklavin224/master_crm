@@ -14,6 +14,23 @@ RUN printf 'server {\n\
     listen 3002;\n\
     root /usr/share/nginx/html;\n\
     index index.html;\n\
+\n\
+    # Static assets -- serve directly\n\
+    location /assets/ {\n\
+        try_files $uri =404;\n\
+    }\n\
+\n\
+    # Master public pages -- SPA fallback\n\
+    location /m/ {\n\
+        try_files $uri $uri/ /index.html;\n\
+    }\n\
+\n\
+    # Client cabinet -- SPA fallback\n\
+    location /my/ {\n\
+        try_files $uri $uri/ /index.html;\n\
+    }\n\
+\n\
+    # Default fallback\n\
     location / {\n\
         try_files $uri $uri/ /index.html;\n\
     }\n\

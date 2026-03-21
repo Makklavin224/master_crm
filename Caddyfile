@@ -15,6 +15,7 @@
     redir /admin /admin/ 308
     redir /app /app/ 308
     redir /m /m/ 308
+    redir /my /my/ 308
 
     # Admin panel
     handle /admin/* {
@@ -28,9 +29,18 @@
         reverse_proxy frontend:3000
     }
 
-    # Public master pages
+    # Public master pages (no strip_prefix -- SPA receives full /m/... path)
     handle /m/* {
-        uri strip_prefix /m
+        reverse_proxy public:3002
+    }
+
+    # Client cabinet (no strip_prefix -- SPA receives full /my/... path)
+    handle /my/* {
+        reverse_proxy public:3002
+    }
+
+    # Static assets (Vite build output with base "/")
+    handle /assets/* {
         reverse_proxy public:3002
     }
 

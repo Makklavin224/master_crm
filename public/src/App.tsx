@@ -25,18 +25,33 @@ function NotFound() {
   );
 }
 
+function ClientCabinetPlaceholder() {
+  return (
+    <div className="flex flex-col items-center justify-center min-h-full p-8 text-center">
+      <h1 className="text-2xl font-bold text-text-primary mb-2">Личный кабинет</h1>
+      <p className="text-text-secondary">Скоро здесь появится ваш личный кабинет</p>
+    </div>
+  );
+}
+
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter basename="/m">
+      <BrowserRouter basename="/">
         <div className="min-h-full flex flex-col bg-white">
           <Routes>
-            <Route path="/:username" element={<MasterPage />} />
-            <Route path="/:username/book" element={<ServiceStep />} />
-            <Route path="/:username/book/date" element={<DateStep />} />
-            <Route path="/:username/book/time" element={<TimeStep />} />
-            <Route path="/:username/book/info" element={<InfoStep />} />
-            <Route path="/:username/book/confirm" element={<ConfirmStep />} />
+            {/* Master public pages */}
+            <Route path="/m/:username" element={<MasterPage />} />
+            <Route path="/m/:username/book" element={<ServiceStep />} />
+            <Route path="/m/:username/book/date" element={<DateStep />} />
+            <Route path="/m/:username/book/time" element={<TimeStep />} />
+            <Route path="/m/:username/book/info" element={<InfoStep />} />
+            <Route path="/m/:username/book/confirm" element={<ConfirmStep />} />
+
+            {/* Client cabinet (placeholder -- implemented in Plan 03) */}
+            <Route path="/my" element={<ClientCabinetPlaceholder />} />
+            <Route path="/my/*" element={<ClientCabinetPlaceholder />} />
+
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
