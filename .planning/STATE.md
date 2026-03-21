@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Feature Expansion
-status: in_progress
-stopped_at: Completed 16-01-PLAN.md
-last_updated: "2026-03-21T07:20:01.000Z"
-last_activity: 2026-03-21 -- Completed 16-01 Analytics Backend Endpoints
+status: complete
+stopped_at: Completed 16-02-PLAN.md
+last_updated: "2026-03-21T07:44:48.000Z"
+last_activity: 2026-03-21 -- Completed 16-02 Analytics Frontend Page
 progress:
   total_phases: 8
-  completed_phases: 7
+  completed_phases: 8
   total_plans: 20
-  completed_plans: 19
-  percent: 95
+  completed_plans: 20
+  percent: 100
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-20)
 
 **Core value:** Master taps "Complete" -- client gets SBP payment link -- tax receipt auto-generates. 3 steps instead of 9.
-**Current focus:** v2.0 Feature Expansion -- Phase 16 (Analytics) in progress
+**Current focus:** v2.0 Feature Expansion -- COMPLETE
 
 ## Current Position
 
 Phase: 16 of 16 (Analytics)
-Plan: 1 of 2
-Status: Phase 16 in progress, Plan 01 complete
-Last activity: 2026-03-21 -- Completed 16-01 Analytics Backend Endpoints
+Plan: 2 of 2
+Status: Phase 16 complete, v2.0 milestone complete
+Last activity: 2026-03-21 -- Completed 16-02 Analytics Frontend Page
 
-Progress: [█████████▓] 95%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -72,6 +72,7 @@ Progress: [█████████▓] 95%
 | Phase 15 P01 | 6min | 2 tasks | 13 files |
 | Phase 15 P02 | 4min | 2 tasks | 7 files |
 | Phase 16 P01 | 4min | 2 tasks | 4 files |
+| Phase 16 P02 | 10min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -139,6 +140,9 @@ Recent decisions affecting current work:
 - [Phase 16-01]: Revenue chart fills zero-revenue days for continuous chart data
 - [Phase 16-01]: Daily breakdown revenue uses booking start date (not payment paid_at) for day alignment
 - [Phase 16-01]: New/repeat client split uses MasterClient.first_visit_at relative to date range
+- [Phase 16-02]: Used recharts (not chart.js) for LineChart and PieChart visualizations
+- [Phase 16-02]: Client-side CSV generation with BOM prefix (no backend endpoint needed)
+- [Phase 16-02]: Analytics staleTime 60s (vs 30s for payments) since data changes less frequently
 
 ### Pending Todos
 
@@ -150,6 +154,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-21T07:20:01.000Z
-Stopped at: Completed 16-01-PLAN.md
+Last session: 2026-03-21T07:44:48Z
+Stopped at: Completed 16-02-PLAN.md -- v2.0 milestone complete
 Resume file: None

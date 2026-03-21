@@ -306,7 +306,7 @@ Plans:
   2. Dashboard displays a revenue line chart by day, a new-vs-repeat clients donut chart, utilization rate, average check, retention rate (% returning within 60 days), and cancellation/no-show rates
   3. Reports tab shows a top services table (service, count, revenue, % of total) and a daily breakdown table (date, bookings, revenue, utilization)
   4. Master can export both reports to CSV
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
 - [ ] 16-01-PLAN.md -- Backend analytics service + Pydantic schemas + 4 API endpoints (summary, revenue-chart, top-services, daily)
@@ -336,4 +336,4 @@ Note: Phases 12-13 and 10-14 have independent dependency chains. Execution follo
 | 13. Auto Receipts | 2/2 | Complete    | 2026-03-21 | - |
 | 14. Portfolio | 3/3 | Complete    | 2026-03-21 | - |
 | 15. Reviews | 2/2 | Complete    | 2026-03-21 | - |
-| 16. Analytics | 1/2 | In Progress|  | - |
+| 16. Analytics | 2/2 | Complete   | 2026-03-21 | - |
