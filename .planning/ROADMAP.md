@@ -218,10 +218,10 @@ Plans:
 **Plans:** 4/4 plans complete
 
 Plans:
-- [ ] 10-01-PLAN.md -- Scaffold public/ React SPA (Vite+TS+Tailwind), API client, types, Dockerfile, Docker Compose + Caddy integration
-- [ ] 10-02-PLAN.md -- Master profile page: hero, services, nearest slots, reviews, contacts, sticky booking button
-- [ ] 10-03-PLAN.md -- 5-step web booking flow: service -> date -> time -> phone+name -> confirmation
-- [ ] 10-04-PLAN.md -- Admin settings "Моя страница" tab (copy link + QR code) + SEO meta tags on public page
+- [x] 10-01-PLAN.md -- Scaffold public/ React SPA (Vite+TS+Tailwind), API client, types, Dockerfile, Docker Compose + Caddy integration
+- [x] 10-02-PLAN.md -- Master profile page: hero, services, nearest slots, reviews, contacts, sticky booking button
+- [x] 10-03-PLAN.md -- 5-step web booking flow: service -> date -> time -> phone+name -> confirmation
+- [x] 10-04-PLAN.md -- Admin settings "Моя страница" tab (copy link + QR code) + SEO meta tags on public page
 
 ### Phase 11: Client Cabinet
 **Goal**: Clients can log in to a personal cabinet at /my, see all their bookings across masters, rebook past services, and leave reviews after completed visits
@@ -232,7 +232,12 @@ Plans:
   2. OTP expires after 5 minutes, allows max 3 attempts, and enforces a 60-second cooldown between requests; session persists for 7 days via cookie
   3. Client sees upcoming bookings with cancel/reschedule buttons, and past visits with "Zapisatsya snova" (pre-fills master + service) and "Ostavit otzyv" buttons
   4. Client who visits multiple masters sees all bookings in one list grouped by date; clicking master name navigates to their public page
-**Plans**: TBD
+**Plans:** 3 plans
+
+Plans:
+- [ ] 11-01-PLAN.md -- Backend client auth (OTP request/verify) + client bookings + reviews API endpoints
+- [ ] 11-02-PLAN.md -- Caddy/Vite/Router routing fix for dual-path SPA (/m/* + /my/*)
+- [ ] 11-03-PLAN.md -- Frontend client cabinet: login form, auth store, bookings list, review form
 
 ### Phase 12: Admin Payments
 **Goal**: Masters can complete visits and accept payments directly from the web admin panel with method selection, and the payments page provides filtering, totals, and export
@@ -304,8 +309,8 @@ Note: Phases 12-13 and 10-14 have independent dependency chains. Execution follo
 | 7. Mini-App UX Polish | v1.1 | 5/5 | Complete | 2026-03-19 |
 | 8. Web Admin UX Polish | v1.1 | 3/3 | Complete | 2026-03-19 |
 | 9. Backend Foundation | v2.0 | 2/2 | Complete | 2026-03-21 |
-| 10. Public Master Page | 4/4 | Complete    | 2026-03-21 | - |
-| 11. Client Cabinet | v2.0 | 0/? | Not started | - |
+| 10. Public Master Page | v2.0 | 4/4 | Complete | 2026-03-21 |
+| 11. Client Cabinet | v2.0 | 0/3 | Not started | - |
 | 12. Admin Payments | v2.0 | 0/? | Not started | - |
 | 13. Auto Receipts | v2.0 | 0/? | Not started | - |
 | 14. Portfolio | v2.0 | 0/? | Not started | - |
