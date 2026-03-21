@@ -129,8 +129,8 @@
 - [x] **PBUK-03**: Public page shows list of services with prices and "Zapisatsya" button
 - [x] **PBUK-04**: Public page shows nearest available slots (3-5 days ahead)
 - [x] **PBUK-05**: Client can book through web browser without a messenger (service -> date -> time -> phone+name -> confirm)
-- [ ] **PBUK-06**: Master can copy booking link and auto-generated QR code from settings
-- [ ] **PBUK-07**: Public page has SEO meta tags (title, description, OpenGraph with avatar)
+- [x] **PBUK-06**: Master can copy booking link and auto-generated QR code from settings
+- [x] **PBUK-07**: Public page has SEO meta tags (title, description, OpenGraph with avatar)
 
 ### Client Cabinet (CCAB)
 
@@ -306,8 +306,8 @@
 | PBUK-03 | Phase 10 | Complete |
 | PBUK-04 | Phase 10 | Complete |
 | PBUK-05 | Phase 10 | Complete |
-| PBUK-06 | Phase 10 | Pending |
-| PBUK-07 | Phase 10 | Pending |
+| PBUK-06 | Phase 10 | Complete |
+| PBUK-07 | Phase 10 | Complete |
 | CCAB-01 | Phase 11 | Pending |
 | CCAB-02 | Phase 11 | Pending |
 | CCAB-03 | Phase 11 | Pending |
