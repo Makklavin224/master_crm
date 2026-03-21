@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { ApiError } from "../api/client.ts";
+import type { PlatformBridge } from "../platform/types.ts";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "/api/v1";
 const TOKEN_KEY = "master_token";
@@ -28,23 +29,43 @@ function safeRemoveItem(key: string): void {
   }
 }
 
+export type MasterRole = "master" | "client" | "detecting";
+
 interface MasterAuthState {
   token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
+  role: MasterRole;
 
   login: (initDataRaw: string) => Promise<boolean>;
   setToken: (token: string | null) => void;
   logout: () => void;
   hydrate: () => void;
+  setRole: (role: "master" | "client") => void;
+  autoDetectRole: (bridge: PlatformBridge) => Promise<void>;
 }
 
-export const useMasterAuth = create<MasterAuthState>((set) => ({
+/** Map platform to its auth endpoint and request body key */
+function getAuthConfig(platform: string, initDataRaw: string): { endpoint: string; body: Record<string, string> } | null {
+  switch (platform) {
+    case "telegram":
+      return { endpoint: "/auth/tg", body: { init_data: initDataRaw } };
+    case "max":
+      return { endpoint: "/auth/max", body: { init_data: initDataRaw } };
+    case "vk":
+      return { endpoint: "/auth/vk", body: { launch_params: initDataRaw } };
+    default:
+      return null;
+  }
+}
+
+export const useMasterAuth = create<MasterAuthState>((set, get) => ({
   token: null,
   isAuthenticated: false,
   isLoading: false,
   error: null,
+  role: "detecting" as MasterRole,
 
   login: async (initDataRaw: string) => {
     set({ isLoading: true, error: null });
@@ -98,6 +119,70 @@ export const useMasterAuth = create<MasterAuthState>((set) => ({
     const token = safeGetItem(TOKEN_KEY);
     if (token) {
       set({ token, isAuthenticated: true });
+    }
+  },
+
+  setRole: (role: "master" | "client") => {
+    set({ role });
+  },
+
+  autoDetectRole: async (bridge: PlatformBridge) => {
+    set({ role: "detecting", isLoading: true });
+
+    // 1. Check localStorage for existing token
+    const existingToken = safeGetItem(TOKEN_KEY);
+    if (existingToken) {
+      set({ token: existingToken, isAuthenticated: true, role: "master", isLoading: false });
+      return;
+    }
+
+    // 2. Get init data from platform bridge
+    const initDataRaw = bridge.getInitDataRaw();
+    if (!initDataRaw) {
+      // Web platform or no init data -- treat as client
+      set({ role: "client", isAuthenticated: false, isLoading: false });
+      return;
+    }
+
+    // 3. Determine auth endpoint based on platform
+    const authConfig = getAuthConfig(bridge.platform, initDataRaw);
+    if (!authConfig) {
+      set({ role: "client", isAuthenticated: false, isLoading: false });
+      return;
+    }
+
+    // 4. Try to authenticate
+    try {
+      const response = await fetch(`${API_BASE}${authConfig.endpoint}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(authConfig.body),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        safeSetItem(TOKEN_KEY, data.access_token);
+        set({
+          token: data.access_token,
+          isAuthenticated: true,
+          role: "master",
+          isLoading: false,
+          error: null,
+        });
+        return;
+      }
+
+      // 401/404 = not a master, this is normal
+      if (response.status === 401 || response.status === 404) {
+        set({ role: "client", isAuthenticated: false, isLoading: false });
+        return;
+      }
+
+      // Other errors -- default to client
+      set({ role: "client", isAuthenticated: false, isLoading: false });
+    } catch {
+      // Network error -- default to client
+      set({ role: "client", isAuthenticated: false, isLoading: false });
     }
   },
 }));
