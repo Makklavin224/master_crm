@@ -352,7 +352,7 @@ Plans:
   1. Master scans the QR code from admin settings with the Telegram camera and it opens the mini-app booking flow (not a web page); the settings page shows both a web link and a Telegram deeplink with separate QR codes
   2. Master opens the mini-app and immediately sees the master panel without flicker or double-loading; role preference persists across app restarts via localStorage
   3. A newly registered master with zero bookings/payments opens the analytics page and sees "No data for selected period" placeholder instead of a crash or blank charts; an API error shows a retry button
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
 - [ ] 18-01-PLAN.md -- QR deeplink fix: backend bot_username in profile settings API, dual QR codes (web + TG deeplink) in SettingsPage
@@ -410,6 +410,6 @@ Phases execute in numeric order: 18 -> 19 -> 20
 | 15. Reviews | v2.0 | 2/2 | Complete | 2026-03-21 |
 | 16. Analytics | v2.0 | 2/2 | Complete | 2026-03-21 |
 | 17. Cross-Platform Auth | v2.0 | 2/2 | Complete | 2026-03-21 |
-| 18. Critical Fixes | v2.1 | 0/2 | Not started | - |
+| 18. Critical Fixes | 1/2 | In Progress|  | - |
 | 19. High Priority Fixes | v2.1 | 0/2 | Not started | - |
 | 20. Error Handling & UX Polish | v2.1 | 0/2 | Not started | - |

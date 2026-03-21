@@ -202,9 +202,9 @@
 
 ### QR & Booking Link (QRFIX)
 
-- [ ] **QRFIX-01**: QR-kod v adminke kodiruet TG deeplink (t.me/BOT?startapp=MASTER_ID), ne prosto URL sayta
-- [ ] **QRFIX-02**: Stranitsa "Moya stranitsa" pokazyvaet oba varianta: ssylka na sayt + QR dlya Telegram
-- [ ] **QRFIX-03**: BOT_USERNAME prikhodit iz backend API, ne hardcoded
+- [x] **QRFIX-01**: QR-kod v adminke kodiruet TG deeplink (t.me/BOT?startapp=MASTER_ID), ne prosto URL sayta
+- [x] **QRFIX-02**: Stranitsa "Moya stranitsa" pokazyvaet oba varianta: ssylka na sayt + QR dlya Telegram
+- [x] **QRFIX-03**: BOT_USERNAME prikhodit iz backend API, ne hardcoded
 
 ### Role Detection (ROLE)
 
@@ -406,9 +406,9 @@
 | XAUTH-03 | Phase 17 | Complete |
 | XAUTH-04 | Phase 17 | Complete |
 | XAUTH-05 | Phase 17 | Complete |
-| QRFIX-01 | Phase 18 | Pending |
-| QRFIX-02 | Phase 18 | Pending |
-| QRFIX-03 | Phase 18 | Pending |
+| QRFIX-01 | Phase 18 | Complete |
+| QRFIX-02 | Phase 18 | Complete |
+| QRFIX-03 | Phase 18 | Complete |
 | ROLE-01 | Phase 18 | Pending |
 | ROLE-02 | Phase 18 | Pending |
 | ROLE-03 | Phase 18 | Pending |
