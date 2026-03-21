@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Feature Expansion
-status: in_progress
-stopped_at: Completed 12-01-PLAN.md
-last_updated: "2026-03-21T05:52:03Z"
-last_activity: 2026-03-21 -- Completed 12-01 Admin Payments Complete Visit Flow
+status: completed
+stopped_at: Completed 12-02-PLAN.md
+last_updated: "2026-03-21T05:57:34Z"
+last_activity: 2026-03-21 -- Completed 12-02 Admin Payments Enhancements + Calendar
 progress:
   total_phases: 8
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 11
-  completed_plans: 10
-  percent: 91
+  completed_plans: 11
+  percent: 100
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-20)
 
 **Core value:** Master taps "Complete" -- client gets SBP payment link -- tax receipt auto-generates. 3 steps instead of 9.
-**Current focus:** v2.0 Feature Expansion -- Phase 12 (Admin Payments) in progress
+**Current focus:** v2.0 Feature Expansion -- Phase 12 (Admin Payments) COMPLETE, next phase pending
 
 ## Current Position
 
-Phase: 12 of 16 (Admin Payments)
-Plan: 1 of 2 -- DONE
-Status: Plan 12-01 complete, 12-02 next
-Last activity: 2026-03-21 -- Completed 12-01 Admin Payments Complete Visit Flow
+Phase: 12 of 16 (Admin Payments) -- COMPLETE
+Plan: 2 of 2 -- DONE
+Status: Phase 12 fully complete, all plans done
+Last activity: 2026-03-21 -- Completed 12-02 Admin Payments Enhancements + Calendar
 
-Progress: [█████████░] 91%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -63,6 +63,7 @@ Progress: [█████████░] 91%
 | Phase 11 P02 | 4min | 2 tasks | 4 files |
 | Phase 11 P03 | 3min | 2 tasks | 10 files |
 | Phase 12 P01 | 4min | 2 tasks | 6 files |
+| Phase 12 P02 | 2min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -106,6 +107,8 @@ Recent decisions affecting current work:
 - [Phase 12-01]: amount_override sent only when differs from service price (avoids unnecessary override)
 - [Phase 12-01]: SBP payment routes through Robokassa when has_robokassa; all other methods use manual payment
 - [Phase 12-01]: Revenue query always filters status=paid regardless of status_filter
+- [Phase 12-02]: CSV export uses StreamingResponse with BOM prefix for Excel UTF-8 compatibility
+- [Phase 12-02]: Calendar payment indicator uses lightweight payment query + Set for O(1) lookup
 
 ### Pending Todos
 
@@ -117,6 +120,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-21T05:52:03Z
-Stopped at: Completed 12-01-PLAN.md
+Last session: 2026-03-21T05:57:34Z
+Stopped at: Completed 12-02-PLAN.md
 Resume file: None

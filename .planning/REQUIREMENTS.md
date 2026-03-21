@@ -147,10 +147,10 @@
 - [x] **APAY-01**: Master can finish a visit from web admin with payment method selection (cash/card/SBP)
 - [x] **APAY-02**: Payment amount pre-filled from service price, editable (discount/extra)
 - [x] **APAY-03**: Fiscalization option on payment completion (auto/manual/none)
-- [ ] **APAY-04**: Payments page shows total revenue for selected period
-- [ ] **APAY-05**: Payments page has filter by payment method
-- [ ] **APAY-06**: Payments page has CSV export
-- [ ] **APAY-07**: Calendar event shows ruble icon for quick payment access
+- [x] **APAY-04**: Payments page shows total revenue for selected period
+- [x] **APAY-05**: Payments page has filter by payment method
+- [x] **APAY-06**: Payments page has CSV export
+- [x] **APAY-07**: Calendar event shows ruble icon for quick payment access
 
 ### Auto Receipts (ARCT)
 
@@ -318,10 +318,10 @@
 | APAY-01 | Phase 12 | Complete |
 | APAY-02 | Phase 12 | Complete |
 | APAY-03 | Phase 12 | Complete |
-| APAY-04 | Phase 12 | Pending |
-| APAY-05 | Phase 12 | Pending |
-| APAY-06 | Phase 12 | Pending |
-| APAY-07 | Phase 12 | Pending |
+| APAY-04 | Phase 12 | Complete |
+| APAY-05 | Phase 12 | Complete |
+| APAY-06 | Phase 12 | Complete |
+| APAY-07 | Phase 12 | Complete |
 | ARCT-01 | Phase 13 | Pending |
 | ARCT-02 | Phase 13 | Pending |
 | ARCT-03 | Phase 13 | Pending |
