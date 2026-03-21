@@ -380,7 +380,7 @@ Plans:
   1. ReviewsPage in web admin shows an error state with retry button when the API fails (not a blank page or unhandled exception)
   2. Every API client (frontend, public, web admin) has a 30-second timeout via AbortController; slow or unresponsive backend does not leave the user staring at an infinite spinner
   3. All error messages, validation messages, and empty states across all three frontends display in Russian; card number input in settings has digit formatting (XXXX XXXX XXXX XXXX); Robokassa test mode shows a visible warning banner
-**Plans:** 2 plans
+**Plans:** 2/2 plans complete
 
 Plans:
 - [ ] 20-01-PLAN.md -- API hardening: AbortController 30s timeout on all API clients + Russian error messages
@@ -410,6 +410,6 @@ Phases execute in numeric order: 18 -> 19 -> 20
 | 15. Reviews | v2.0 | 2/2 | Complete | 2026-03-21 |
 | 16. Analytics | v2.0 | 2/2 | Complete | 2026-03-21 |
 | 17. Cross-Platform Auth | v2.0 | 2/2 | Complete | 2026-03-21 |
-| 18. Critical Fixes | 2/2 | Complete    | 2026-03-21 | - |
-| 19. High Priority Fixes | 2/2 | Complete    | 2026-03-21 | - |
-| 20. Error Handling & UX Polish | v2.1 | 0/2 | Not started | - |
+| 18. Critical Fixes | 2/2 | Complete   | 2026-03-21 | - |
+| 19. High Priority Fixes | 2/2 | Complete   | 2026-03-21 | - |
+| 20. Error Handling & UX Polish | 2/2 | Complete   | 2026-03-21 | - |

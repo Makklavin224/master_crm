@@ -238,8 +238,8 @@
 ### Error Handling (ERRH)
 
 - [ ] **ERRH-01**: ReviewsPage imeet error handling s EmptyState
-- [ ] **ERRH-02**: Vse API klienty imeyut 30s timeout cherez AbortController
-- [ ] **ERRH-03**: Vse error messages na russkom yazyke
+- [x] **ERRH-02**: Vse API klienty imeyut 30s timeout cherez AbortController
+- [x] **ERRH-03**: Vse error messages na russkom yazyke
 - [ ] **ERRH-04**: Card number v nastroykakh imeet formatirovaniye
 - [ ] **ERRH-05**: Robokassa test mode pokazyvaet preduprezhdeniye
 
@@ -424,8 +424,8 @@
 | BVAL-01 | Phase 19 | Complete |
 | BVAL-02 | Phase 19 | Complete |
 | ERRH-01 | Phase 20 | Pending |
-| ERRH-02 | Phase 20 | Pending |
-| ERRH-03 | Phase 20 | Pending |
+| ERRH-02 | Phase 20 | Complete |
+| ERRH-03 | Phase 20 | Complete |
 | ERRH-04 | Phase 20 | Pending |
 | ERRH-05 | Phase 20 | Pending |
 

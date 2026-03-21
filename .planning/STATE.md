@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v2.1
 milestone_name: Bugfix & Stabilization
-status: executing
-stopped_at: Completed 19-02-PLAN.md (client auth Bearer fallback + booking validation)
-last_updated: "2026-03-21T10:43:30.605Z"
-last_activity: 2026-03-21 -- Completed 19-02 (Bearer token fallback + UUID validation + 404 messages)
+status: complete
+stopped_at: Completed 20-02-PLAN.md (error handling UX -- reviews, card formatting, Robokassa alert)
+last_updated: "2026-03-21T10:48:14Z"
+last_activity: 2026-03-21 -- Completed 20-02 (ReviewsPage error state, card formatting, Robokassa Alert)
 progress:
   total_phases: 3
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 6
-  completed_plans: 4
-  percent: 67
+  completed_plans: 6
+  percent: 100
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-03-21)
 ## Current Position
 
 Phase: 20 of 20 (Medium-Priority Fixes)
-Plan: 0 of 2 in current phase (phase 19 complete)
+Plan: 1 of 2 in current phase
 Status: In progress
-Last activity: 2026-03-21 -- Completed 19-02 (Bearer token fallback + UUID validation + 404 messages)
+Last activity: 2026-03-21 -- Completed 20-01 (30s AbortController timeout + Russian error messages)
 
-Progress: [███████░░░] 67%
+Progress: [████████░░] 83%
 
 ## Performance Metrics
 
@@ -63,6 +63,10 @@ Recent decisions affecting current work:
 - [Phase 19]: UUID validation before API call to prevent invalid booking requests
 - [Phase 19]: Frontend Bearer token via localStorage injected in apiRequest (not passed through store)
 - [Phase 19]: UUID validation before API call to prevent invalid booking requests
+- [Phase 20]: AbortSignal.any with typeof guard for caller signal merging (graceful degradation)
+- [Phase 20]: 30s timeout with Russian error "Превышено время ожидания" on all API functions
+- [Phase 20]: Used antd Result component for error state (consistent with admin design)
+- [Phase 20]: Card number formatting via onChange + setFieldValue (avoids controlled input complexity)
 
 ### Pending Todos
 
@@ -74,6 +78,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-21T10:42:48.632Z
-Stopped at: Completed 19-02-PLAN.md (client auth Bearer fallback + booking validation)
+Last session: 2026-03-21T10:48:06.527Z
+Stopped at: Completed 20-02-PLAN.md (error handling UX -- reviews, card formatting, Robokassa alert)
 Resume file: None
