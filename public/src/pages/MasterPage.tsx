@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import {
@@ -6,12 +7,50 @@ import {
   useMasterReviews,
 } from "../api/master.ts";
 import { ApiError } from "../api/client.ts";
+import type { MasterProfile } from "../api/types.ts";
 import HeroSection from "../components/HeroSection.tsx";
 import ServicesSection from "../components/ServicesSection.tsx";
 import SlotsSection from "../components/SlotsSection.tsx";
 import ReviewsSection from "../components/ReviewsSection.tsx";
 import ContactsSection from "../components/ContactsSection.tsx";
 import StickyBookButton from "../components/StickyBookButton.tsx";
+
+function setMetaTag(name: string, content: string, attr: "name" | "property" = "name") {
+  let el = document.querySelector(`meta[${attr}="${name}"]`) as HTMLMetaElement | null;
+  if (!el) {
+    el = document.createElement("meta");
+    el.setAttribute(attr, name);
+    document.head.appendChild(el);
+  }
+  el.content = content;
+}
+
+function updateMetaTags(profile: MasterProfile) {
+  const title = profile.specialization
+    ? `${profile.name} — ${profile.specialization} | МоиОкошки`
+    : `${profile.name} | МоиОкошки`;
+  document.title = title;
+
+  const parts = [profile.specialization, profile.city].filter(Boolean);
+  const ratingText = profile.avg_rating
+    ? `★ ${profile.avg_rating} (${profile.review_count} отзывов)`
+    : "";
+  const description = `${profile.name}${parts.length ? " — " + parts.join(", ") : ""}. ${ratingText} Запишитесь онлайн.`.trim();
+
+  setMetaTag("description", description);
+  setMetaTag("og:title", title, "property");
+  setMetaTag("og:description", description, "property");
+  setMetaTag("og:type", "profile", "property");
+  setMetaTag("og:site_name", "МоиОкошки", "property");
+
+  const url = `https://moiokoshki.ru/m/${profile.username || profile.id}`;
+  setMetaTag("og:url", url, "property");
+
+  if (profile.avatar_path) {
+    const imageUrl = `https://moiokoshki.ru/api/v1/media/${profile.avatar_path}`;
+    setMetaTag("og:image", imageUrl, "property");
+  }
+}
 
 export default function MasterPage() {
   const { username } = useParams<{ username: string }>();
@@ -20,6 +59,15 @@ export default function MasterPage() {
   const profileQuery = useMasterProfile(username ?? "");
   const servicesQuery = useMasterServices(username ?? "");
   const reviewsQuery = useMasterReviews(username ?? "");
+
+  useEffect(() => {
+    if (profileQuery.data) {
+      updateMetaTags(profileQuery.data);
+    }
+    return () => {
+      document.title = "МоиОкошки — Запись онлайн";
+    };
+  }, [profileQuery.data]);
 
   const handleBook = (serviceId?: string) => {
     const params = serviceId ? `?service=${serviceId}` : "";
