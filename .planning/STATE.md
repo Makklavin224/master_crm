@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Feature Expansion
-status: completed
-stopped_at: Completed 12-02-PLAN.md
-last_updated: "2026-03-21T06:02:21.482Z"
-last_activity: 2026-03-21 -- Completed 12-02 Admin Payments Enhancements + Calendar
+status: in_progress
+stopped_at: Completed 13-01-PLAN.md
+last_updated: "2026-03-21T06:26:14.000Z"
+last_activity: 2026-03-21 -- Completed 13-01 Auto-Receipts Backend
 progress:
   total_phases: 8
   completed_phases: 4
   total_plans: 11
-  completed_plans: 11
+  completed_plans: 12
   percent: 100
 ---
 
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-20)
 
 **Core value:** Master taps "Complete" -- client gets SBP payment link -- tax receipt auto-generates. 3 steps instead of 9.
-**Current focus:** v2.0 Feature Expansion -- Phase 12 (Admin Payments) COMPLETE, next phase pending
+**Current focus:** v2.0 Feature Expansion -- Phase 13 (Auto-Receipts) in progress
 
 ## Current Position
 
-Phase: 12 of 16 (Admin Payments) -- COMPLETE
-Plan: 2 of 2 -- DONE
-Status: Phase 12 fully complete, all plans done
-Last activity: 2026-03-21 -- Completed 12-02 Admin Payments Enhancements + Calendar
+Phase: 13 of 16 (Auto-Receipts)
+Plan: 1 of 2 -- DONE
+Status: Phase 13 plan 01 complete, plan 02 pending
+Last activity: 2026-03-21 -- Completed 13-01 Auto-Receipts Backend
 
 Progress: [██████████] 100%
 
@@ -64,6 +64,7 @@ Progress: [██████████] 100%
 | Phase 11 P03 | 3min | 2 tasks | 10 files |
 | Phase 12 P01 | 4min | 2 tasks | 6 files |
 | Phase 12 P02 | 2min | 2 tasks | 4 files |
+| Phase 13 P01 | 7min | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -109,6 +110,10 @@ Recent decisions affecting current work:
 - [Phase 12-01]: Revenue query always filters status=paid regardless of status_filter
 - [Phase 12-02]: CSV export uses StreamingResponse with BOM prefix for Excel UTF-8 compatibility
 - [Phase 12-02]: Calendar payment indicator uses lightweight payment query + Set for O(1) lookup
+- [Phase 13-01]: ReceiptAttach uses same URL for test/prod, IsTest=1 flag differentiates
+- [Phase 13-01]: Receipt retry reuses APScheduler from reminder_service (receipt_retry_poll job)
+- [Phase 13-01]: send_receipt_link wraps send_message (no new adapter method needed)
+- [Phase 13-01]: INN binding requires Robokassa connected first (returns 400 if not)
 
 ### Pending Todos
 
@@ -120,6 +125,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-21T05:57:34Z
-Stopped at: Completed 12-02-PLAN.md
+Last session: 2026-03-21T06:26:14Z
+Stopped at: Completed 13-01-PLAN.md
 Resume file: None

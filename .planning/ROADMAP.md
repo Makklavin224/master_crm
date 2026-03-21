@@ -265,7 +265,7 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 13-01-PLAN.md -- Backend ReceiptAttach service, INN binding endpoints, PaymentService integration, retry scheduler
+- [x] 13-01-PLAN.md -- Backend ReceiptAttach service, INN binding endpoints, PaymentService integration, retry scheduler
 - [ ] 13-02-PLAN.md -- Frontend INN binding UI in mini-app and web admin settings pages
 
 ### Phase 14: Portfolio
@@ -333,7 +333,7 @@ Note: Phases 12-13 and 10-14 have independent dependency chains. Execution follo
 | 10. Public Master Page | v2.0 | 4/4 | Complete | 2026-03-21 |
 | 11. Client Cabinet | v2.0 | 3/3 | Complete | 2026-03-21 |
 | 12. Admin Payments | v2.0 | 2/2 | Complete | 2026-03-21 |
-| 13. Auto Receipts | v2.0 | 0/2 | Planned | - |
+| 13. Auto Receipts | v2.0 | 1/2 | In Progress | - |
 | 14. Portfolio | v2.0 | 0/3 | Planned | - |
 | 15. Reviews | v2.0 | 0/2 | Planned | - |
 | 16. Analytics | v2.0 | 0/2 | Planned | - |

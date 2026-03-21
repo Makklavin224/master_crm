@@ -154,11 +154,11 @@
 
 ### Auto Receipts (ARCT)
 
-- [ ] **ARCT-01**: Master can bind INN in settings for auto-receipt via Robokassa ReceiptAttach
-- [ ] **ARCT-02**: When "auto receipt" selected, system sends receipt data to Robokassa ReceiptAttach
-- [ ] **ARCT-03**: Receipt works for all payment methods (cash, card, SBP) -- not just SBP
-- [ ] **ARCT-04**: Client receives receipt link in messenger after payment
-- [ ] **ARCT-05**: Failed receipt attempts retry 3 times via background job; error notification to master on failure
+- [x] **ARCT-01**: Master can bind INN in settings for auto-receipt via Robokassa ReceiptAttach
+- [x] **ARCT-02**: When "auto receipt" selected, system sends receipt data to Robokassa ReceiptAttach
+- [x] **ARCT-03**: Receipt works for all payment methods (cash, card, SBP) -- not just SBP
+- [x] **ARCT-04**: Client receives receipt link in messenger after payment
+- [x] **ARCT-05**: Failed receipt attempts retry 3 times via background job; error notification to master on failure
 
 ### Portfolio (PORT)
 
@@ -322,11 +322,11 @@
 | APAY-05 | Phase 12 | Complete |
 | APAY-06 | Phase 12 | Complete |
 | APAY-07 | Phase 12 | Complete |
-| ARCT-01 | Phase 13 | Pending |
-| ARCT-02 | Phase 13 | Pending |
-| ARCT-03 | Phase 13 | Pending |
-| ARCT-04 | Phase 13 | Pending |
-| ARCT-05 | Phase 13 | Pending |
+| ARCT-01 | Phase 13 | Complete |
+| ARCT-02 | Phase 13 | Complete |
+| ARCT-03 | Phase 13 | Complete |
+| ARCT-04 | Phase 13 | Complete |
+| ARCT-05 | Phase 13 | Complete |
 | PORT-01 | Phase 14 | Pending |
 | PORT-02 | Phase 14 | Pending |
 | PORT-03 | Phase 14 | Pending |
