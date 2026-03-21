@@ -97,14 +97,26 @@ export default function MasterPage() {
       profileQuery.error.status === 404;
     return (
       <div className="flex flex-col items-center justify-center min-h-full p-8 text-center">
-        <h1 className="text-2xl font-bold text-text-primary mb-2">
-          {is404 ? "Мастер не найден" : "Ошибка"}
-        </h1>
-        <p className="text-text-secondary">
-          {is404
-            ? "Возможно, ссылка устарела или мастер удалил свою страницу"
-            : "Не удалось загрузить страницу. Попробуйте позже."}
-        </p>
+        {is404 ? (
+          <>
+            <h1 className="text-2xl font-bold text-text-primary mb-2">
+              Мастер не найден
+            </h1>
+            <p className="text-text-secondary mb-4">
+              Возможно, ссылка устарела или мастер удалил свою страницу.
+            </p>
+            <p className="text-text-secondary text-sm">
+              Проверьте ссылку или попросите мастера отправить новую.
+            </p>
+          </>
+        ) : (
+          <>
+            <h1 className="text-2xl font-bold text-text-primary mb-2">Ошибка</h1>
+            <p className="text-text-secondary">
+              Не удалось загрузить страницу. Попробуйте позже.
+            </p>
+          </>
+        )}
       </div>
     );
   }

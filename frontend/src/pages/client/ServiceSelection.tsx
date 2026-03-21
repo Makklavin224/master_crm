@@ -5,15 +5,19 @@ import { Skeleton } from "../../components/ui/Skeleton.tsx";
 import { EmptyState } from "../../components/ui/EmptyState.tsx";
 import { ServiceCard } from "../../components/ServiceCard.tsx";
 import { useServices, type ServiceRead } from "../../api/services.ts";
+import { ApiError } from "../../api/client.ts";
 import { useBookingFlow } from "../../stores/booking-flow.ts";
 import { usePlatform } from "../../platform/context.tsx";
 import { CalendarX } from "lucide-react";
+
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export function ServiceSelection() {
   const { masterId } = useParams<{ masterId: string }>();
   const navigate = useNavigate();
   const platform = usePlatform();
-  const { data: services, isLoading, error } = useServices(masterId);
+  const isValidUUID = masterId ? UUID_REGEX.test(masterId) : false;
+  const { data: services, isLoading, error } = useServices(isValidUUID ? masterId : undefined);
   const { selectedService, setMasterId, selectService } = useBookingFlow();
 
   useEffect(() => {
@@ -46,7 +50,15 @@ export function ServiceSelection() {
           Выберите услугу
         </h1>
 
-        {isLoading && (
+        {!isValidUUID && masterId && (
+          <EmptyState
+            icon={<CalendarX className="w-12 h-12" />}
+            heading="Мастер не найден"
+            body="Проверьте ссылку или попросите мастера отправить новую."
+          />
+        )}
+
+        {isValidUUID && isLoading && (
           <div className="flex flex-col gap-3">
             <Skeleton height="80px" className="w-full" />
             <Skeleton height="80px" className="w-full" />
@@ -54,11 +66,19 @@ export function ServiceSelection() {
           </div>
         )}
 
-        {error && (
+        {isValidUUID && error && (
           <EmptyState
             icon={<CalendarX className="w-12 h-12" />}
-            heading="Не удалось загрузить услуги"
-            body="Что-то пошло не так. Попробуйте позже."
+            heading={
+              error instanceof ApiError && error.status === 404
+                ? "Мастер не найден"
+                : "Не удалось загрузить услуги"
+            }
+            body={
+              error instanceof ApiError && error.status === 404
+                ? "Проверьте ссылку или попросите мастера отправить новую."
+                : "Что-то пошло не так. Попробуйте позже."
+            }
           />
         )}
 
