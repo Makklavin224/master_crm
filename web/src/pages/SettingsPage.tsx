@@ -88,8 +88,13 @@ function MyPageTab({ onSwitchTab }: { onSwitchTab?: (key: string) => void }) {
   }
 
   const bookingUrl = `${PUBLIC_DOMAIN}/m/${username}`;
+  const botUsername = profileSettings?.bot_username;
+  const masterId = profile?.id;
+  const tgDeeplink = botUsername && masterId
+    ? `https://t.me/${botUsername}?startapp=${masterId}`
+    : null;
 
-  const handleCopy = async () => {
+  const handleCopyWeb = async () => {
     try {
       await navigator.clipboard.writeText(bookingUrl);
       messageApi.success("Ссылка скопирована");
@@ -98,31 +103,59 @@ function MyPageTab({ onSwitchTab }: { onSwitchTab?: (key: string) => void }) {
     }
   };
 
+  const handleCopyTg = async () => {
+    if (!tgDeeplink) return;
+    try {
+      await navigator.clipboard.writeText(tgDeeplink);
+      messageApi.success("Ссылка скопирована");
+    } catch {
+      messageApi.error("Не удалось скопировать");
+    }
+  };
+
   return (
     <>
-      {/* Booking link */}
-      <Card title="Ссылка для записи" size="small" style={{ marginBottom: 24 }}>
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+      {/* Web link */}
+      <Card title="Ссылка на сайт" size="small" style={{ marginBottom: 24 }}>
+        <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 16 }}>
           <Input
             value={bookingUrl}
             readOnly
             style={{ flex: 1 }}
           />
-          <Button type="primary" onClick={handleCopy}>
+          <Button type="primary" onClick={handleCopyWeb}>
             Скопировать
           </Button>
         </div>
-      </Card>
-
-      {/* QR Code */}
-      <Card title="QR-код" size="small" style={{ marginBottom: 24 }}>
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
           <QRCodeSVG value={bookingUrl} size={200} />
           <p style={{ color: "#888", textAlign: "center", margin: 0 }}>
-            Распечатайте и повесьте в салоне или добавьте на визитку
+            Для Instagram, сайта, визитки
           </p>
         </div>
       </Card>
+
+      {/* TG deeplink */}
+      {tgDeeplink && (
+        <Card title="QR для записи через Telegram" size="small" style={{ marginBottom: 24 }}>
+          <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 16 }}>
+            <Input
+              value={tgDeeplink}
+              readOnly
+              style={{ flex: 1 }}
+            />
+            <Button type="primary" onClick={handleCopyTg}>
+              Скопировать
+            </Button>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
+            <QRCodeSVG value={tgDeeplink} size={200} />
+            <p style={{ color: "#888", textAlign: "center", margin: 0 }}>
+              Клиент сканирует камерой Telegram — открывается мини-апп
+            </p>
+          </div>
+        </Card>
+      )}
 
       {/* Preview */}
       <Card title="Предпросмотр" size="small">

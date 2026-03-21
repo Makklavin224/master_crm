@@ -92,6 +92,7 @@ export interface ProfileSettings {
   city: string | null;
   avatar_path: string | null;
   instagram_url: string | null;
+  bot_username: string | null;
 }
 
 export interface ProfileSettingsUpdate {
