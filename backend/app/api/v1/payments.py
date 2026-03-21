@@ -1,11 +1,14 @@
 """Payment API endpoints: manual, Robokassa, requisites flows + history."""
 
+import csv
+import io
 import json
 import uuid
 from datetime import date
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.dependencies import get_current_master, get_db_with_rls
@@ -150,6 +153,75 @@ async def create_requisites_payment(
     read_dict = read.model_dump()
     read_dict["requisites"] = PaymentRequisites(**requisites).model_dump()
     return read_dict
+
+
+@router.get("/export-csv")
+async def export_payments_csv(
+    master: Annotated[Master, Depends(get_current_master)],
+    db: Annotated[AsyncSession, Depends(get_db_with_rls)],
+    status_filter: str | None = Query(default=None, alias="status"),
+    payment_method: str | None = Query(default=None),
+    date_from: date | None = Query(default=None),
+    date_to: date | None = Query(default=None),
+):
+    """Export filtered payments as a CSV file."""
+    items, total, _ = await PaymentService.get_payment_history(
+        db=db,
+        master_id=master.id,
+        status_filter=status_filter,
+        date_from=date_from,
+        date_to=date_to,
+        payment_method=payment_method,
+        limit=10000,
+        offset=0,
+    )
+
+    method_labels = {
+        "cash": "Наличные",
+        "card_to_card": "Перевод на карту",
+        "sbp": "СБП",
+        "sbp_robokassa": "СБП (Robokassa)",
+    }
+    status_labels = {
+        "pending": "Ожидание",
+        "paid": "Оплачен",
+        "cancelled": "Отменён",
+        "refunded": "Возврат",
+    }
+    receipt_labels = {
+        "not_applicable": "Не требуется",
+        "pending": "Ожидание",
+        "issued": "Выдан",
+        "failed": "Ошибка",
+    }
+
+    output = io.StringIO()
+    output.write("\ufeff")  # BOM for Excel UTF-8 compatibility
+    writer = csv.writer(output)
+    writer.writerow(
+        ["Дата", "Клиент", "Услуга", "Сумма (руб)", "Способ оплаты", "Статус", "Чек"]
+    )
+
+    for item in items:
+        created = item.get("created_at")
+        date_str = created.strftime("%d.%m.%Y %H:%M") if created else ""
+        writer.writerow([
+            date_str,
+            item.get("client_name") or "-",
+            item.get("service_name") or "-",
+            f"{item['amount'] / 100:.2f}",
+            method_labels.get(item.get("payment_method") or "", item.get("payment_method") or "-"),
+            status_labels.get(item.get("status", ""), item.get("status", "")),
+            receipt_labels.get(item.get("receipt_status", ""), item.get("receipt_status", "")),
+        ])
+
+    output.seek(0)
+    filename = f"payments_{date_from or 'all'}_{date_to or 'all'}.csv"
+    return StreamingResponse(
+        iter([output.getvalue()]),
+        media_type="text/csv",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
 
 
 @router.post("/{payment_id}/confirm", response_model=PaymentRead)

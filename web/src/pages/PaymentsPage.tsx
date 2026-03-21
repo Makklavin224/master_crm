@@ -1,7 +1,17 @@
 import { useState, useCallback } from "react";
-import { Card, DatePicker, Select, Space, Statistic, Table, Tag } from "antd";
+import {
+  Button,
+  Card,
+  DatePicker,
+  Select,
+  Space,
+  Statistic,
+  Table,
+  Tag,
+} from "antd";
+import { DownloadOutlined } from "@ant-design/icons";
 import dayjs, { type Dayjs } from "dayjs";
-import { usePayments, type PaymentRead } from "../api/payments";
+import { usePayments, exportPaymentsCsv, type PaymentRead } from "../api/payments";
 import { PaymentStatusTag } from "../components/StatusTag";
 import type { ColumnsType } from "antd/es/table";
 
@@ -19,6 +29,7 @@ const paymentMethodLabels: Record<string, string> = {
   card_to_card: "Перевод на карту",
   transfer: "Перевод",
   sbp: "СБП",
+  sbp_robokassa: "СБП (Robokassa)",
 };
 
 const receiptStatusMap: Record<string, { color: string; label: string }> = {
@@ -31,15 +42,25 @@ const receiptStatusMap: Record<string, { color: string; label: string }> = {
 
 const PAGE_SIZE = 20;
 
+const paymentMethodOptions = [
+  { value: "cash", label: "Наличные" },
+  { value: "card_to_card", label: "Перевод на карту" },
+  { value: "sbp", label: "СБП" },
+  { value: "sbp_robokassa", label: "СБП (Robokassa)" },
+];
+
 export function PaymentsPage() {
   const [status, setStatus] = useState<string | undefined>();
+  const [paymentMethod, setPaymentMethod] = useState<string | undefined>();
   const [dateRange, setDateRange] = useState<
     [Dayjs | null, Dayjs | null] | null
   >(null);
   const [page, setPage] = useState(1);
+  const [exporting, setExporting] = useState(false);
 
   const filters = {
     status,
+    payment_method: paymentMethod,
     date_from: dateRange?.[0]?.format("YYYY-MM-DD"),
     date_to: dateRange?.[1]?.format("YYYY-MM-DD"),
     limit: PAGE_SIZE,
@@ -120,6 +141,17 @@ export function PaymentsPage() {
           }}
           style={{ minWidth: 150 }}
         />
+        <Select
+          placeholder="Способ оплаты"
+          allowClear
+          options={paymentMethodOptions}
+          value={paymentMethod}
+          onChange={(val) => {
+            setPaymentMethod(val);
+            setPage(1);
+          }}
+          style={{ minWidth: 180 }}
+        />
         {data && (
           <>
             <Statistic
@@ -129,18 +161,34 @@ export function PaymentsPage() {
             />
             <Statistic
               title="Выручка"
-              value={
-                data.items
-                  .filter((p) => p.status === "paid")
-                  .reduce((sum, p) => sum + p.amount, 0) / 100
-              }
-              suffix="руб"
+              value={(data.total_revenue || 0) / 100}
+              suffix="₽"
               precision={0}
               formatter={(val) => Number(val).toLocaleString("ru-RU")}
               style={{ marginLeft: 16 }}
             />
           </>
         )}
+        <Button
+          icon={<DownloadOutlined />}
+          loading={exporting}
+          onClick={async () => {
+            setExporting(true);
+            try {
+              await exportPaymentsCsv({
+                status,
+                payment_method: paymentMethod,
+                date_from: dateRange?.[0]?.format("YYYY-MM-DD"),
+                date_to: dateRange?.[1]?.format("YYYY-MM-DD"),
+              });
+            } finally {
+              setExporting(false);
+            }
+          }}
+          style={{ marginLeft: 16 }}
+        >
+          Экспорт CSV
+        </Button>
       </Space>
       <Table<PaymentRead>
         columns={columns}

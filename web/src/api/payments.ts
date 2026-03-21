@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "./client";
+import { useAuth } from "../stores/auth";
 
 // --- Interfaces ---
 
@@ -99,4 +100,32 @@ export function useCreateRobokassaPayment() {
       queryClient.invalidateQueries({ queryKey: ["bookings"] });
     },
   });
+}
+
+export async function exportPaymentsCsv(
+  filters: Omit<PaymentFilters, "limit" | "offset">,
+) {
+  const { token } = useAuth.getState();
+  const params = new URLSearchParams();
+  if (filters.status) params.set("status", filters.status);
+  if (filters.payment_method)
+    params.set("payment_method", filters.payment_method);
+  if (filters.date_from) params.set("date_from", filters.date_from);
+  if (filters.date_to) params.set("date_to", filters.date_to);
+  const qs = params.toString();
+  const API_BASE = import.meta.env.VITE_API_BASE_URL || "/api/v1";
+  const res = await fetch(
+    `${API_BASE}/payments/export-csv${qs ? `?${qs}` : ""}`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    },
+  );
+  if (!res.ok) throw new Error("Export failed");
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `payments_${filters.date_from || "all"}_${filters.date_to || "all"}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
 }
