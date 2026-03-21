@@ -362,7 +362,11 @@ Plans:
   1. A new user sends /start to the TG bot, taps "Register as master", and gets a confirmation with an "Open mini-app" button that launches the master panel; an existing web-registered master can tap "Link account", enter email, and get their TG account linked
   2. Client enters phone at /my, receives OTP, enters code, and sees their bookings; the session works both with httpOnly cookie and with Bearer token fallback (for cross-origin or mobile webview scenarios)
   3. Opening /book/invalid-uuid or /book/nonexistent-uuid in the mini-app shows "Master not found" with a suggestion to check the link; the public page /m/nonexistent-username shows a helpful 404 message
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 19-01-PLAN.md -- Backend fixes: client_auth dual-path token, get_current_client Bearer fallback, bot registration string cleanup (TG + MAX)
+- [ ] 19-02-PLAN.md -- Frontend fixes: auth store Bearer token persistence, booking URL UUID validation, improved 404 messages
 
 ### Phase 20: Error Handling & UX Polish
 **Goal**: All remaining rough edges are smoothed -- every page handles errors gracefully, API calls have timeouts, all user-facing messages are in Russian, and settings inputs are properly formatted
@@ -403,5 +407,5 @@ Phases execute in numeric order: 18 -> 19 -> 20
 | 16. Analytics | v2.0 | 2/2 | Complete | 2026-03-21 |
 | 17. Cross-Platform Auth | v2.0 | 2/2 | Complete | 2026-03-21 |
 | 18. Critical Fixes | v2.1 | 0/0 | Not started | - |
-| 19. High Priority Fixes | v2.1 | 0/0 | Not started | - |
+| 19. High Priority Fixes | v2.1 | 0/2 | Not started | - |
 | 20. Error Handling & UX Polish | v2.1 | 0/2 | Not started | - |
