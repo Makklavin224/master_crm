@@ -96,7 +96,7 @@ async def handle_bot_started(
             attachments=_inline_keyboard(buttons),
         )
     else:
-        # NOT registered -- show welcome with explicit registration button.
+        # NOT registered -- show welcome with registration and account linking buttons.
         # Do NOT auto-create a Master record for every user who opens the bot.
         buttons = [
             [
@@ -104,6 +104,13 @@ async def handle_bot_started(
                     "type": "callback",
                     "text": "\U0001f485 \u0417\u0430\u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0438\u0440\u043e\u0432\u0430\u0442\u044c\u0441\u044f \u043a\u0430\u043a \u043c\u0430\u0441\u0442\u0435\u0440",
                     "payload": "register_master",
+                },
+            ],
+            [
+                {
+                    "type": "callback",
+                    "text": "\U0001f517 \u041f\u0440\u0438\u0432\u044f\u0437\u0430\u0442\u044c \u0441\u0443\u0449\u0435\u0441\u0442\u0432\u0443\u044e\u0449\u0438\u0439 \u0430\u043a\u043a\u0430\u0443\u043d\u0442",
+                    "payload": "link_account",
                 },
             ],
         ]
@@ -118,6 +125,10 @@ async def handle_bot_started(
                 "\u0438 \u0445\u043e\u0442\u0438\u0442\u0435 \u043f\u0440\u0438\u043d\u0438\u043c\u0430\u0442\u044c "
                 "\u043e\u043d\u043b\u0430\u0439\u043d-\u0437\u0430\u043f\u0438\u0441\u044c, "
                 "\u043d\u0430\u0436\u043c\u0438\u0442\u0435 \u043a\u043d\u043e\u043f\u043a\u0443 \u043d\u0438\u0436\u0435.\n\n"
+                "\u0423\u0436\u0435 \u0437\u0430\u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0438\u0440\u043e\u0432\u0430\u043d\u044b "
+                "\u0447\u0435\u0440\u0435\u0437 \u0432\u0435\u0431? "
+                "\u041d\u0430\u0436\u043c\u0438\u0442\u0435 "
+                "\u00ab\u041f\u0440\u0438\u0432\u044f\u0437\u0430\u0442\u044c \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u00bb.\n\n"
                 "\u0415\u0441\u043b\u0438 \u0432\u044b \u043a\u043b\u0438\u0435\u043d\u0442, "
                 "\u043f\u043e\u043f\u0440\u043e\u0441\u0438\u0442\u0435 "
                 "\u0441\u0441\u044b\u043b\u043a\u0443 \u0434\u043b\u044f \u0437\u0430\u043f\u0438\u0441\u0438 "

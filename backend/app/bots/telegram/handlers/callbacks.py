@@ -36,6 +36,9 @@ router = Router(name="callbacks")
 # Module-level dict for pending review text input: tg_user_id -> booking_id
 _pending_review_text: dict[str, uuid.UUID] = {}
 
+# Module-level dict for pending link-account email input: tg_user_id -> True
+_pending_link_email: dict[str, bool] = {}
+
 
 @router.callback_query(F.data == "register_master")
 async def cb_register_master(callback: CallbackQuery, db: AsyncSession) -> None:
@@ -94,7 +97,12 @@ async def cb_register_master(callback: CallbackQuery, db: AsyncSession) -> None:
         "\u0440\u0430\u0441\u043f\u0438\u0441\u0430\u043d\u0438\u0435, "
         "\u0447\u0442\u043e\u0431\u044b \u043a\u043b\u0438\u0435\u043d\u0442\u044b "
         "\u043c\u043e\u0433\u043b\u0438 "
-        "\u0437\u0430\u043f\u0438\u0441\u044b\u0432\u0430\u0442\u044c\u0441\u044f.",
+        "\u0437\u0430\u043f\u0438\u0441\u044b\u0432\u0430\u0442\u044c\u0441\u044f.\n\n"
+        "\u0420\u0435\u043a\u043e\u043c\u0435\u043d\u0434\u0443\u0435\u043c "
+        "\u0434\u043e\u0431\u0430\u0432\u0438\u0442\u044c email "
+        "\u0432 \u043d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0430\u0445 "
+        "\u0434\u043b\u044f \u0432\u0445\u043e\u0434\u0430 "
+        "\u0447\u0435\u0440\u0435\u0437 \u0432\u0435\u0431-\u043f\u0430\u043d\u0435\u043b\u044c.",
         parse_mode="HTML",
         reply_markup=keyboard,
     )
@@ -103,6 +111,129 @@ async def cb_register_master(callback: CallbackQuery, db: AsyncSession) -> None:
         master.id,
         tg_user_id,
     )
+
+
+@router.callback_query(F.data == "link_account")
+async def cb_link_account(callback: CallbackQuery, db: AsyncSession) -> None:
+    """Start the account linking flow -- ask user to enter their email."""
+    await callback.answer()
+
+    tg_user_id = str(callback.from_user.id)
+
+    # Check if already registered (no need to link)
+    result = await db.execute(
+        select(Master).where(Master.tg_user_id == tg_user_id)
+    )
+    existing = result.scalar_one_or_none()
+    if existing:
+        await callback.message.edit_text(
+            f"\u0412\u0430\u0448 Telegram \u0443\u0436\u0435 \u043f\u0440\u0438\u0432\u044f\u0437\u0430\u043d "
+            f"\u043a \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0443 {existing.name}! "
+            f"\u041e\u0442\u043f\u0440\u0430\u0432\u044c\u0442\u0435 /start "
+            f"\u0434\u043b\u044f \u0434\u043e\u0441\u0442\u0443\u043f\u0430 \u043a \u043f\u0430\u043d\u0435\u043b\u0438."
+        )
+        return
+
+    # Set pending link state
+    _pending_link_email[tg_user_id] = True
+
+    await callback.message.edit_text(
+        "\u0412\u0432\u0435\u0434\u0438\u0442\u0435 email, "
+        "\u043a\u043e\u0442\u043e\u0440\u044b\u0439 \u0432\u044b "
+        "\u0443\u043a\u0430\u0437\u0430\u043b\u0438 "
+        "\u043f\u0440\u0438 \u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u0438:"
+    )
+
+
+@router.message(F.text, lambda msg: str(msg.from_user.id) in _pending_link_email)
+async def msg_link_email(message: Message, db: AsyncSession) -> None:
+    """Capture email from user who is in the link-account flow."""
+    from app.core.security import create_access_token
+
+    tg_user_id = str(message.from_user.id)
+    _pending_link_email.pop(tg_user_id, None)
+
+    email = message.text.strip().lower()
+
+    # Look up master by email
+    result = await db.execute(
+        select(Master).where(Master.email == email)
+    )
+    master = result.scalar_one_or_none()
+
+    if master is None:
+        await message.answer(
+            "\u0410\u043a\u043a\u0430\u0443\u043d\u0442 \u0441 \u0442\u0430\u043a\u0438\u043c email "
+            "\u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d. "
+            "\u041f\u0440\u043e\u0432\u0435\u0440\u044c\u0442\u0435 email "
+            "\u0438\u043b\u0438 \u0437\u0430\u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0438\u0440\u0443\u0439\u0442\u0435\u0441\u044c "
+            "\u0437\u0430\u043d\u043e\u0432\u043e \u0447\u0435\u0440\u0435\u0437 /start."
+        )
+        return
+
+    if master.tg_user_id is not None and master.tg_user_id != tg_user_id:
+        await message.answer(
+            "\u042d\u0442\u043e\u0442 \u0430\u043a\u043a\u0430\u0443\u043d\u0442 "
+            "\u0443\u0436\u0435 \u043f\u0440\u0438\u0432\u044f\u0437\u0430\u043d "
+            "\u043a \u0434\u0440\u0443\u0433\u043e\u043c\u0443 Telegram."
+        )
+        return
+
+    if master.tg_user_id == tg_user_id:
+        # Already linked to this user
+        keyboard = _build_master_keyboard()
+        await message.answer(
+            f"\u042d\u0442\u043e\u0442 \u0430\u043a\u043a\u0430\u0443\u043d\u0442 "
+            f"\u0443\u0436\u0435 \u043f\u0440\u0438\u0432\u044f\u0437\u0430\u043d "
+            f"\u043a \u0432\u0430\u0448\u0435\u043c\u0443 Telegram!",
+            reply_markup=keyboard,
+        )
+        return
+
+    # Link the account
+    master.tg_user_id = tg_user_id
+    await db.flush()
+
+    keyboard = _build_master_keyboard()
+    await message.answer(
+        f"\u0410\u043a\u043a\u0430\u0443\u043d\u0442 \u043f\u0440\u0438\u0432\u044f\u0437\u0430\u043d! "
+        f"\u0414\u043e\u0431\u0440\u043e \u043f\u043e\u0436\u0430\u043b\u043e\u0432\u0430\u0442\u044c, "
+        f"{master.name}!",
+        reply_markup=keyboard,
+    )
+    logger.info(
+        "Account linked via TG: master=%s, tg_user_id=%s",
+        master.id,
+        tg_user_id,
+    )
+
+
+def _build_master_keyboard() -> InlineKeyboardMarkup:
+    """Build inline keyboard for linked/registered master."""
+    buttons = [
+        [
+            InlineKeyboardButton(
+                text="\U0001f4c5 \u0417\u0430\u043f\u0438\u0441\u0438 "
+                     "\u043d\u0430 \u0441\u0435\u0433\u043e\u0434\u043d\u044f",
+                callback_data="today",
+            ),
+            InlineKeyboardButton(
+                text="\U0001f517 \u041c\u043e\u044f \u0441\u0441\u044b\u043b\u043a\u0430",
+                callback_data="link",
+            ),
+        ],
+    ]
+    if settings.mini_app_url:
+        buttons.append(
+            [
+                InlineKeyboardButton(
+                    text="\U0001f4f1 \u041e\u0442\u043a\u0440\u044b\u0442\u044c "
+                         "\u043f\u0430\u043d\u0435\u043b\u044c",
+                    web_app=WebAppInfo(url=settings.mini_app_url),
+                )
+            ]
+        )
+    return InlineKeyboardMarkup(inline_keyboard=buttons)
 
 
 @router.callback_query(F.data == "today")

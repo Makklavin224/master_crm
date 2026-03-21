@@ -30,6 +30,9 @@ BASE_URL = "https://platform-api.max.ru"
 # Module-level dict for pending review text input: max_user_id -> booking_id
 _pending_review_text: dict[str, uuid.UUID] = {}
 
+# Module-level dict for pending link-account email input: max_user_id -> True
+_pending_link_email: dict[str, bool] = {}
+
 
 async def handle_callback(
     body: dict, db: AsyncSession, token: str
@@ -49,6 +52,8 @@ async def handle_callback(
 
     if payload == "register_master":
         await _cb_register_master(max_user_id, user.get("name", "Master"), db, token)
+    elif payload == "link_account":
+        await _cb_link_account(max_user_id, db, token)
     elif payload == "today":
         await _cb_today(max_user_id, db, token)
     elif payload == "link":
@@ -154,7 +159,12 @@ async def _cb_register_master(
         "\u0440\u0430\u0441\u043f\u0438\u0441\u0430\u043d\u0438\u0435, "
         "\u0447\u0442\u043e\u0431\u044b \u043a\u043b\u0438\u0435\u043d\u0442\u044b "
         "\u043c\u043e\u0433\u043b\u0438 "
-        "\u0437\u0430\u043f\u0438\u0441\u044b\u0432\u0430\u0442\u044c\u0441\u044f.",
+        "\u0437\u0430\u043f\u0438\u0441\u044b\u0432\u0430\u0442\u044c\u0441\u044f.\n\n"
+        "\u0420\u0435\u043a\u043e\u043c\u0435\u043d\u0434\u0443\u0435\u043c "
+        "\u0434\u043e\u0431\u0430\u0432\u0438\u0442\u044c email "
+        "\u0432 \u043d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0430\u0445 "
+        "\u0434\u043b\u044f \u0432\u0445\u043e\u0434\u0430 "
+        "\u0447\u0435\u0440\u0435\u0437 \u0432\u0435\u0431-\u043f\u0430\u043d\u0435\u043b\u044c.",
         attachments=attachments,
     )
     logger.info(
@@ -162,6 +172,142 @@ async def _cb_register_master(
         master.id,
         max_user_id,
     )
+
+
+async def _cb_link_account(
+    max_user_id: str, db: AsyncSession, token: str
+) -> None:
+    """Start the account linking flow -- ask user to enter their email."""
+    # Check if already registered (no need to link)
+    result = await db.execute(
+        select(Master).where(Master.max_user_id == max_user_id)
+    )
+    existing = result.scalar_one_or_none()
+    if existing:
+        await _send(
+            token,
+            max_user_id,
+            f"\u0412\u0430\u0448 MAX \u0443\u0436\u0435 \u043f\u0440\u0438\u0432\u044f\u0437\u0430\u043d "
+            f"\u043a \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0443 {existing.name}! "
+            f"\u041e\u0442\u043f\u0440\u0430\u0432\u044c\u0442\u0435 /start "
+            f"\u0434\u043b\u044f \u0434\u043e\u0441\u0442\u0443\u043f\u0430 \u043a \u043f\u0430\u043d\u0435\u043b\u0438.",
+        )
+        return
+
+    _pending_link_email[max_user_id] = True
+    await _send(
+        token,
+        max_user_id,
+        "\u0412\u0432\u0435\u0434\u0438\u0442\u0435 email, "
+        "\u043a\u043e\u0442\u043e\u0440\u044b\u0439 \u0432\u044b "
+        "\u0443\u043a\u0430\u0437\u0430\u043b\u0438 "
+        "\u043f\u0440\u0438 \u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u0438:",
+    )
+
+
+async def handle_link_email_message(
+    max_user_id: str, text: str, db: AsyncSession, token: str
+) -> bool:
+    """Handle incoming text message if user is in pending link-email state.
+
+    Returns True if the message was handled, False otherwise.
+    """
+    if max_user_id not in _pending_link_email:
+        return False
+
+    _pending_link_email.pop(max_user_id, None)
+
+    email = text.strip().lower()
+
+    # Look up master by email
+    result = await db.execute(
+        select(Master).where(Master.email == email)
+    )
+    master = result.scalar_one_or_none()
+
+    if master is None:
+        await _send(
+            token,
+            max_user_id,
+            "\u0410\u043a\u043a\u0430\u0443\u043d\u0442 \u0441 \u0442\u0430\u043a\u0438\u043c email "
+            "\u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d. "
+            "\u041f\u0440\u043e\u0432\u0435\u0440\u044c\u0442\u0435 email "
+            "\u0438\u043b\u0438 \u0437\u0430\u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0438\u0440\u0443\u0439\u0442\u0435\u0441\u044c "
+            "\u0437\u0430\u043d\u043e\u0432\u043e \u0447\u0435\u0440\u0435\u0437 /start.",
+        )
+        return True
+
+    if master.max_user_id is not None and master.max_user_id != max_user_id:
+        await _send(
+            token,
+            max_user_id,
+            "\u042d\u0442\u043e\u0442 \u0430\u043a\u043a\u0430\u0443\u043d\u0442 "
+            "\u0443\u0436\u0435 \u043f\u0440\u0438\u0432\u044f\u0437\u0430\u043d "
+            "\u043a \u0434\u0440\u0443\u0433\u043e\u043c\u0443 MAX.",
+        )
+        return True
+
+    if master.max_user_id == max_user_id:
+        # Already linked to this user
+        buttons = _master_buttons_for_linked()
+        await _send(
+            token,
+            max_user_id,
+            "\u042d\u0442\u043e\u0442 \u0430\u043a\u043a\u0430\u0443\u043d\u0442 "
+            "\u0443\u0436\u0435 \u043f\u0440\u0438\u0432\u044f\u0437\u0430\u043d "
+            "\u043a \u0432\u0430\u0448\u0435\u043c\u0443 MAX!",
+            [{"type": "inline_keyboard", "payload": {"buttons": buttons}}],
+        )
+        return True
+
+    # Link the account
+    master.max_user_id = max_user_id
+    await db.flush()
+
+    buttons = _master_buttons_for_linked()
+    await _send(
+        token,
+        max_user_id,
+        f"\u0410\u043a\u043a\u0430\u0443\u043d\u0442 \u043f\u0440\u0438\u0432\u044f\u0437\u0430\u043d! "
+        f"\u0414\u043e\u0431\u0440\u043e \u043f\u043e\u0436\u0430\u043b\u043e\u0432\u0430\u0442\u044c, "
+        f"{master.name}!",
+        [{"type": "inline_keyboard", "payload": {"buttons": buttons}}],
+    )
+    logger.info(
+        "Account linked via MAX: master=%s, max_user_id=%s",
+        master.id,
+        max_user_id,
+    )
+    return True
+
+
+def _master_buttons_for_linked() -> list[list[dict]]:
+    """Build inline keyboard buttons for a linked/registered master."""
+    buttons: list[list[dict]] = [
+        [
+            {
+                "type": "callback",
+                "text": "\U0001f4c5 \u0417\u0430\u043f\u0438\u0441\u0438 \u043d\u0430 \u0441\u0435\u0433\u043e\u0434\u043d\u044f",
+                "payload": "today",
+            },
+            {
+                "type": "callback",
+                "text": "\U0001f517 \u041c\u043e\u044f \u0441\u0441\u044b\u043b\u043a\u0430",
+                "payload": "link",
+            },
+        ],
+    ]
+    if settings.mini_app_url:
+        buttons.append(
+            [
+                {
+                    "type": "open_app",
+                    "text": "\U0001f4f1 \u041e\u0442\u043a\u0440\u044b\u0442\u044c \u043f\u0430\u043d\u0435\u043b\u044c",
+                    "url": settings.mini_app_url,
+                }
+            ]
+        )
+    return buttons
 
 
 async def _cb_today(
