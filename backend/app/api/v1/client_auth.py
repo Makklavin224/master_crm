@@ -139,10 +139,10 @@ async def request_otp_code(
             client.id,
             phone,
         )
-        # Still return success -- in production, SMS fallback would fire here
-        return OTPResponse(
-            success=True,
-            message="SMS-отправка пока не подключена. Код не доставлен.",
+        # SMS fallback not yet integrated — return honest error
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Не удалось отправить код. Запишитесь через Telegram, MAX или VK — тогда код придёт в мессенджер.",
         )
 
     return OTPResponse(success=True, message="Код отправлен")
