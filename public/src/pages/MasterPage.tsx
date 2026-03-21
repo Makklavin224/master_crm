@@ -5,10 +5,12 @@ import {
   useMasterProfile,
   useMasterServices,
   useMasterReviews,
+  useMasterPortfolio,
 } from "../api/master.ts";
 import { ApiError } from "../api/client.ts";
 import type { MasterProfile } from "../api/types.ts";
 import HeroSection from "../components/HeroSection.tsx";
+import PortfolioSection from "../components/PortfolioSection.tsx";
 import ServicesSection from "../components/ServicesSection.tsx";
 import SlotsSection from "../components/SlotsSection.tsx";
 import ReviewsSection from "../components/ReviewsSection.tsx";
@@ -59,6 +61,7 @@ export default function MasterPage() {
   const profileQuery = useMasterProfile(username ?? "");
   const servicesQuery = useMasterServices(username ?? "");
   const reviewsQuery = useMasterReviews(username ?? "");
+  const portfolioQuery = useMasterPortfolio(username ?? "");
 
   useEffect(() => {
     if (profileQuery.data) {
@@ -109,10 +112,18 @@ export default function MasterPage() {
   const profile = profileQuery.data!;
   const services = servicesQuery.data ?? [];
   const reviews = reviewsQuery.data ?? [];
+  const portfolio = portfolioQuery.data ?? [];
 
   return (
     <div className="pb-24">
       <HeroSection profile={profile} onBook={() => handleBook()} />
+
+      {portfolio.length > 0 && (
+        <>
+          <div className="h-px bg-border mx-4" />
+          <PortfolioSection photos={portfolio} />
+        </>
+      )}
 
       <div className="h-px bg-border mx-4" />
 
