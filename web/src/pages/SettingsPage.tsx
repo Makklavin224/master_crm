@@ -652,7 +652,7 @@ function PaymentsTab() {
   useEffect(() => {
     if (data) {
       requisitesForm.setFieldsValue({
-        card_number: data.card_number ?? "",
+        card_number: data.card_number ? data.card_number.replace(/(\d{4})(?=\d)/g, '$1 ') : "",
         sbp_phone: data.sbp_phone ?? "",
         bank_name: data.bank_name ?? "",
       });
@@ -663,7 +663,7 @@ function PaymentsTab() {
     try {
       const values = await requisitesForm.validateFields();
       await updatePayment.mutateAsync({
-        card_number: values.card_number || null,
+        card_number: values.card_number?.replace(/\s/g, '') || null,
         sbp_phone: values.sbp_phone || null,
         bank_name: values.bank_name || null,
       });
@@ -733,7 +733,15 @@ function PaymentsTab() {
       <Card title="Реквизиты для оплаты" size="small" style={{ marginBottom: 24 }}>
         <Form form={requisitesForm} layout="vertical">
           <Form.Item name="card_number" label="Номер карты">
-            <Input placeholder="0000 0000 0000 0000" />
+            <Input
+              placeholder="0000 0000 0000 0000"
+              maxLength={19}
+              onChange={(e) => {
+                const digits = e.target.value.replace(/\D/g, '').slice(0, 16);
+                const formatted = digits.replace(/(\d{4})(?=\d)/g, '$1 ');
+                requisitesForm.setFieldValue('card_number', formatted);
+              }}
+            />
           </Form.Item>
           <Form.Item name="sbp_phone" label="Телефон СБП">
             <Input placeholder="+7 900 000-00-00" />
@@ -774,7 +782,13 @@ function PaymentsTab() {
           <div>
             <Badge status="success" text="Подключена" />
             {data.robokassa_is_test && (
-              <Badge status="warning" text="тестовый режим" style={{ marginLeft: 12 }} />
+              <Alert
+                type="warning"
+                showIcon
+                message="Тестовый режим"
+                description="Платежи не обрабатываются. Для приёма реальных платежей отключите тестовый режим в настройках Робокассы и переподключите интеграцию."
+                style={{ marginTop: 12 }}
+              />
             )}
           </div>
         ) : showRobokassaForm ? (
