@@ -15,9 +15,11 @@ from sqlalchemy.orm import selectinload
 
 from app.core.dependencies import get_db
 from app.models.master import Master
+from app.models.portfolio_photo import PortfolioPhoto
 from app.models.review import Review
 from app.models.service import Service
 from app.schemas.master import MasterPublicProfile
+from app.schemas.portfolio import PortfolioPhotoRead
 from app.schemas.review import ReviewRead
 from app.schemas.service import ServiceRead
 from app.schemas.slot import AvailableSlot, AvailableSlotsResponse
@@ -185,3 +187,26 @@ async def list_master_reviews(
         )
         for r in reviews
     ]
+
+
+@router.get("/{identifier}/portfolio", response_model=list[PortfolioPhotoRead])
+async def list_master_portfolio(
+    identifier: str,
+    db: Annotated[AsyncSession, Depends(get_db)],
+    service_tag: str | None = Query(default=None),
+):
+    """List portfolio photos for a master (public, no auth required).
+
+    Optionally filter by service_tag.
+    """
+    master = await _get_master_by_identifier(identifier, db)
+
+    stmt = select(PortfolioPhoto).where(
+        PortfolioPhoto.master_id == master.id
+    )
+    if service_tag is not None:
+        stmt = stmt.where(PortfolioPhoto.service_tag == service_tag)
+    stmt = stmt.order_by(PortfolioPhoto.sort_order)
+
+    result = await db.execute(stmt)
+    return result.scalars().all()

@@ -8,6 +8,8 @@ from app.api.v1.clients import router as clients_router
 from app.api.v1.health import router as health_router
 from app.api.v1.masters import router as masters_router
 from app.api.v1.payments import router as payments_router
+from app.api.v1.portfolio import media_router
+from app.api.v1.portfolio import router as portfolio_router
 from app.api.v1.public import router as public_router
 from app.api.v1.schedule import router as schedule_router
 from app.api.v1.services import router as services_router
@@ -40,6 +42,10 @@ api_v1_router.include_router(
 api_v1_router.include_router(
     payments_router, prefix="/payments", tags=["payments"]
 )
+api_v1_router.include_router(
+    portfolio_router, prefix="/portfolio", tags=["portfolio"]
+)
+api_v1_router.include_router(media_router, tags=["media"])
 api_v1_router.include_router(
     client_auth_router, prefix="/client/auth", tags=["client-auth"]
 )
