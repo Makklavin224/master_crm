@@ -134,13 +134,13 @@
 
 ### Client Cabinet (CCAB)
 
-- [ ] **CCAB-01**: Client can access cabinet at /my by entering phone number + 6-digit OTP
-- [ ] **CCAB-02**: OTP sent via messenger bot (TG/MAX/VK); SMS fallback for web-booked clients (~2 rub)
-- [ ] **CCAB-03**: OTP has 5-min expiration, max 3 attempts, 60-sec cooldown
-- [ ] **CCAB-04**: Client sees upcoming bookings with cancel/reschedule buttons
-- [ ] **CCAB-05**: Client sees past visits with "Zapisatsya snova" button (pre-fills master + service)
-- [ ] **CCAB-06**: Client can leave a review after completed visit (1-5 stars + optional text)
-- [ ] **CCAB-07**: Client sees bookings from all masters in one list
+- [x] **CCAB-01**: Client can access cabinet at /my by entering phone number + 6-digit OTP
+- [x] **CCAB-02**: OTP sent via messenger bot (TG/MAX/VK); SMS fallback for web-booked clients (~2 rub)
+- [x] **CCAB-03**: OTP has 5-min expiration, max 3 attempts, 60-sec cooldown
+- [x] **CCAB-04**: Client sees upcoming bookings with cancel/reschedule buttons
+- [x] **CCAB-05**: Client sees past visits with "Zapisatsya snova" button (pre-fills master + service)
+- [x] **CCAB-06**: Client can leave a review after completed visit (1-5 stars + optional text)
+- [x] **CCAB-07**: Client sees bookings from all masters in one list
 
 ### Admin Payments (APAY)
 
@@ -308,13 +308,13 @@
 | PBUK-05 | Phase 10 | Complete |
 | PBUK-06 | Phase 10 | Complete |
 | PBUK-07 | Phase 10 | Complete |
-| CCAB-01 | Phase 11 | Pending |
-| CCAB-02 | Phase 11 | Pending |
-| CCAB-03 | Phase 11 | Pending |
-| CCAB-04 | Phase 11 | Pending |
-| CCAB-05 | Phase 11 | Pending |
-| CCAB-06 | Phase 11 | Pending |
-| CCAB-07 | Phase 11 | Pending |
+| CCAB-01 | Phase 11 | Complete |
+| CCAB-02 | Phase 11 | Complete |
+| CCAB-03 | Phase 11 | Complete |
+| CCAB-04 | Phase 11 | Complete |
+| CCAB-05 | Phase 11 | Complete |
+| CCAB-06 | Phase 11 | Complete |
+| CCAB-07 | Phase 11 | Complete |
 | APAY-01 | Phase 12 | Pending |
 | APAY-02 | Phase 12 | Pending |
 | APAY-03 | Phase 12 | Pending |

@@ -235,7 +235,7 @@ Plans:
 **Plans:** 3 plans
 
 Plans:
-- [ ] 11-01-PLAN.md -- Backend client auth (OTP request/verify) + client bookings + reviews API endpoints
+- [x] 11-01-PLAN.md -- Backend client auth (OTP request/verify) + client bookings + reviews API endpoints
 - [ ] 11-02-PLAN.md -- Caddy/Vite/Router routing fix for dual-path SPA (/m/* + /my/*)
 - [ ] 11-03-PLAN.md -- Frontend client cabinet: login form, auth store, bookings list, review form
 
@@ -310,7 +310,7 @@ Note: Phases 12-13 and 10-14 have independent dependency chains. Execution follo
 | 8. Web Admin UX Polish | v1.1 | 3/3 | Complete | 2026-03-19 |
 | 9. Backend Foundation | v2.0 | 2/2 | Complete | 2026-03-21 |
 | 10. Public Master Page | v2.0 | 4/4 | Complete | 2026-03-21 |
-| 11. Client Cabinet | v2.0 | 0/3 | Not started | - |
+| 11. Client Cabinet | v2.0 | 1/3 | In progress | - |
 | 12. Admin Payments | v2.0 | 0/? | Not started | - |
 | 13. Auto Receipts | v2.0 | 0/? | Not started | - |
 | 14. Portfolio | v2.0 | 0/? | Not started | - |

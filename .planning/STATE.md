@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Feature Expansion
-status: completed
-stopped_at: Completed 10-04-PLAN.md (Phase 10 complete)
-last_updated: "2026-03-21T04:51:53.940Z"
-last_activity: 2026-03-21 -- Completed 10-04 Booking Link & QR + SEO Meta Tags
+status: in_progress
+stopped_at: Completed 11-01-PLAN.md
+last_updated: "2026-03-21T05:12:48Z"
+last_activity: 2026-03-21 -- Completed 11-01 Client Cabinet API
 progress:
   total_phases: 8
   completed_phases: 2
-  total_plans: 6
-  completed_plans: 6
-  percent: 100
+  total_plans: 9
+  completed_plans: 7
+  percent: 78
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-20)
 
 **Core value:** Master taps "Complete" -- client gets SBP payment link -- tax receipt auto-generates. 3 steps instead of 9.
-**Current focus:** v2.0 Feature Expansion -- Phase 10 (Public Master Page)
+**Current focus:** v2.0 Feature Expansion -- Phase 11 (Client Cabinet)
 
 ## Current Position
 
-Phase: 10 of 16 (Public Master Page) -- COMPLETE
-Plan: 4 of 4 -- DONE
-Status: Phase 10 complete
-Last activity: 2026-03-21 -- Completed 10-04 Booking Link & QR + SEO Meta Tags
+Phase: 11 of 16 (Client Cabinet)
+Plan: 1 of 3 -- DONE
+Status: Executing phase 11
+Last activity: 2026-03-21 -- Completed 11-01 Client Cabinet API
 
-Progress: [██████████] 100%
+Progress: [███████░░░] 78%
 
 ## Performance Metrics
 
@@ -59,6 +59,7 @@ Progress: [██████████] 100%
 | Phase 10 P02 | 2min | 2 tasks | 10 files |
 | Phase 10 P03 | 4min | 2 tasks | 10 files |
 | Phase 10 P04 | 2min | 2 tasks | 4 files |
+| Phase 11 P01 | 3min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -88,6 +89,10 @@ Recent decisions affecting current work:
 - [Phase 10-03]: Date picker uses 14-day grid cards instead of react-day-picker (no extra dep)
 - [Phase 10-03]: source_platform hardcoded as "web" for public page bookings
 - [Phase 10-04]: Client-side meta tags via useEffect (sufficient for Telegram/WhatsApp/VK link previews)
+- [Phase 11-01]: OTP stored as SHA256 hash in client_sessions table (not separate table)
+- [Phase 11-01]: Session token as httpOnly secure cookie with SameSite=lax (7-day expiry)
+- [Phase 11-01]: Messenger delivery priority: telegram > max > vk
+- [Phase 11-01]: Reviews with rating >= 3 auto-publish, rating < 3 pending_reply
 
 ### Pending Todos
 
@@ -99,6 +104,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-21T04:47:54.456Z
-Stopped at: Completed 10-04-PLAN.md (Phase 10 complete)
+Last session: 2026-03-21T05:12:48Z
+Stopped at: Completed 11-01-PLAN.md
 Resume file: None
