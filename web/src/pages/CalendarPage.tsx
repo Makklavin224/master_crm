@@ -21,6 +21,7 @@ import type { DateClickArg } from "@fullcalendar/interaction";
 import ruLocale from "@fullcalendar/core/locales/ru";
 import dayjs from "dayjs";
 import { useBookings, useCreateManualBooking, type BookingRead } from "../api/bookings";
+import { usePayments } from "../api/payments";
 import { useServices } from "../api/services";
 import { useScheduleTemplate } from "../api/schedule";
 import { BookingDrawer } from "../components/BookingDrawer";
@@ -54,6 +55,26 @@ export function CalendarPage() {
   const { data: bookingsData, isLoading: bookingsLoading } = useBookings(
     dateRange.date_from ? dateRange : {},
   );
+
+  const { data: paymentsData } = usePayments({
+    date_from: dateRange.date_from
+      ? dayjs(dateRange.date_from).format("YYYY-MM-DD")
+      : undefined,
+    date_to: dateRange.date_to
+      ? dayjs(dateRange.date_to).format("YYYY-MM-DD")
+      : undefined,
+    limit: 100,
+    offset: 0,
+  });
+
+  const paidBookingIds = useMemo(() => {
+    if (!paymentsData?.items) return new Set<string>();
+    return new Set(
+      paymentsData.items
+        .filter((p) => p.status === "paid")
+        .map((p) => p.booking_id),
+    );
+  }, [paymentsData]);
 
   const { data: schedule } = useScheduleTemplate();
   const { data: servicesData } = useServices();
@@ -91,16 +112,22 @@ export function CalendarPage() {
   const events = useMemo(() => {
     if (!bookingsData?.bookings) return [];
 
-    return bookingsData.bookings.map((b) => ({
-      id: b.id,
-      title: [b.service_name, b.client_name].filter(Boolean).join(" — "),
-      start: b.starts_at,
-      end: b.ends_at,
-      backgroundColor: STATUS_COLORS[b.status] || "#636E72",
-      borderColor: "transparent",
-      extendedProps: { booking: b },
-    }));
-  }, [bookingsData]);
+    return bookingsData.bookings.map((b) => {
+      const hasPaid = paidBookingIds.has(b.id);
+      const title = [hasPaid ? "₽" : null, b.service_name, b.client_name]
+        .filter(Boolean)
+        .join(" — ");
+      return {
+        id: b.id,
+        title,
+        start: b.starts_at,
+        end: b.ends_at,
+        backgroundColor: STATUS_COLORS[b.status] || "#636E72",
+        borderColor: "transparent",
+        extendedProps: { booking: b },
+      };
+    });
+  }, [bookingsData, paidBookingIds]);
 
   const handleDatesSet = useCallback((arg: DatesSetArg) => {
     const from = arg.start.toISOString();
