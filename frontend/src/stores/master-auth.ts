@@ -81,7 +81,7 @@ export const useMasterAuth = create<MasterAuthState>((set, get) => ({
       });
 
       if (!response.ok) {
-        const err = await response.json().catch(() => ({ detail: "Auth error" }));
+        const err = await response.json().catch(() => ({ detail: "Ошибка авторизации" }));
         if (response.status === 401 || response.status === 404) {
           set({ isLoading: false, isAuthenticated: false, error: err.detail });
           return false;
@@ -99,7 +99,7 @@ export const useMasterAuth = create<MasterAuthState>((set, get) => ({
       });
       return true;
     } catch (e) {
-      const message = e instanceof Error ? e.message : "Auth failed";
+      const message = e instanceof Error ? e.message : "Не удалось авторизоваться";
       set({ isLoading: false, isAuthenticated: false, error: message });
       return false;
     }

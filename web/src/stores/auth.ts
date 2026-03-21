@@ -83,7 +83,7 @@ export const useAuth = create<AuthState>((set, get) => ({
         body: JSON.stringify({ email, password }),
       });
       if (!res.ok) {
-        const err = await res.json().catch(() => ({ detail: "Login failed" }));
+        const err = await res.json().catch(() => ({ detail: "Не удалось войти" }));
         set({ isLoading: false, error: err.detail });
         return false;
       }
@@ -94,7 +94,7 @@ export const useAuth = create<AuthState>((set, get) => ({
       get().fetchProfile();
       return true;
     } catch {
-      set({ isLoading: false, error: "Network error" });
+      set({ isLoading: false, error: "Ошибка сети" });
       return false;
     }
   },

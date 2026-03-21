@@ -107,7 +107,7 @@ function QrTab() {
     setQr({ sessionId: null, qrPayload: null, status: "loading", error: null });
     try {
       const res = await fetch(`${API_BASE}/auth/qr/init`, { method: "POST" });
-      if (!res.ok) throw new Error("Failed to create QR session");
+      if (!res.ok) throw new Error("Не удалось создать QR-сессию");
       const data = await res.json();
       setQr({
         sessionId: data.session_id,
