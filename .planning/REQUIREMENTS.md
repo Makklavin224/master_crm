@@ -237,11 +237,11 @@
 
 ### Error Handling (ERRH)
 
-- [ ] **ERRH-01**: ReviewsPage imeet error handling s EmptyState
+- [x] **ERRH-01**: ReviewsPage imeet error handling s EmptyState
 - [x] **ERRH-02**: Vse API klienty imeyut 30s timeout cherez AbortController
 - [x] **ERRH-03**: Vse error messages na russkom yazyke
-- [ ] **ERRH-04**: Card number v nastroykakh imeet formatirovaniye
-- [ ] **ERRH-05**: Robokassa test mode pokazyvaet preduprezhdeniye
+- [x] **ERRH-04**: Card number v nastroykakh imeet formatirovaniye
+- [x] **ERRH-05**: Robokassa test mode pokazyvaet preduprezhdeniye
 
 ## v3 Requirements (deferred)
 
@@ -423,11 +423,11 @@
 | CAUTH-03 | Phase 19 | Complete |
 | BVAL-01 | Phase 19 | Complete |
 | BVAL-02 | Phase 19 | Complete |
-| ERRH-01 | Phase 20 | Pending |
+| ERRH-01 | Phase 20 | Complete |
 | ERRH-02 | Phase 20 | Complete |
 | ERRH-03 | Phase 20 | Complete |
-| ERRH-04 | Phase 20 | Pending |
-| ERRH-05 | Phase 20 | Pending |
+| ERRH-04 | Phase 20 | Complete |
+| ERRH-05 | Phase 20 | Complete |
 
 **Coverage:**
 - v1.0 requirements: 40 total, mapped: 40, unmapped: 0
