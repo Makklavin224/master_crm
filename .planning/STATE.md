@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Feature Expansion
 status: completed
-stopped_at: Completed 13-02-PLAN.md
-last_updated: "2026-03-21T06:36:05.723Z"
-last_activity: 2026-03-21 -- Completed 13-02 Auto-Receipts Frontend
+stopped_at: Completed 14-01-PLAN.md
+last_updated: "2026-03-21T06:42:08.935Z"
+last_activity: 2026-03-21 -- Completed 14-01 Portfolio Backend
 progress:
   total_phases: 8
   completed_phases: 5
   total_plans: 20
-  completed_plans: 13
-  percent: 65
+  completed_plans: 14
+  percent: 70
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-20)
 
 **Core value:** Master taps "Complete" -- client gets SBP payment link -- tax receipt auto-generates. 3 steps instead of 9.
-**Current focus:** v2.0 Feature Expansion -- Phase 13 (Auto-Receipts) complete, moving to Phase 14
+**Current focus:** v2.0 Feature Expansion -- Phase 14 (Portfolio) in progress
 
 ## Current Position
 
-Phase: 13 of 16 (Auto-Receipts)
-Plan: 2 of 2 -- DONE
-Status: Phase 13 complete, ready for Phase 14
-Last activity: 2026-03-21 -- Completed 13-02 Auto-Receipts Frontend
+Phase: 14 of 16 (Portfolio)
+Plan: 1 of 3 -- DONE
+Status: Plan 14-01 complete, ready for 14-02
+Last activity: 2026-03-21 -- Completed 14-01 Portfolio Backend
 
-Progress: [███████░░░] 65%
+Progress: [███████░░░] 70%
 
 ## Performance Metrics
 
@@ -66,6 +66,7 @@ Progress: [███████░░░] 65%
 | Phase 12 P02 | 2min | 2 tasks | 4 files |
 | Phase 13 P01 | 7min | 2 tasks | 9 files |
 | Phase 13 P02 | 3min | 2 tasks | 4 files |
+| Phase 14 P01 | 3min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -117,6 +118,9 @@ Recent decisions affecting current work:
 - [Phase 13-01]: INN binding requires Robokassa connected first (returns 400 if not)
 - [Phase 13-02]: Web admin allows INN binding directly (not read-only) for admin convenience
 - [Phase 13-02]: INN input uses digit-only filter with maxLength 12 and inputMode numeric
+- [Phase 14-01]: Image resize via Pillow with LANCZOS, max 1200px full / 300px thumb
+- [Phase 14-01]: Media serving as separate router (no auth) for public photo access
+- [Phase 14-01]: Reorder endpoint placed before /{photo_id} to avoid FastAPI path conflict
 
 ### Pending Todos
 
@@ -128,6 +132,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-21T06:34:00Z
-Stopped at: Completed 13-02-PLAN.md
+Last session: 2026-03-21T06:42:08.933Z
+Stopped at: Completed 14-01-PLAN.md
 Resume file: None
