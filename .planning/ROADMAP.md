@@ -262,7 +262,11 @@ Plans:
   1. Master enters INN (12 digits) in Settings > "Nalogi i cheki"; when Robokassa is connected and INN is valid, auto-receipts are activated and settings show "Avtocheki podklyucheny" with a disconnect option
   2. When master completes a visit with "Chek: Avtomaticheski", the system sends receipt data to Robokassa ReceiptAttach regardless of payment method (cash, card, or SBP); client receives receipt link in their messenger
   3. If ReceiptAttach fails, the receipt is queued for retry (up to 3 attempts via background job); if all retries fail, master receives an error notification with instructions to issue the receipt manually
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 13-01-PLAN.md -- Backend ReceiptAttach service, INN binding endpoints, PaymentService integration, retry scheduler
+- [ ] 13-02-PLAN.md -- Frontend INN binding UI in mini-app and web admin settings pages
 
 ### Phase 14: Portfolio
 **Goal**: Masters can upload photos of their work and clients see them as a gallery on the public profile page
@@ -320,7 +324,7 @@ Note: Phases 12-13 and 10-14 have independent dependency chains. Execution follo
 | 10. Public Master Page | v2.0 | 4/4 | Complete | 2026-03-21 |
 | 11. Client Cabinet | v2.0 | 3/3 | Complete | 2026-03-21 |
 | 12. Admin Payments | v2.0 | 2/2 | Complete | 2026-03-21 |
-| 13. Auto Receipts | v2.0 | 0/? | Not started | - |
+| 13. Auto Receipts | v2.0 | 0/2 | Planned | - |
 | 14. Portfolio | v2.0 | 0/? | Not started | - |
 | 15. Reviews | v2.0 | 0/? | Not started | - |
 | 16. Analytics | v2.0 | 0/2 | Planned | - |
