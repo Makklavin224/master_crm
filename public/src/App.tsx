@@ -1,6 +1,11 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import MasterPage from "./pages/MasterPage.tsx";
+import ServiceStep from "./pages/booking/ServiceStep.tsx";
+import DateStep from "./pages/booking/DateStep.tsx";
+import TimeStep from "./pages/booking/TimeStep.tsx";
+import InfoStep from "./pages/booking/InfoStep.tsx";
+import ConfirmStep from "./pages/booking/ConfirmStep.tsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -10,27 +15,6 @@ const queryClient = new QueryClient({
     },
   },
 });
-
-// Placeholder pages — will be implemented in Plan 03
-function BookingPage() {
-  return <div className="p-4">Booking page</div>;
-}
-
-function BookingDatePage() {
-  return <div className="p-4">Select date</div>;
-}
-
-function BookingTimePage() {
-  return <div className="p-4">Select time</div>;
-}
-
-function BookingInfoPage() {
-  return <div className="p-4">Your info</div>;
-}
-
-function BookingConfirmPage() {
-  return <div className="p-4">Confirm booking</div>;
-}
 
 function NotFound() {
   return (
@@ -48,11 +32,11 @@ export default function App() {
         <div className="min-h-full flex flex-col bg-white">
           <Routes>
             <Route path="/:username" element={<MasterPage />} />
-            <Route path="/:username/book" element={<BookingPage />} />
-            <Route path="/:username/book/date" element={<BookingDatePage />} />
-            <Route path="/:username/book/time" element={<BookingTimePage />} />
-            <Route path="/:username/book/info" element={<BookingInfoPage />} />
-            <Route path="/:username/book/confirm" element={<BookingConfirmPage />} />
+            <Route path="/:username/book" element={<ServiceStep />} />
+            <Route path="/:username/book/date" element={<DateStep />} />
+            <Route path="/:username/book/time" element={<TimeStep />} />
+            <Route path="/:username/book/info" element={<InfoStep />} />
+            <Route path="/:username/book/confirm" element={<ConfirmStep />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
