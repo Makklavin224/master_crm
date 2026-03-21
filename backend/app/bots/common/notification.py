@@ -166,6 +166,24 @@ class NotificationService:
             )
             return False
 
+    async def send_receipt_link(
+        self,
+        platform: str,
+        platform_user_id: str,
+        receipt_url: str,
+        service_name: str,
+    ) -> bool:
+        """Send a receipt link to a client via the appropriate platform adapter.
+
+        Convenience wrapper around send_message with formatted receipt text.
+        """
+        text = f'Чек по услуге "{service_name}":\n{receipt_url}'
+        return await self.send_message(
+            platform=platform,
+            platform_user_id=platform_user_id,
+            text=text,
+        )
+
     async def send_booking_confirmation(
         self,
         platform: str,

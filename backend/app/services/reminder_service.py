@@ -256,3 +256,15 @@ scheduler.add_job(
     replace_existing=True,
     misfire_grace_time=300,
 )
+
+# Register receipt retry polling job
+from app.services.receipt_service import process_pending_receipts  # noqa: E402
+
+scheduler.add_job(
+    process_pending_receipts,
+    "interval",
+    minutes=5,
+    id="receipt_retry_poll",
+    replace_existing=True,
+    misfire_grace_time=300,
+)
