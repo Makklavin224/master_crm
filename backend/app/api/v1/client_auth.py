@@ -10,7 +10,7 @@ import secrets
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -209,7 +209,7 @@ async def verify_otp_code(
         value=session.token,
         httponly=True,
         secure=True,
-        samesite="lax",
+        samesite="none",
         max_age=SESSION_EXPIRY_DAYS * 24 * 3600,
         path="/",
     )
