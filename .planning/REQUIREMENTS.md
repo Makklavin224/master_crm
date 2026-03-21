@@ -221,7 +221,7 @@
 ### Client Auth (CAUTH)
 
 - [x] **CAUTH-01**: verify-code vozvrashchaet token v response body (ne tolko cookie)
-- [ ] **CAUTH-02**: Client cabinet otpravlyaet token cherez Bearer header kak fallback
+- [x] **CAUTH-02**: Client cabinet otpravlyaet token cherez Bearer header kak fallback
 - [x] **CAUTH-03**: get_current_client prinimaet i cookie, i Bearer header
 
 ### Analytics Robustness (ANLTR)
@@ -232,8 +232,8 @@
 
 ### Booking Validation (BVAL)
 
-- [ ] **BVAL-01**: Nevalidnyy masterId v URL pokazyvaet "Master ne nayden"
-- [ ] **BVAL-02**: 404 na publichnoy stranitse pokazyvaet poleznoye soobshcheniye s predlozheniyem proverit ssylku
+- [x] **BVAL-01**: Nevalidnyy masterId v URL pokazyvaet "Master ne nayden"
+- [x] **BVAL-02**: 404 na publichnoy stranitse pokazyvaet poleznoye soobshcheniye s predlozheniyem proverit ssylku
 
 ### Error Handling (ERRH)
 
@@ -419,10 +419,10 @@
 | BREG-02 | Phase 19 | Complete |
 | BREG-03 | Phase 19 | Complete |
 | CAUTH-01 | Phase 19 | Complete |
-| CAUTH-02 | Phase 19 | Pending |
+| CAUTH-02 | Phase 19 | Complete |
 | CAUTH-03 | Phase 19 | Complete |
-| BVAL-01 | Phase 19 | Pending |
-| BVAL-02 | Phase 19 | Pending |
+| BVAL-01 | Phase 19 | Complete |
+| BVAL-02 | Phase 19 | Complete |
 | ERRH-01 | Phase 20 | Pending |
 | ERRH-02 | Phase 20 | Pending |
 | ERRH-03 | Phase 20 | Pending |
