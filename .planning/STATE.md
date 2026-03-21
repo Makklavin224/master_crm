@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Feature Expansion
-status: in_progress
-stopped_at: Completed 11-01-PLAN.md
-last_updated: "2026-03-21T05:12:48Z"
-last_activity: 2026-03-21 -- Completed 11-01 Client Cabinet API
+status: executing
+stopped_at: Completed 11-02-PLAN.md
+last_updated: "2026-03-21T05:14:06Z"
+last_activity: 2026-03-21 -- Completed 11-02 Dual-Path SPA Routing
 progress:
   total_phases: 8
   completed_phases: 2
   total_plans: 9
-  completed_plans: 7
-  percent: 78
+  completed_plans: 9
+  percent: 89
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-03-20)
 ## Current Position
 
 Phase: 11 of 16 (Client Cabinet)
-Plan: 1 of 3 -- DONE
+Plan: 2 of 3 -- DONE
 Status: Executing phase 11
-Last activity: 2026-03-21 -- Completed 11-01 Client Cabinet API
+Last activity: 2026-03-21 -- Completed 11-02 Dual-Path SPA Routing
 
-Progress: [███████░░░] 78%
+Progress: [█████████░] 89%
 
 ## Performance Metrics
 
@@ -60,6 +60,7 @@ Progress: [███████░░░] 78%
 | Phase 10 P03 | 4min | 2 tasks | 10 files |
 | Phase 10 P04 | 2min | 2 tasks | 4 files |
 | Phase 11 P01 | 3min | 2 tasks | 7 files |
+| Phase 11 P02 | 4min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -93,6 +94,9 @@ Recent decisions affecting current work:
 - [Phase 11-01]: Session token as httpOnly secure cookie with SameSite=lax (7-day expiry)
 - [Phase 11-01]: Messenger delivery priority: telegram > max > vk
 - [Phase 11-01]: Reviews with rating >= 3 auto-publish, rating < 3 pending_reply
+- [Phase 11-02]: Removed strip_prefix from /m/* Caddy block; SPA receives full path
+- [Phase 11-02]: Added /assets/* Caddy handler for Vite build output with base "/"
+- [Phase 11-02]: Navigate calls use absolute /m/ prefix paths (pre-applied by 11-01)
 
 ### Pending Todos
 
@@ -104,6 +108,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-21T05:12:48Z
-Stopped at: Completed 11-01-PLAN.md
+Last session: 2026-03-21T05:14:06Z
+Stopped at: Completed 11-02-PLAN.md
 Resume file: None
