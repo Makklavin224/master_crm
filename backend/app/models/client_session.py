@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey, String, text
+from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -21,6 +21,13 @@ class ClientSession(Base):
     phone: Mapped[str] = mapped_column(String(20))
     token: Mapped[str] = mapped_column(
         String(255), unique=True, index=True
+    )
+    otp_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    otp_attempts: Mapped[int] = mapped_column(
+        Integer, default=0, server_default=text("0")
+    )
+    is_verified: Mapped[bool] = mapped_column(
+        Boolean, default=False, server_default=text("false")
     )
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     created_at: Mapped[datetime] = mapped_column(

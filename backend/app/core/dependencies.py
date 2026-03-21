@@ -4,12 +4,16 @@ from uuid import UUID
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordBearer
 from jwt.exceptions import InvalidTokenError
-from sqlalchemy import select, text
+from sqlalchemy import func, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from sqlalchemy.orm import selectinload
 
 from app.core.config import settings
 from app.core.database import async_session_factory
 from app.core.security import decode_access_token, validate_tg_init_data
+from app.models.client import Client
+from app.models.client_session import ClientSession
 from app.models.master import Master
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
@@ -126,3 +130,35 @@ async def get_optional_master(
     if master is None or not master.is_active:
         return None
     return master
+
+
+async def get_current_client(
+    request: Request,
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> Client:
+    """Extract client_session cookie, validate against client_sessions, return Client.
+
+    Requires is_verified=True and non-expired session.
+    """
+    token = request.cookies.get("client_session")
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authenticated",
+        )
+    result = await db.execute(
+        select(ClientSession)
+        .where(
+            ClientSession.token == token,
+            ClientSession.is_verified == True,  # noqa: E712
+            ClientSession.expires_at > func.now(),
+        )
+        .options(selectinload(ClientSession.client))
+    )
+    session = result.scalar_one_or_none()
+    if not session:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Session expired",
+        )
+    return session.client

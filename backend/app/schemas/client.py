@@ -28,3 +28,25 @@ class ClientDetailRead(BaseModel):
     client: ClientRead
     bookings: list[BookingRead]
     visit_count: int
+
+
+# --- Client Cabinet OTP Auth Schemas ---
+
+
+class OTPRequest(BaseModel):
+    phone: str
+
+
+class OTPVerify(BaseModel):
+    phone: str
+    code: str
+
+
+class OTPResponse(BaseModel):
+    success: bool
+    message: str
+    cooldown_seconds: int | None = None
+
+
+class SessionResponse(BaseModel):
+    token: str
