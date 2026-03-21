@@ -4,6 +4,7 @@ import {
   TeamOutlined,
   AppstoreOutlined,
   DollarOutlined,
+  BarChartOutlined,
   StarOutlined,
   SettingOutlined,
   LogoutOutlined,
@@ -22,6 +23,7 @@ const PAGE_TITLES: Record<string, string> = {
   "/clients": "Клиенты",
   "/services": "Услуги",
   "/payments": "Платежи",
+  "/analytics": "Аналитика",
   "/reviews": "Отзывы",
   "/settings": "Настройки",
 };
@@ -31,6 +33,7 @@ const menuItems = [
   { key: "/clients", icon: <TeamOutlined />, label: "Клиенты" },
   { key: "/services", icon: <AppstoreOutlined />, label: "Услуги" },
   { key: "/payments", icon: <DollarOutlined />, label: "Платежи" },
+  { key: "/analytics", icon: <BarChartOutlined />, label: "Аналитика" },
   { key: "/reviews", icon: <StarOutlined />, label: "Отзывы" },
   { key: "/settings", icon: <SettingOutlined />, label: "Настройки" },
 ];

@@ -14,6 +14,7 @@ import { PaymentsPage } from "./pages/PaymentsPage";
 import { ReviewsPage } from "./pages/ReviewsPage";
 import { ServicesPage } from "./pages/ServicesPage";
 import { SettingsPage } from "./pages/SettingsPage";
+import { AnalyticsPage } from "./pages/AnalyticsPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -87,6 +88,7 @@ export default function App() {
                   <Route path="/clients/:id" element={<ClientDetailPage />} />
                   <Route path="/services" element={<ServicesPage />} />
                   <Route path="/payments" element={<PaymentsPage />} />
+                  <Route path="/analytics" element={<AnalyticsPage />} />
                   <Route path="/reviews" element={<ReviewsPage />} />
                   <Route path="/settings" element={<SettingsPage />} />
                 </Route>
