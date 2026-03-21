@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Feature Expansion
-status: completed
-stopped_at: Completed 11-03-PLAN.md
-last_updated: "2026-03-21T05:27:32.820Z"
-last_activity: 2026-03-21 -- Completed 11-03 Client Cabinet Frontend
+status: in_progress
+stopped_at: Completed 12-01-PLAN.md
+last_updated: "2026-03-21T05:52:03Z"
+last_activity: 2026-03-21 -- Completed 12-01 Admin Payments Complete Visit Flow
 progress:
   total_phases: 8
   completed_phases: 3
-  total_plans: 9
-  completed_plans: 9
-  percent: 100
+  total_plans: 11
+  completed_plans: 10
+  percent: 91
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-20)
 
 **Core value:** Master taps "Complete" -- client gets SBP payment link -- tax receipt auto-generates. 3 steps instead of 9.
-**Current focus:** v2.0 Feature Expansion -- Phase 11 (Client Cabinet) COMPLETE
+**Current focus:** v2.0 Feature Expansion -- Phase 12 (Admin Payments) in progress
 
 ## Current Position
 
-Phase: 11 of 16 (Client Cabinet)
-Plan: 3 of 3 -- DONE
-Status: Phase 11 complete
-Last activity: 2026-03-21 -- Completed 11-03 Client Cabinet Frontend
+Phase: 12 of 16 (Admin Payments)
+Plan: 1 of 2 -- DONE
+Status: Plan 12-01 complete, 12-02 next
+Last activity: 2026-03-21 -- Completed 12-01 Admin Payments Complete Visit Flow
 
-Progress: [██████████] 100%
+Progress: [█████████░] 91%
 
 ## Performance Metrics
 
@@ -53,7 +53,7 @@ Progress: [██████████] 100%
 | 8. Web Admin UX Polish | 3/3 | 6min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 3min, 1min, 3min, 3min, 3min
+- Last 5 plans: 3min, 3min, 3min, 3min, 4min
 - Trend: consistent
 | Phase 10 P01 | 3min | 2 tasks | 17 files |
 | Phase 10 P02 | 2min | 2 tasks | 10 files |
@@ -62,6 +62,7 @@ Progress: [██████████] 100%
 | Phase 11 P01 | 3min | 2 tasks | 7 files |
 | Phase 11 P02 | 4min | 2 tasks | 4 files |
 | Phase 11 P03 | 3min | 2 tasks | 10 files |
+| Phase 12 P01 | 4min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -102,6 +103,9 @@ Recent decisions affecting current work:
 - [Phase 11-03]: OTP input uses 6 separate fields with auto-focus and paste support
 - [Phase 11-03]: Reschedule MVP shows alert placeholder (requires time picker UI, deferred)
 - [Phase 11-03]: Review form renders inline below BookingCard (not modal/bottom sheet)
+- [Phase 12-01]: amount_override sent only when differs from service price (avoids unnecessary override)
+- [Phase 12-01]: SBP payment routes through Robokassa when has_robokassa; all other methods use manual payment
+- [Phase 12-01]: Revenue query always filters status=paid regardless of status_filter
 
 ### Pending Todos
 
@@ -113,6 +117,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-21T05:21:00Z
-Stopped at: Completed 11-03-PLAN.md
+Last session: 2026-03-21T05:52:03Z
+Stopped at: Completed 12-01-PLAN.md
 Resume file: None

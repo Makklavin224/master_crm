@@ -144,9 +144,9 @@
 
 ### Admin Payments (APAY)
 
-- [ ] **APAY-01**: Master can finish a visit from web admin with payment method selection (cash/card/SBP)
-- [ ] **APAY-02**: Payment amount pre-filled from service price, editable (discount/extra)
-- [ ] **APAY-03**: Fiscalization option on payment completion (auto/manual/none)
+- [x] **APAY-01**: Master can finish a visit from web admin with payment method selection (cash/card/SBP)
+- [x] **APAY-02**: Payment amount pre-filled from service price, editable (discount/extra)
+- [x] **APAY-03**: Fiscalization option on payment completion (auto/manual/none)
 - [ ] **APAY-04**: Payments page shows total revenue for selected period
 - [ ] **APAY-05**: Payments page has filter by payment method
 - [ ] **APAY-06**: Payments page has CSV export
@@ -315,9 +315,9 @@
 | CCAB-05 | Phase 11 | Complete |
 | CCAB-06 | Phase 11 | Complete |
 | CCAB-07 | Phase 11 | Complete |
-| APAY-01 | Phase 12 | Pending |
-| APAY-02 | Phase 12 | Pending |
-| APAY-03 | Phase 12 | Pending |
+| APAY-01 | Phase 12 | Complete |
+| APAY-02 | Phase 12 | Complete |
+| APAY-03 | Phase 12 | Complete |
 | APAY-04 | Phase 12 | Pending |
 | APAY-05 | Phase 12 | Pending |
 | APAY-06 | Phase 12 | Pending |
