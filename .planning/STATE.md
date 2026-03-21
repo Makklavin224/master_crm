@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Feature Expansion
-status: in_progress
-stopped_at: Completed 17-01-PLAN.md
-last_updated: "2026-03-21T09:22:36.765Z"
-last_activity: 2026-03-21 -- Completed 17-01 Backend Platform Linking API
+status: completed
+stopped_at: Completed 17-02-PLAN.md
+last_updated: "2026-03-21T09:30:24.286Z"
+last_activity: 2026-03-21 -- Completed 17-02 Mini-App Role Detection + Web Platforms Tab
 progress:
   total_phases: 9
-  completed_phases: 8
+  completed_phases: 9
   total_plans: 22
-  completed_plans: 21
-  percent: 95
+  completed_plans: 22
+  percent: 100
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-20)
 
 **Core value:** Master taps "Complete" -- client gets SBP payment link -- tax receipt auto-generates. 3 steps instead of 9.
-**Current focus:** v2.0 Feature Expansion -- Phase 17 in progress
+**Current focus:** v2.0 Feature Expansion -- COMPLETE
 
 ## Current Position
 
-Phase: 17 of 17 (Cross-Platform Auth & Role Detection)
-Plan: 1 of 2
-Status: Plan 17-01 complete, 17-02 next
-Last activity: 2026-03-21 -- Completed 17-01 Backend Platform Linking API
+Phase: 17 of 17 (Cross-Platform Auth & Role Detection) -- COMPLETE
+Plan: 2 of 2 -- ALL COMPLETE
+Status: v2.0 Feature Expansion milestone complete
+Last activity: 2026-03-21 -- Completed 17-02 Mini-App Role Detection + Web Platforms Tab
 
-Progress: [██████████] 95%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -74,6 +74,7 @@ Progress: [██████████] 95%
 | Phase 16 P01 | 4min | 2 tasks | 4 files |
 | Phase 16 P02 | 10min | 2 tasks | 6 files |
 | Phase 17 P01 | 6min | 2 tasks | 10 files |
+| Phase 17 P02 | 3min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -147,6 +148,9 @@ Recent decisions affecting current work:
 - [Phase 17]: Bot registration creates Master without password (can set password later via web admin)
 - [Phase 17]: Account linking uses email lookup (not phone) since web-registered masters always have email
 - [Phase 17]: Link-email handler checked before review-text handler in MAX router to prevent state conflict
+- [Phase 17]: autoDetectRole checks localStorage first (instant if token exists), then tries platform auth endpoint
+- [Phase 17]: 401/404 from auth endpoint treated as normal client detection (no error shown)
+- [Phase 17]: RoleSwitcher renders outside Routes as overlay on all pages for masters
 
 ### Pending Todos
 
@@ -162,6 +166,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-21T09:22:36.762Z
-Stopped at: Completed 17-01-PLAN.md
+Last session: 2026-03-21T09:30:24.284Z
+Stopped at: Completed 17-02-PLAN.md
 Resume file: None
