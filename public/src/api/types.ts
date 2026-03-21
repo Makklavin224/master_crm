@@ -66,3 +66,46 @@ export interface BookingRead {
   client_name: string;
   client_phone: string;
 }
+
+// Client cabinet types
+
+export interface OTPResponse {
+  success: boolean;
+  message: string;
+  cooldown_seconds?: number;
+}
+
+export interface SessionResponse {
+  token: string;
+}
+
+export interface ClientBookingRead {
+  id: string;
+  master_id: string;
+  master_name: string;
+  service_id: string;
+  service_name: string;
+  starts_at: string;
+  ends_at: string;
+  status: string;
+  source_platform: string | null;
+  master_username: string | null;
+}
+
+export interface ClientBookingsResponse {
+  upcoming: ClientBookingRead[];
+  past: ClientBookingRead[];
+}
+
+export interface ReviewCreateRequest {
+  booking_id: string;
+  rating: number;
+  text?: string;
+}
+
+export interface ReviewCreateResponse {
+  id: string;
+  rating: number;
+  text: string | null;
+  created_at: string;
+}
