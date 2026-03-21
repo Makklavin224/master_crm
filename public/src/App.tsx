@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import MasterPage from "./pages/MasterPage.tsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -10,10 +11,7 @@ const queryClient = new QueryClient({
   },
 });
 
-function MasterPage() {
-  return <div className="p-4">Loading master page...</div>;
-}
-
+// Placeholder pages — will be implemented in Plan 03
 function BookingPage() {
   return <div className="p-4">Booking page</div>;
 }
