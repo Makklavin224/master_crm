@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Feature Expansion
-status: completed
-stopped_at: Completed 15-02-PLAN.md
-last_updated: "2026-03-21T07:15:16.100Z"
-last_activity: 2026-03-21 -- Completed 15-02 Admin Reviews Management
+status: in_progress
+stopped_at: Completed 16-01-PLAN.md
+last_updated: "2026-03-21T07:20:01.000Z"
+last_activity: 2026-03-21 -- Completed 16-01 Analytics Backend Endpoints
 progress:
   total_phases: 8
   completed_phases: 7
   total_plans: 20
-  completed_plans: 18
-  percent: 90
+  completed_plans: 19
+  percent: 95
 ---
 
 # Project State
@@ -21,21 +21,21 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-20)
 
 **Core value:** Master taps "Complete" -- client gets SBP payment link -- tax receipt auto-generates. 3 steps instead of 9.
-**Current focus:** v2.0 Feature Expansion -- Phase 15 (Reviews) in progress
+**Current focus:** v2.0 Feature Expansion -- Phase 16 (Analytics) in progress
 
 ## Current Position
 
-Phase: 15 of 16 (Reviews) -- COMPLETE
-Plan: 2 of 2
-Status: Phase 15 complete, Phase 16 next
-Last activity: 2026-03-21 -- Completed 15-02 Admin Reviews Management
+Phase: 16 of 16 (Analytics)
+Plan: 1 of 2
+Status: Phase 16 in progress, Plan 01 complete
+Last activity: 2026-03-21 -- Completed 16-01 Analytics Backend Endpoints
 
-Progress: [█████████░] 90%
+Progress: [█████████▓] 95%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 29
+- Total plans completed: 30
 - Average duration: 6min
 - Total execution time: ~2.8 hours
 
@@ -71,6 +71,7 @@ Progress: [█████████░] 90%
 | Phase 14 P03 | 9min | 2 tasks | 4 files |
 | Phase 15 P01 | 6min | 2 tasks | 13 files |
 | Phase 15 P02 | 4min | 2 tasks | 7 files |
+| Phase 16 P01 | 4min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -134,6 +135,10 @@ Recent decisions affecting current work:
 - [Phase 15-01]: Rating >= 3 auto-publishes, rating < 3 gets pending_reply status
 - [Phase 15-01]: Module-level dict tracks pending review text state (no FSM needed)
 - [Phase 15]: Reviews API uses get_db (not get_db_with_rls) since review filtering is done explicitly by master_id
+- [Phase 16-01]: Utilization = completed booking duration / scheduled working hours (breaks subtracted, exceptions applied)
+- [Phase 16-01]: Revenue chart fills zero-revenue days for continuous chart data
+- [Phase 16-01]: Daily breakdown revenue uses booking start date (not payment paid_at) for day alignment
+- [Phase 16-01]: New/repeat client split uses MasterClient.first_visit_at relative to date range
 
 ### Pending Todos
 
@@ -145,6 +150,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-21T07:14:38.143Z
-Stopped at: Completed 15-02-PLAN.md
+Last session: 2026-03-21T07:20:01.000Z
+Stopped at: Completed 16-01-PLAN.md
 Resume file: None

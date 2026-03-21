@@ -179,16 +179,16 @@
 
 ### Analytics (ANLT)
 
-- [ ] **ANLT-01**: Dashboard shows revenue, booking count, client count for selected period
-- [ ] **ANLT-02**: Revenue chart (line graph by day)
-- [ ] **ANLT-03**: New vs repeat clients (donut chart)
-- [ ] **ANLT-04**: Utilization rate (booked hours / scheduled hours)
-- [ ] **ANLT-05**: Average check amount
-- [ ] **ANLT-06**: Client retention rate (% returning within 60 days)
-- [ ] **ANLT-07**: Cancellation rate and no-show rate
-- [ ] **ANLT-08**: Top services table (service, count, revenue, % of total)
-- [ ] **ANLT-09**: Daily breakdown table (date, bookings, revenue, utilization)
-- [ ] **ANLT-10**: CSV export for reports
+- [x] **ANLT-01**: Dashboard shows revenue, booking count, client count for selected period
+- [x] **ANLT-02**: Revenue chart (line graph by day)
+- [x] **ANLT-03**: New vs repeat clients (donut chart)
+- [x] **ANLT-04**: Utilization rate (booked hours / scheduled hours)
+- [x] **ANLT-05**: Average check amount
+- [x] **ANLT-06**: Client retention rate (% returning within 60 days)
+- [x] **ANLT-07**: Cancellation rate and no-show rate
+- [x] **ANLT-08**: Top services table (service, count, revenue, % of total)
+- [x] **ANLT-09**: Daily breakdown table (date, bookings, revenue, utilization)
+- [x] **ANLT-10**: CSV export for reports
 
 ## v3 Requirements (deferred)
 
@@ -338,16 +338,16 @@
 | REVW-04 | Phase 15 | Complete |
 | REVW-05 | Phase 15 | Complete |
 | REVW-06 | Phase 15 | Complete |
-| ANLT-01 | Phase 16 | Pending |
-| ANLT-02 | Phase 16 | Pending |
-| ANLT-03 | Phase 16 | Pending |
-| ANLT-04 | Phase 16 | Pending |
-| ANLT-05 | Phase 16 | Pending |
-| ANLT-06 | Phase 16 | Pending |
-| ANLT-07 | Phase 16 | Pending |
-| ANLT-08 | Phase 16 | Pending |
-| ANLT-09 | Phase 16 | Pending |
-| ANLT-10 | Phase 16 | Pending |
+| ANLT-01 | Phase 16 | Complete |
+| ANLT-02 | Phase 16 | Complete |
+| ANLT-03 | Phase 16 | Complete |
+| ANLT-04 | Phase 16 | Complete |
+| ANLT-05 | Phase 16 | Complete |
+| ANLT-06 | Phase 16 | Complete |
+| ANLT-07 | Phase 16 | Complete |
+| ANLT-08 | Phase 16 | Complete |
+| ANLT-09 | Phase 16 | Complete |
+| ANLT-10 | Phase 16 | Complete |
 
 **Coverage:**
 - v1.0 requirements: 40 total, mapped: 40, unmapped: 0
