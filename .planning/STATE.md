@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Feature Expansion
 status: completed
-stopped_at: Completed 14-03-PLAN.md
-last_updated: "2026-03-21T06:55:51.537Z"
-last_activity: 2026-03-21 -- Completed 14-03 Portfolio Management UI
+stopped_at: Completed 15-01-PLAN.md
+last_updated: "2026-03-21T07:07:00.502Z"
+last_activity: 2026-03-21 -- Completed 15-01 Review Collection System
 progress:
   total_phases: 8
   completed_phases: 6
   total_plans: 20
-  completed_plans: 16
+  completed_plans: 17
   percent: 85
 ---
 
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-20)
 
 **Core value:** Master taps "Complete" -- client gets SBP payment link -- tax receipt auto-generates. 3 steps instead of 9.
-**Current focus:** v2.0 Feature Expansion -- Phase 14 (Portfolio) in progress
+**Current focus:** v2.0 Feature Expansion -- Phase 15 (Reviews) in progress
 
 ## Current Position
 
-Phase: 14 of 16 (Portfolio)
-Plan: 3 of 3 -- DONE
-Status: Phase 14 complete, ready for Phase 15
-Last activity: 2026-03-21 -- Completed 14-03 Portfolio Management UI
+Phase: 15 of 16 (Reviews)
+Plan: 1 of 2
+Status: 15-01 complete, 15-02 remaining
+Last activity: 2026-03-21 -- Completed 15-01 Review Collection System
 
-Progress: [████████░░] 85%
+Progress: [█████████░] 85%
 
 ## Performance Metrics
 
@@ -69,6 +69,7 @@ Progress: [████████░░] 85%
 | Phase 14 P01 | 3min | 2 tasks | 8 files |
 | Phase 14 P02 | 9min | 2 tasks | 4 files |
 | Phase 14 P03 | 9min | 2 tasks | 4 files |
+| Phase 15 P01 | 6min | 2 tasks | 13 files |
 
 ## Accumulated Context
 
@@ -128,6 +129,9 @@ Recent decisions affecting current work:
 - [Phase 14-03]: Upload uses raw fetch (not apiRequest) to avoid Content-Type header on multipart form data
 - [Phase 14-03]: Mini-app uses native select for service tag (mobile-friendly, no extra dep)
 - [Phase 14-03]: Web admin uses Ant Design Upload.Dragger for drag-and-drop UX
+- [Phase 15-01]: Sentinel Review row (rating=0, status=request_sent) prevents duplicate review requests
+- [Phase 15-01]: Rating >= 3 auto-publishes, rating < 3 gets pending_reply status
+- [Phase 15-01]: Module-level dict tracks pending review text state (no FSM needed)
 
 ### Pending Todos
 
@@ -139,6 +143,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-21T06:52:17Z
-Stopped at: Completed 14-03-PLAN.md
+Last session: 2026-03-21T07:06:59.495Z
+Stopped at: Completed 15-01-PLAN.md
 Resume file: None
