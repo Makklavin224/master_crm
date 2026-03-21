@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Feature Expansion
 status: in_progress
-stopped_at: Roadmap created for v2.0 (phases 9-16)
-last_updated: "2026-03-20T14:00:00.000Z"
-last_activity: 2026-03-20 -- Roadmap created for v2.0 Feature Expansion
+stopped_at: Completed 09-01-PLAN.md
+last_updated: "2026-03-21T03:37:41.000Z"
+last_activity: 2026-03-21 -- Completed 09-01 Database Migrations & Models
 progress:
   total_phases: 8
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  total_plans: 2
+  completed_plans: 1
+  percent: 50
 ---
 
 # Project State
@@ -21,23 +21,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-20)
 
 **Core value:** Master taps "Complete" -- client gets SBP payment link -- tax receipt auto-generates. 3 steps instead of 9.
-**Current focus:** v2.0 Feature Expansion -- Phase 9 (Backend Foundation) ready to plan
+**Current focus:** v2.0 Feature Expansion -- Phase 9 (Backend Foundation) Plan 1 complete
 
 ## Current Position
 
 Phase: 9 of 16 (Backend Foundation)
-Plan: --
-Status: Ready to plan
-Last activity: 2026-03-20 -- Roadmap created for v2.0 Feature Expansion (phases 9-16, 47 requirements mapped)
+Plan: 2 of 2
+Status: In progress
+Last activity: 2026-03-21 -- Completed 09-01 Database Migrations & Models (5 migrations, 3 new models)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█████░░░░░] 50%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 25
+- Total plans completed: 26
 - Average duration: 6min
-- Total execution time: ~2.6 hours
+- Total execution time: ~2.65 hours
 
 **By Phase (v1.0 + v1.1):**
 
@@ -69,6 +69,9 @@ Recent decisions affecting current work:
 - Robokassa ReceiptAttach for cash/card receipts (not direct FNS API)
 - Client cabinet shares SPA with public page (both under /public/, routes /m/ and /my/)
 - Portfolio stored in Docker volume (/data/portfolio/) for MVP; S3/MinIO later
+- Used sa.text() in Review model to avoid 'text' column shadowing SQLAlchemy text() function
+- client_sessions has no RLS (cross-master table by design)
+- Rating CHECK constraint (1-5) added at DB level in reviews migration
 
 ### Pending Todos
 
@@ -80,6 +83,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-20
-Stopped at: Roadmap created for v2.0 (phases 9-16)
+Last session: 2026-03-21
+Stopped at: Completed 09-01-PLAN.md
 Resume file: None
