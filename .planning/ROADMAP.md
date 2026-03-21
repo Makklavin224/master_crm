@@ -315,7 +315,7 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 9 -> 10 -> 11 -> 12 -> 13 -> 14 -> 15 -> 16
+Phases execute in numeric order: 9 -> 10 -> 11 -> 12 -> 13 -> 14 -> 15 -> 16 -> 17
 
 Note: Phases 12-13 and 10-14 have independent dependency chains. Execution follows numeric order for simplicity, but 12 does not depend on 11.
 
@@ -337,6 +337,7 @@ Note: Phases 12-13 and 10-14 have independent dependency chains. Execution follo
 | 14. Portfolio | 3/3 | Complete    | 2026-03-21 | - |
 | 15. Reviews | 2/2 | Complete    | 2026-03-21 | - |
 | 16. Analytics | 2/2 | Complete    | 2026-03-21 | - |
+| 17. Cross-Platform Auth | v2.0 | 0/2 | In Progress | - |
 
 ### Phase 17: Cross-Platform Auth & Role Detection
 **Goal**: Masters have a single account accessible from web, TG, MAX, and VK; the mini-app auto-detects whether the user is a master or client and shows the appropriate interface
@@ -348,4 +349,8 @@ Note: Phases 12-13 and 10-14 have independent dependency chains. Execution follo
   3. Master can link/unlink TG, MAX, VK accounts from the web admin settings page
   4. Master in mini-app can switch between "Панель мастера" and "Мои записи" views
   5. New master can register through the bot by providing email and phone, creating a full Master account with platform binding
-**Plans:** TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 17-01-PLAN.md -- Backend platform link/unlink API, bot /start enhancement, account linking flow, bot registration
+- [ ] 17-02-PLAN.md -- Mini-app role auto-detection, master/client toggle, web admin platforms tab
