@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+@theme {
+  --color-accent: #5A4BD1;
+  --color-accent-light: #5A4BD114;
+  --color-destructive: #EF4444;
+  --color-success: #10B981;
+  --color-surface: #F4F5F7;
+  --color-text-primary: #1A1A2E;
+  --color-text-secondary: #6B7280;
+  --color-border: #E5E7EB;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --text-heading: 20px;
+  --text-title: 16px;
+  --text-body: 14px;
+  --text-caption: 12px;
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-sheet: 0 -4px 20px rgba(0,0,0,0.08);
+  --shadow-modal: 0 8px 32px rgba(0,0,0,0.12);
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #FFFFFF;
+  color: #1A1A2E;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Prevent overscroll bounce */
+body {
+  overscroll-behavior: none;
+}
+
+/* Custom scrollbar (minimal) */
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
