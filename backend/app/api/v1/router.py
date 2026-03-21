@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 
+from app.api.v1.analytics import router as analytics_router
 from app.api.v1.auth import router as auth_router
 from app.api.v1.bookings import router as bookings_router
 from app.api.v1.client_auth import router as client_auth_router
@@ -39,6 +40,9 @@ api_v1_router.include_router(
 )
 api_v1_router.include_router(
     public_router, prefix="/masters", tags=["public"]
+)
+api_v1_router.include_router(
+    analytics_router, prefix="/analytics", tags=["analytics"]
 )
 api_v1_router.include_router(
     payments_router, prefix="/payments", tags=["payments"]
