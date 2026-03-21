@@ -136,11 +136,20 @@ async def get_current_client(
     request: Request,
     db: Annotated[AsyncSession, Depends(get_db)],
 ) -> Client:
-    """Extract client_session cookie, validate against client_sessions, return Client.
+    """Extract client session from cookie OR Bearer token, validate, return Client.
 
+    Tries cookie first, falls back to Authorization: Bearer header.
     Requires is_verified=True and non-expired session.
     """
+    # Try cookie first
     token = request.cookies.get("client_session")
+
+    # Fallback to Bearer header
+    if not token:
+        auth_header = request.headers.get("authorization", "")
+        if auth_header.lower().startswith("bearer "):
+            token = auth_header[7:].strip()
+
     if not token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
