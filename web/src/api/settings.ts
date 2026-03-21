@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiRequest } from "./client";
+import { apiRequest, ApiError } from "./client";
+import { useAuth } from "../stores/auth";
 
 // --- Interfaces ---
 
@@ -242,5 +243,83 @@ export function useDeleteScheduleException() {
       apiRequest<void>(`/schedule/exceptions/${id}`, { method: "DELETE" }),
     onSuccess: () =>
       qc.invalidateQueries({ queryKey: ["schedule-exceptions"] }),
+  });
+}
+
+// --- Portfolio ---
+
+export interface PortfolioPhoto {
+  id: string;
+  file_path: string;
+  thumbnail_path: string;
+  caption: string | null;
+  service_tag: string | null;
+  sort_order: number;
+  created_at: string;
+}
+
+export function usePortfolio() {
+  return useQuery<PortfolioPhoto[]>({
+    queryKey: ["portfolio"],
+    queryFn: () => apiRequest<PortfolioPhoto[]>("/portfolio/"),
+  });
+}
+
+export function useUploadPhoto() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: { file: File; serviceTag?: string; caption?: string }) => {
+      const formData = new FormData();
+      formData.append("file", data.file);
+      if (data.serviceTag) formData.append("service_tag", data.serviceTag);
+      if (data.caption) formData.append("caption", data.caption);
+
+      const { token } = useAuth.getState();
+      const API_BASE = import.meta.env.VITE_API_BASE_URL || "/api/v1";
+      const res = await fetch(`${API_BASE}/portfolio/upload`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ detail: "Ошибка загрузки" }));
+        throw new ApiError(res.status, err.detail);
+      }
+      return res.json() as Promise<PortfolioPhoto>;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["portfolio"] }),
+  });
+}
+
+export function useDeletePhoto() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (photoId: string) =>
+      apiRequest<void>(`/portfolio/${photoId}`, { method: "DELETE" }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["portfolio"] }),
+  });
+}
+
+export function useUpdatePhoto() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, ...data }: { id: string; caption?: string; service_tag?: string | null }) =>
+      apiRequest<PortfolioPhoto>(`/portfolio/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["portfolio"] }),
+  });
+}
+
+export function useReorderPhotos() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (items: { id: string; sort_order: number }[]) =>
+      apiRequest<void>("/portfolio/reorder", {
+        method: "PUT",
+        body: JSON.stringify({ items }),
+      }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["portfolio"] }),
   });
 }

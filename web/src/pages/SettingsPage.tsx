@@ -17,8 +17,9 @@ import {
   Table,
   Tabs,
   TimePicker,
+  Upload,
 } from "antd";
-import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+import { DeleteOutlined, LeftOutlined, PlusOutlined, RightOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import {
   useSettings,
@@ -34,8 +35,15 @@ import {
   useScheduleExceptions,
   useCreateScheduleException,
   useDeleteScheduleException,
+  usePortfolio,
+  useUploadPhoto,
+  useDeletePhoto,
+  useUpdatePhoto,
+  useReorderPhotos,
   type ScheduleDayEntry,
+  type PortfolioPhoto,
 } from "../api/settings";
+import { useServices } from "../api/services";
 import { QRCodeSVG } from "qrcode.react";
 import { useAuth } from "../stores/auth";
 import type { ColumnsType } from "antd/es/table";
@@ -729,6 +737,147 @@ function ProfileTab() {
 }
 
 // =============================================
+// Tab 5: Portfolio ("Мои работы")
+// =============================================
+
+const MAX_PHOTOS = 30;
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
+
+function PortfolioTab() {
+  const { data: photos = [], isLoading } = usePortfolio();
+  const { data: services = [] } = useServices();
+  const uploadMutation = useUploadPhoto();
+  const deleteMutation = useDeletePhoto();
+  const updateMutation = useUpdatePhoto();
+  const reorderMutation = useReorderPhotos();
+  const { message: messageApi } = App.useApp();
+
+  const sorted = [...photos].sort((a, b) => a.sort_order - b.sort_order);
+
+  const handleMovePhoto = useCallback(
+    (fromIndex: number, toIndex: number) => {
+      const updated = [...sorted];
+      const [moved] = updated.splice(fromIndex, 1);
+      updated.splice(toIndex, 0, moved);
+      const items = updated.map((p, i) => ({ id: p.id, sort_order: i }));
+      reorderMutation.mutate(items);
+    },
+    [sorted, reorderMutation],
+  );
+
+  if (isLoading) return <Spin />;
+
+  return (
+    <Card
+      title="Мои работы"
+      extra={<Badge count={photos.length} showZero />}
+    >
+      <Upload.Dragger
+        accept=".jpg,.jpeg,.png,.webp"
+        beforeUpload={(file) => {
+          if (!ALLOWED_TYPES.includes(file.type)) {
+            messageApi.error("Допустимые форматы: JPEG, PNG, WebP");
+            return false;
+          }
+          if (file.size > MAX_FILE_SIZE) {
+            messageApi.error("Максимальный размер файла — 5 МБ");
+            return false;
+          }
+          if (photos.length >= MAX_PHOTOS) {
+            messageApi.error(`Максимум ${MAX_PHOTOS} фотографий`);
+            return false;
+          }
+          uploadMutation.mutate(
+            { file },
+            {
+              onSuccess: () => messageApi.success("Фото загружено"),
+              onError: () => messageApi.error("Ошибка загрузки"),
+            },
+          );
+          return false;
+        }}
+        showUploadList={false}
+        multiple={false}
+        disabled={photos.length >= MAX_PHOTOS}
+      >
+        <p style={{ fontSize: 16 }}>Нажмите или перетащите фото</p>
+        <p className="ant-upload-hint">
+          JPEG, PNG, WebP. Макс 5 МБ. Фото: {photos.length}/{MAX_PHOTOS}
+        </p>
+      </Upload.Dragger>
+
+      {sorted.length > 0 && (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))",
+            gap: 12,
+            marginTop: 16,
+          }}
+        >
+          {sorted.map((photo, index) => (
+            <Card
+              key={photo.id}
+              size="small"
+              cover={
+                <img
+                  src={`/api/v1/media/${photo.thumbnail_path}`}
+                  alt={photo.caption ?? "Фото работы"}
+                  style={{ height: 150, objectFit: "cover" }}
+                />
+              }
+              actions={[
+                <Button
+                  key="left"
+                  icon={<LeftOutlined />}
+                  size="small"
+                  type="text"
+                  disabled={index === 0}
+                  onClick={() => handleMovePhoto(index, index - 1)}
+                />,
+                <Button
+                  key="right"
+                  icon={<RightOutlined />}
+                  size="small"
+                  type="text"
+                  disabled={index === sorted.length - 1}
+                  onClick={() => handleMovePhoto(index, index + 1)}
+                />,
+                <Popconfirm
+                  key="delete"
+                  title="Удалить фото?"
+                  onConfirm={() => deleteMutation.mutate(photo.id)}
+                >
+                  <Button icon={<DeleteOutlined />} size="small" type="text" danger />
+                </Popconfirm>,
+              ]}
+            >
+              <Select
+                placeholder="Тег услуги"
+                allowClear
+                size="small"
+                style={{ width: "100%" }}
+                value={photo.service_tag}
+                onChange={(value) =>
+                  updateMutation.mutate({ id: photo.id, service_tag: value ?? null })
+                }
+              >
+                {services.map((s) => (
+                  <Select.Option key={s.id} value={s.name}>
+                    {s.name}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Card>
+          ))}
+        </div>
+      )}
+    </Card>
+  );
+}
+
+// =============================================
 // Main Settings Page
 // =============================================
 
@@ -742,6 +891,7 @@ export function SettingsPage() {
         { key: "notifications", label: "Уведомления", children: <NotificationsTab /> },
         { key: "payments", label: "Платежи", children: <PaymentsTab /> },
         { key: "profile", label: "Профиль", children: <ProfileTab /> },
+        { key: "portfolio", label: "Мои работы", children: <PortfolioTab /> },
       ]}
     />
   );
