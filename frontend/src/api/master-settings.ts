@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { masterApiRequest } from "../stores/master-auth.ts";
+import { masterApiRequest, useMasterAuth } from "../stores/master-auth.ts";
+import { ApiError } from "./client.ts";
 
 export interface MasterSettings {
   buffer_minutes: number;
@@ -214,6 +215,99 @@ export function useUnbindInn() {
       queryClient.invalidateQueries({
         queryKey: ["master", "paymentSettings"],
       });
+    },
+  });
+}
+
+// --- Portfolio ---
+
+export interface PortfolioPhoto {
+  id: string;
+  file_path: string;
+  thumbnail_path: string;
+  caption: string | null;
+  service_tag: string | null;
+  sort_order: number;
+  created_at: string;
+}
+
+export function usePortfolio() {
+  return useQuery<PortfolioPhoto[]>({
+    queryKey: ["master", "portfolio"],
+    queryFn: () => masterApiRequest<PortfolioPhoto[]>("/portfolio/"),
+  });
+}
+
+export function useUploadPhoto() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: { file: File; serviceTag?: string; caption?: string }) => {
+      const formData = new FormData();
+      formData.append("file", data.file);
+      if (data.serviceTag) formData.append("service_tag", data.serviceTag);
+      if (data.caption) formData.append("caption", data.caption);
+
+      const { token } = useMasterAuth.getState();
+      const API_BASE = import.meta.env.VITE_API_BASE_URL || "/api/v1";
+      const headers: Record<string, string> = {};
+      if (token) headers["Authorization"] = `Bearer ${token}`;
+
+      const res = await fetch(`${API_BASE}/portfolio/upload`, {
+        method: "POST",
+        headers,
+        body: formData,
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ detail: "Ошибка загрузки" }));
+        throw new ApiError(res.status, err.detail);
+      }
+      return res.json() as Promise<PortfolioPhoto>;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["master", "portfolio"] });
+    },
+  });
+}
+
+export function useDeletePhoto() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (photoId: string) =>
+      masterApiRequest<void>(`/portfolio/${photoId}`, { method: "DELETE" }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["master", "portfolio"] });
+    },
+  });
+}
+
+export function useUpdatePhoto() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, ...data }: { id: string; caption?: string; service_tag?: string | null }) =>
+      masterApiRequest<PortfolioPhoto>(`/portfolio/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["master", "portfolio"] });
+    },
+  });
+}
+
+export function useReorderPhotos() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (items: { id: string; sort_order: number }[]) =>
+      masterApiRequest<void>("/portfolio/reorder", {
+        method: "PUT",
+        body: JSON.stringify({ items }),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["master", "portfolio"] });
     },
   });
 }

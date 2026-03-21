@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Copy, Check, ChevronRight, AlertCircle } from "lucide-react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { Copy, Check, ChevronRight, AlertCircle, Trash2, ArrowUp, ArrowDown, Plus, ImageIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {
   useMasterSettings,
@@ -12,7 +12,13 @@ import {
   useUpdateNotificationSettings,
   useBindInn,
   useUnbindInn,
+  usePortfolio,
+  useUploadPhoto,
+  useDeletePhoto,
+  useUpdatePhoto,
+  useReorderPhotos,
 } from "../../api/master-settings.ts";
+import { useMasterServices } from "../../api/master-services.ts";
 import { Card } from "../../components/ui/Card.tsx";
 import { Badge } from "../../components/ui/Badge.tsx";
 import { Button } from "../../components/ui/Button.tsx";
@@ -61,6 +67,212 @@ const SNO_OPTIONS = [
   { value: "usn_income", label: "УСН доходы" },
   { value: "osn", label: "ОСН" },
 ];
+
+// =============================================
+// Portfolio Section ("Мои работы")
+// =============================================
+
+const MAX_PHOTOS = 30;
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
+
+function PortfolioSection() {
+  const { data: photos = [], isLoading } = usePortfolio();
+  const { data: services = [] } = useMasterServices();
+  const uploadMutation = useUploadPhoto();
+  const deleteMutation = useDeletePhoto();
+  const updateMutation = useUpdatePhoto();
+  const reorderMutation = useReorderPhotos();
+  const toast = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [deletePhotoId, setDeletePhotoId] = useState<string | null>(null);
+
+  const sorted = [...photos].sort((a, b) => a.sort_order - b.sort_order);
+
+  const handleFileChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      if (!ALLOWED_TYPES.includes(file.type)) {
+        toast.error("Допустимые форматы: JPEG, PNG, WebP");
+        return;
+      }
+      if (file.size > MAX_FILE_SIZE) {
+        toast.error("Максимальный размер файла -- 5 МБ");
+        return;
+      }
+      if (photos.length >= MAX_PHOTOS) {
+        toast.error(`Максимум ${MAX_PHOTOS} фотографий`);
+        return;
+      }
+
+      uploadMutation.mutate(
+        { file },
+        {
+          onSuccess: () => toast.success("Фото загружено"),
+          onError: () => toast.error("Ошибка загрузки"),
+        },
+      );
+
+      // Reset input so the same file can be selected again
+      e.target.value = "";
+    },
+    [photos.length, uploadMutation, toast],
+  );
+
+  const handleMove = useCallback(
+    (fromIndex: number, toIndex: number) => {
+      const updated = [...sorted];
+      const [moved] = updated.splice(fromIndex, 1);
+      updated.splice(toIndex, 0, moved);
+      const items = updated.map((p, i) => ({ id: p.id, sort_order: i }));
+      reorderMutation.mutate(items);
+    },
+    [sorted, reorderMutation],
+  );
+
+  const handleConfirmDelete = useCallback(() => {
+    if (!deletePhotoId) return;
+    deleteMutation.mutate(deletePhotoId, {
+      onSuccess: () => {
+        toast.success("Фото удалено");
+        setDeletePhotoId(null);
+      },
+      onError: () => {
+        toast.error("Ошибка удаления");
+        setDeletePhotoId(null);
+      },
+    });
+  }, [deletePhotoId, deleteMutation, toast]);
+
+  if (isLoading) {
+    return <Skeleton height="200px" className="w-full" />;
+  }
+
+  return (
+    <>
+      <Card className="flex flex-col gap-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-[16px] font-semibold text-text-primary">
+            Мои работы
+          </h2>
+          <span className="text-[12px] text-text-secondary">
+            {photos.length}/{MAX_PHOTOS}
+          </span>
+        </div>
+
+        {/* Upload button */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".jpg,.jpeg,.png,.webp"
+          onChange={handleFileChange}
+          className="hidden"
+        />
+        <button
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={photos.length >= MAX_PHOTOS || uploadMutation.isPending}
+          className="w-full h-[80px] rounded-[12px] border-2 border-dashed border-border flex flex-col items-center justify-center gap-1 text-text-secondary transition-colors active:bg-surface disabled:opacity-50"
+        >
+          {uploadMutation.isPending ? (
+            <span className="text-[14px]">Загрузка...</span>
+          ) : (
+            <>
+              <Plus className="w-5 h-5" />
+              <span className="text-[12px]">JPEG, PNG, WebP. Макс 5 МБ</span>
+            </>
+          )}
+        </button>
+
+        {/* Photo grid */}
+        {sorted.length > 0 ? (
+          <div className="grid grid-cols-3 gap-2">
+            {sorted.map((photo, index) => (
+              <div key={photo.id} className="relative group">
+                {/* Thumbnail */}
+                <img
+                  src={`/api/v1/media/${photo.thumbnail_path}`}
+                  alt={photo.caption ?? "Фото работы"}
+                  className="w-full aspect-square object-cover rounded-[10px]"
+                />
+
+                {/* Delete button */}
+                <button
+                  type="button"
+                  onClick={() => setDeletePhotoId(photo.id)}
+                  className="absolute top-1 right-1 w-6 h-6 bg-black/50 rounded-full flex items-center justify-center"
+                >
+                  <Trash2 className="w-3 h-3 text-white" />
+                </button>
+
+                {/* Reorder buttons */}
+                <div className="absolute bottom-1 left-1 flex gap-1">
+                  {index > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => handleMove(index, index - 1)}
+                      className="w-5 h-5 bg-black/50 rounded-full flex items-center justify-center"
+                    >
+                      <ArrowUp className="w-3 h-3 text-white" />
+                    </button>
+                  )}
+                  {index < sorted.length - 1 && (
+                    <button
+                      type="button"
+                      onClick={() => handleMove(index, index + 1)}
+                      className="w-5 h-5 bg-black/50 rounded-full flex items-center justify-center"
+                    >
+                      <ArrowDown className="w-3 h-3 text-white" />
+                    </button>
+                  )}
+                </div>
+
+                {/* Service tag */}
+                <select
+                  value={photo.service_tag ?? ""}
+                  onChange={(e) =>
+                    updateMutation.mutate({
+                      id: photo.id,
+                      service_tag: e.target.value || null,
+                    })
+                  }
+                  className="w-full mt-1 text-[11px] text-text-secondary bg-white border border-border rounded-[8px] px-1 py-0.5 outline-none truncate"
+                >
+                  <option value="">Без тега</option>
+                  {services.map((s) => (
+                    <option key={s.id} value={s.name}>
+                      {s.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center py-4 text-text-secondary">
+            <ImageIcon className="w-8 h-8 mb-2 opacity-40" />
+            <p className="text-[14px]">Пока нет фото</p>
+            <p className="text-[12px]">Добавьте фото ваших работ</p>
+          </div>
+        )}
+      </Card>
+
+      {/* Delete confirmation dialog */}
+      <ConfirmDialog
+        isOpen={!!deletePhotoId}
+        title="Удалить фото?"
+        message="Фото будет удалено безвозвратно."
+        confirmLabel="Удалить"
+        cancelLabel="Отмена"
+        variant="destructive"
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setDeletePhotoId(null)}
+      />
+    </>
+  );
+}
 
 export function Settings() {
   const navigate = useNavigate();
@@ -724,6 +936,10 @@ export function Settings() {
                 <ChevronRight className="w-5 h-5 text-text-secondary" />
               </Card>
             </button>
+
+            {/* Portfolio section */}
+            <div className="h-px bg-border mt-2" />
+            <PortfolioSection />
           </>
         )}
       </div>
