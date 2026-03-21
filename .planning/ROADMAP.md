@@ -286,7 +286,11 @@ Plans:
   1. Two hours after a completed visit, the bot sends the client a review prompt with 1-5 star buttons; client can optionally add text (up to 500 chars)
   2. Reviews with 3+ stars auto-publish; reviews below 3 stars are held for master reply and auto-publish after 7 days if the master does not respond
   3. Only clients with real completed visits can leave reviews (one per booking); reviews are displayed on the public profile page with average rating and individual entries
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 15-01-PLAN.md -- Backend review collection: APScheduler review request service, auto-publish service, adapter send_review_request methods, bot callback handlers for star rating + text flow
+- [ ] 15-02-PLAN.md -- Admin reviews management: reviews API (list + reply), ReviewsPage in web admin with table, status filter, reply modal
 
 ### Phase 16: Analytics
 **Goal**: Masters can see their business performance at a glance -- revenue, utilization, client retention, top services -- and export detailed reports
@@ -326,5 +330,5 @@ Note: Phases 12-13 and 10-14 have independent dependency chains. Execution follo
 | 12. Admin Payments | v2.0 | 2/2 | Complete | 2026-03-21 |
 | 13. Auto Receipts | v2.0 | 0/2 | Planned | - |
 | 14. Portfolio | v2.0 | 0/? | Not started | - |
-| 15. Reviews | v2.0 | 0/? | Not started | - |
+| 15. Reviews | v2.0 | 0/2 | Planned | - |
 | 16. Analytics | v2.0 | 0/2 | Planned | - |
