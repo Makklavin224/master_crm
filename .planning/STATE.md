@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Feature Expansion
 status: in_progress
-stopped_at: Completed 13-01-PLAN.md
-last_updated: "2026-03-21T06:26:14.000Z"
-last_activity: 2026-03-21 -- Completed 13-01 Auto-Receipts Backend
+stopped_at: Completed 13-02-PLAN.md
+last_updated: "2026-03-21T06:34:46.129Z"
+last_activity: 2026-03-21 -- Completed 13-02 Auto-Receipts Frontend
 progress:
   total_phases: 8
-  completed_phases: 4
-  total_plans: 11
-  completed_plans: 12
+  completed_phases: 5
+  total_plans: 20
+  completed_plans: 13
   percent: 100
 ---
 
@@ -21,21 +21,21 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-20)
 
 **Core value:** Master taps "Complete" -- client gets SBP payment link -- tax receipt auto-generates. 3 steps instead of 9.
-**Current focus:** v2.0 Feature Expansion -- Phase 13 (Auto-Receipts) in progress
+**Current focus:** v2.0 Feature Expansion -- Phase 13 (Auto-Receipts) complete, moving to Phase 14
 
 ## Current Position
 
 Phase: 13 of 16 (Auto-Receipts)
-Plan: 1 of 2 -- DONE
-Status: Phase 13 plan 01 complete, plan 02 pending
-Last activity: 2026-03-21 -- Completed 13-01 Auto-Receipts Backend
+Plan: 2 of 2 -- DONE
+Status: Phase 13 complete, ready for Phase 14
+Last activity: 2026-03-21 -- Completed 13-02 Auto-Receipts Frontend
 
-Progress: [██████████] 100%
+Progress: [███████░░░] 65%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 28
+- Total plans completed: 29
 - Average duration: 6min
 - Total execution time: ~2.8 hours
 
@@ -65,6 +65,7 @@ Progress: [██████████] 100%
 | Phase 12 P01 | 4min | 2 tasks | 6 files |
 | Phase 12 P02 | 2min | 2 tasks | 4 files |
 | Phase 13 P01 | 7min | 2 tasks | 9 files |
+| Phase 13 P02 | 3min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -114,6 +115,8 @@ Recent decisions affecting current work:
 - [Phase 13-01]: Receipt retry reuses APScheduler from reminder_service (receipt_retry_poll job)
 - [Phase 13-01]: send_receipt_link wraps send_message (no new adapter method needed)
 - [Phase 13-01]: INN binding requires Robokassa connected first (returns 400 if not)
+- [Phase 13-02]: Web admin allows INN binding directly (not read-only) for admin convenience
+- [Phase 13-02]: INN input uses digit-only filter with maxLength 12 and inputMode numeric
 
 ### Pending Todos
 
@@ -125,6 +128,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-21T06:26:14Z
-Stopped at: Completed 13-01-PLAN.md
+Last session: 2026-03-21T06:34:00Z
+Stopped at: Completed 13-02-PLAN.md
 Resume file: None
