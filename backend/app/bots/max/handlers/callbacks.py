@@ -47,7 +47,9 @@ async def handle_callback(
     # Acknowledge the callback
     await _answer_callback(token, callback_id)
 
-    if payload == "today":
+    if payload == "register_master":
+        await _cb_register_master(max_user_id, user.get("name", "Master"), db, token)
+    elif payload == "today":
         await _cb_today(max_user_id, db, token)
     elif payload == "link":
         await _cb_link(max_user_id, db, token)
@@ -88,6 +90,78 @@ async def _answer_callback(token: str, callback_id: str) -> None:
             )
     except Exception:
         logger.exception("Failed to answer MAX callback %s", callback_id)
+
+
+async def _cb_register_master(
+    max_user_id: str, user_name: str, db: AsyncSession, token: str
+) -> None:
+    """Explicit master registration -- only creates account when user clicks the button."""
+    # Check if already registered (race condition guard)
+    result = await db.execute(
+        select(Master).where(Master.max_user_id == max_user_id)
+    )
+    existing = result.scalar_one_or_none()
+    if existing:
+        await _send(
+            token,
+            max_user_id,
+            f"\u0412\u044b \u0443\u0436\u0435 "
+            f"\u0437\u0430\u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0438\u0440\u043e\u0432\u0430\u043d\u044b, "
+            f"{existing.name}! "
+            f"\u041e\u0442\u043f\u0440\u0430\u0432\u044c\u0442\u0435 /start "
+            f"\u0434\u043b\u044f \u0434\u043e\u0441\u0442\u0443\u043f\u0430 "
+            f"\u043a \u043f\u0430\u043d\u0435\u043b\u0438.",
+        )
+        return
+
+    # Create new master
+    master = Master(
+        name=user_name,
+        max_user_id=max_user_id,
+    )
+    db.add(master)
+    await db.flush()
+
+    # Build panel keyboard
+    buttons: list[list[dict]] = []
+    if settings.mini_app_url:
+        buttons.append(
+            [
+                {
+                    "type": "open_app",
+                    "text": "\U0001f4f1 \u041e\u0442\u043a\u0440\u044b\u0442\u044c \u043f\u0430\u043d\u0435\u043b\u044c",
+                    "url": settings.mini_app_url,
+                }
+            ]
+        )
+
+    attachments = (
+        [{"type": "inline_keyboard", "payload": {"buttons": buttons}}]
+        if buttons
+        else None
+    )
+
+    await _send(
+        token,
+        max_user_id,
+        "<b>\u0414\u043e\u0431\u0440\u043e "
+        "\u043f\u043e\u0436\u0430\u043b\u043e\u0432\u0430\u0442\u044c "
+        "\u0432 \u041c\u043e\u0438\u041e\u043a\u043e\u0448\u043a\u0438!</b>\n\n"
+        "\u0412\u0430\u0448 \u0430\u043a\u043a\u0430\u0443\u043d\u0442 "
+        "\u0441\u043e\u0437\u0434\u0430\u043d.\n\n"
+        "\u041d\u0430\u0441\u0442\u0440\u043e\u0439\u0442\u0435 "
+        "\u0443\u0441\u043b\u0443\u0433\u0438 \u0438 "
+        "\u0440\u0430\u0441\u043f\u0438\u0441\u0430\u043d\u0438\u0435, "
+        "\u0447\u0442\u043e\u0431\u044b \u043a\u043b\u0438\u0435\u043d\u0442\u044b "
+        "\u043c\u043e\u0433\u043b\u0438 "
+        "\u0437\u0430\u043f\u0438\u0441\u044b\u0432\u0430\u0442\u044c\u0441\u044f.",
+        attachments=attachments,
+    )
+    logger.info(
+        "New master registered via MAX: %s (max_user_id=%s)",
+        master.id,
+        max_user_id,
+    )
 
 
 async def _cb_today(

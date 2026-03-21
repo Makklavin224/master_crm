@@ -94,11 +94,34 @@ export interface ProfileSettings {
   instagram_url: string | null;
 }
 
+export interface ProfileSettingsUpdate {
+  name?: string;
+  username?: string | null;
+  specialization?: string | null;
+  city?: string | null;
+  instagram_url?: string | null;
+}
+
 export function useProfileSettings() {
   return useQuery<ProfileSettings>({
     queryKey: ["settings", "profile"],
     queryFn: () => apiRequest<ProfileSettings>("/settings/profile"),
     staleTime: 60_000,
+  });
+}
+
+export function useUpdateProfileSettings() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: ProfileSettingsUpdate) =>
+      apiRequest<ProfileSettings>("/settings/profile", {
+        method: "PUT",
+        body: JSON.stringify(data),
+      }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["settings", "profile"] });
+      qc.invalidateQueries({ queryKey: ["auth"] });
+    },
   });
 }
 
@@ -165,6 +188,37 @@ export function useUpdatePaymentSettings() {
       }),
     onSuccess: () =>
       qc.invalidateQueries({ queryKey: ["payment-settings"] }),
+  });
+}
+
+export interface RobokassaSetupData {
+  merchant_login: string;
+  password1: string;
+  password2: string;
+  is_test: boolean;
+  hash_algorithm: string;
+}
+
+export function useSetupRobokassa() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: RobokassaSetupData) =>
+      apiRequest<PaymentSettings>("/settings/payment/robokassa", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["payment-settings"] }),
+  });
+}
+
+export function useDisconnectRobokassa() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: () =>
+      apiRequest<PaymentSettings>("/settings/payment/robokassa", {
+        method: "DELETE",
+      }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["payment-settings"] }),
   });
 }
 

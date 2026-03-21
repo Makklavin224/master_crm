@@ -1,5 +1,13 @@
 import { useEffect } from "react";
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  Outlet,
+  useSearchParams,
+  useNavigate,
+} from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { PlatformProvider } from "./platform/context.tsx";
 import { ToastContainer } from "./components/ui/Toast.tsx";
@@ -41,6 +49,27 @@ function MasterLayout() {
   );
 }
 
+/**
+ * Entrypoint redirect: detects ?master=UUID query param (from TG bot WebAppInfo URL)
+ * and redirects to the booking flow at /book/{masterId}.
+ * Falls back to /my-bookings if no master param found.
+ */
+function EntryRedirect() {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const masterId = searchParams.get("master");
+    if (masterId) {
+      navigate(`/book/${masterId}`, { replace: true });
+    } else {
+      navigate("/my-bookings", { replace: true });
+    }
+  }, [searchParams, navigate]);
+
+  return null;
+}
+
 export default function App() {
   useEffect(() => {
     useMasterAuth.getState().hydrate();
@@ -77,8 +106,11 @@ export default function App() {
                 <Route path="payments" element={<PaymentHistory />} />
               </Route>
 
-              {/* Default redirect */}
-              <Route path="*" element={<Navigate to="/my-bookings" replace />} />
+              {/* Root: check ?master= query param, redirect to booking or my-bookings */}
+              <Route index element={<EntryRedirect />} />
+
+              {/* Fallback: also check query params for any unmatched route */}
+              <Route path="*" element={<EntryRedirect />} />
             </Routes>
           </div>
           <ToastContainer />

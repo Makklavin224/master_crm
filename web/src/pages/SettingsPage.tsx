@@ -27,9 +27,13 @@ import {
   useNotificationSettings,
   useUpdateNotificationSettings,
   usePaymentSettings,
+  useUpdatePaymentSettings,
   useBindInn,
   useUnbindInn,
+  useSetupRobokassa,
+  useDisconnectRobokassa,
   useProfileSettings,
+  useUpdateProfileSettings,
   useScheduleTemplate,
   useUpdateScheduleTemplate,
   useScheduleExceptions,
@@ -56,7 +60,7 @@ const PUBLIC_DOMAIN = "https://moiokoshki.ru";
 // Tab 0: My Page (booking link + QR code)
 // =============================================
 
-function MyPageTab() {
+function MyPageTab({ onSwitchTab }: { onSwitchTab?: (key: string) => void }) {
   const { data: profileSettings, isLoading } = useProfileSettings();
   const profile = useAuth((s) => s.profile);
   const { message: messageApi } = App.useApp();
@@ -72,7 +76,9 @@ function MyPageTab() {
           <p style={{ fontSize: 16, marginBottom: 16 }}>
             Задайте имя пользователя в разделе &laquo;Профиль&raquo; чтобы получить ссылку на вашу страницу
           </p>
-          <Button type="primary">Перейти в Профиль</Button>
+          <Button type="primary" onClick={() => onSwitchTab?.("profile")}>
+            Перейти в Профиль
+          </Button>
         </div>
       </Card>
     );
@@ -585,7 +591,7 @@ function NotificationsTab() {
 }
 
 // =============================================
-// Tab 3: Payments (read-only)
+// Tab 3: Payments
 // =============================================
 
 const fiscalizationLabels: Record<string, { status: "default" | "processing" | "success"; text: string }> = {
@@ -596,10 +602,40 @@ const fiscalizationLabels: Record<string, { status: "default" | "processing" | "
 
 function PaymentsTab() {
   const { data, isLoading } = usePaymentSettings();
+  const updatePayment = useUpdatePaymentSettings();
   const bindInn = useBindInn();
   const unbindInn = useUnbindInn();
+  const setupRobokassa = useSetupRobokassa();
+  const disconnectRobokassa = useDisconnectRobokassa();
   const [innInput, setInnInput] = useState("");
+  const [showRobokassaForm, setShowRobokassaForm] = useState(false);
+  const [robokassaForm] = Form.useForm();
+  const [requisitesForm] = Form.useForm();
   const { message: messageApi } = App.useApp();
+
+  useEffect(() => {
+    if (data) {
+      requisitesForm.setFieldsValue({
+        card_number: data.card_number ?? "",
+        sbp_phone: data.sbp_phone ?? "",
+        bank_name: data.bank_name ?? "",
+      });
+    }
+  }, [data, requisitesForm]);
+
+  const handleSaveRequisites = useCallback(async () => {
+    try {
+      const values = await requisitesForm.validateFields();
+      await updatePayment.mutateAsync({
+        card_number: values.card_number || null,
+        sbp_phone: values.sbp_phone || null,
+        bank_name: values.bank_name || null,
+      });
+      messageApi.success("Реквизиты сохранены");
+    } catch {
+      messageApi.error("Ошибка сохранения");
+    }
+  }, [requisitesForm, updatePayment, messageApi]);
 
   const handleBindInn = useCallback(async () => {
     try {
@@ -620,6 +656,33 @@ function PaymentsTab() {
     }
   }, [unbindInn, messageApi]);
 
+  const handleSetupRobokassa = useCallback(async () => {
+    try {
+      const values = await robokassaForm.validateFields();
+      await setupRobokassa.mutateAsync({
+        merchant_login: values.merchant_login,
+        password1: values.password1,
+        password2: values.password2,
+        is_test: values.is_test ?? false,
+        hash_algorithm: values.hash_algorithm ?? "sha256",
+      });
+      messageApi.success("Робокасса подключена");
+      setShowRobokassaForm(false);
+      robokassaForm.resetFields();
+    } catch {
+      messageApi.error("Не удалось подключить Робокассу");
+    }
+  }, [robokassaForm, setupRobokassa, messageApi]);
+
+  const handleDisconnectRobokassa = useCallback(async () => {
+    try {
+      await disconnectRobokassa.mutateAsync();
+      messageApi.success("Робокасса отключена");
+    } catch {
+      messageApi.error("Не удалось отключить Робокассу");
+    }
+  }, [disconnectRobokassa, messageApi]);
+
   if (isLoading) return <Spin />;
   if (!data) return null;
 
@@ -629,77 +692,166 @@ function PaymentsTab() {
   };
 
   return (
-    <Card title="Платежи">
-      <Descriptions bordered column={1}>
-        <Descriptions.Item label="Номер карты">
-          {data.card_number || "Не указан"}
-        </Descriptions.Item>
-        <Descriptions.Item label="Телефон СБП">
-          {data.sbp_phone || "Не указан"}
-        </Descriptions.Item>
-        <Descriptions.Item label="Банк">
-          {data.bank_name || "Не указан"}
-        </Descriptions.Item>
-        <Descriptions.Item label="Робокасса">
-          {data.has_robokassa ? (
-            <>
-              Подключена{" "}
-              {data.robokassa_is_test && (
-                <Badge status="warning" text="тестовый режим" />
-              )}
-            </>
-          ) : (
-            "Не подключена"
-          )}
-        </Descriptions.Item>
-        <Descriptions.Item label="Фискализация">
-          <Badge status={fisc.status} text={fisc.text} />
-        </Descriptions.Item>
-        <Descriptions.Item label="Авточеки (ФНС)">
-          {data.fns_connected ? (
-            <>
-              <Badge status="success" text="Подключены" />
-              <span style={{ marginLeft: 8 }}>ИНН: {data.inn}</span>
-              <Popconfirm
-                title="Отключить авточеки?"
-                description="Чеки не будут автоматически отправляться в ФНС"
-                onConfirm={handleUnbindInn}
-              >
-                <Button type="link" danger size="small" style={{ marginLeft: 8 }}>
-                  Отключить
-                </Button>
-              </Popconfirm>
-            </>
-          ) : data.has_robokassa ? (
-            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-              <Input
-                value={innInput}
-                onChange={(e) =>
-                  setInnInput(e.target.value.replace(/\D/g, "").slice(0, 12))
-                }
-                placeholder="ИНН (12 цифр)"
-                maxLength={12}
-                style={{ width: 180 }}
-              />
+    <>
+      {/* Payment requisites */}
+      <Card title="Реквизиты для оплаты" size="small" style={{ marginBottom: 24 }}>
+        <Form form={requisitesForm} layout="vertical">
+          <Form.Item name="card_number" label="Номер карты">
+            <Input placeholder="0000 0000 0000 0000" />
+          </Form.Item>
+          <Form.Item name="sbp_phone" label="Телефон СБП">
+            <Input placeholder="+7 900 000-00-00" />
+          </Form.Item>
+          <Form.Item name="bank_name" label="Банк">
+            <Input placeholder="Сбербанк, Тинькофф..." />
+          </Form.Item>
+          <Button
+            type="primary"
+            onClick={handleSaveRequisites}
+            loading={updatePayment.isPending}
+          >
+            Сохранить реквизиты
+          </Button>
+        </Form>
+      </Card>
+
+      {/* Robokassa */}
+      <Card
+        title="Робокасса"
+        size="small"
+        style={{ marginBottom: 24 }}
+        extra={
+          data.has_robokassa ? (
+            <Popconfirm
+              title="Отключить Робокассу?"
+              description="Приём оплаты через Робокассу будет недоступен"
+              onConfirm={handleDisconnectRobokassa}
+            >
+              <Button type="link" danger size="small" loading={disconnectRobokassa.isPending}>
+                Отключить
+              </Button>
+            </Popconfirm>
+          ) : null
+        }
+      >
+        {data.has_robokassa ? (
+          <div>
+            <Badge status="success" text="Подключена" />
+            {data.robokassa_is_test && (
+              <Badge status="warning" text="тестовый режим" style={{ marginLeft: 12 }} />
+            )}
+          </div>
+        ) : showRobokassaForm ? (
+          <Form
+            form={robokassaForm}
+            layout="vertical"
+            initialValues={{ is_test: false, hash_algorithm: "sha256" }}
+          >
+            <Form.Item
+              name="merchant_login"
+              label="Логин магазина"
+              rules={[{ required: true, message: "Введите логин" }]}
+            >
+              <Input placeholder="my_shop" />
+            </Form.Item>
+            <Form.Item
+              name="password1"
+              label="Пароль #1"
+              rules={[{ required: true, message: "Введите пароль #1" }]}
+            >
+              <Input.Password />
+            </Form.Item>
+            <Form.Item
+              name="password2"
+              label="Пароль #2"
+              rules={[{ required: true, message: "Введите пароль #2" }]}
+            >
+              <Input.Password />
+            </Form.Item>
+            <Form.Item name="hash_algorithm" label="Алгоритм хеширования">
+              <Radio.Group>
+                <Radio value="md5">MD5</Radio>
+                <Radio value="sha256">SHA-256</Radio>
+                <Radio value="sha512">SHA-512</Radio>
+              </Radio.Group>
+            </Form.Item>
+            <Form.Item name="is_test" label="Тестовый режим" valuePropName="checked">
+              <Switch />
+            </Form.Item>
+            <div style={{ display: "flex", gap: 8 }}>
               <Button
                 type="primary"
-                size="small"
-                onClick={handleBindInn}
-                loading={bindInn.isPending}
-                disabled={innInput.length !== 12}
+                onClick={handleSetupRobokassa}
+                loading={setupRobokassa.isPending}
               >
                 Подключить
               </Button>
+              <Button onClick={() => { setShowRobokassaForm(false); robokassaForm.resetFields(); }}>
+                Отмена
+              </Button>
             </div>
-          ) : (
-            <span style={{ color: "#888" }}>Требуется подключение Робокассы</span>
-          )}
-        </Descriptions.Item>
-      </Descriptions>
-      <p style={{ marginTop: 16, color: "#888" }}>
-        Для изменения настроек платежей используйте мини-приложение
-      </p>
-    </Card>
+          </Form>
+        ) : (
+          <div style={{ textAlign: "center", padding: "16px 0" }}>
+            <p style={{ marginBottom: 12, color: "#888" }}>
+              Подключите Робокассу для приёма онлайн-оплаты через СБП
+            </p>
+            <Button type="primary" onClick={() => setShowRobokassaForm(true)}>
+              Подключить Робокассу
+            </Button>
+          </div>
+        )}
+      </Card>
+
+      {/* Fiscalization & INN */}
+      <Card title="Фискализация и ИНН" size="small">
+        <Descriptions bordered column={1} size="small">
+          <Descriptions.Item label="Фискализация">
+            <Badge status={fisc.status} text={fisc.text} />
+          </Descriptions.Item>
+          <Descriptions.Item label="Авточеки (ФНС)">
+            {data.fns_connected ? (
+              <>
+                <Badge status="success" text="Подключены" />
+                <span style={{ marginLeft: 8 }}>ИНН: {data.inn}</span>
+                <Popconfirm
+                  title="Отключить авточеки?"
+                  description="Чеки не будут автоматически отправляться в ФНС"
+                  onConfirm={handleUnbindInn}
+                >
+                  <Button type="link" danger size="small" style={{ marginLeft: 8 }}>
+                    Отключить
+                  </Button>
+                </Popconfirm>
+              </>
+            ) : data.has_robokassa ? (
+              <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                <Input
+                  value={innInput}
+                  onChange={(e) =>
+                    setInnInput(e.target.value.replace(/\D/g, "").slice(0, 12))
+                  }
+                  placeholder="ИНН (12 цифр)"
+                  maxLength={12}
+                  style={{ width: 180 }}
+                />
+                <Button
+                  type="primary"
+                  size="small"
+                  onClick={handleBindInn}
+                  loading={bindInn.isPending}
+                  disabled={innInput.length !== 12}
+                >
+                  Подключить
+                </Button>
+              </div>
+            ) : (
+              <span style={{ color: "#888" }}>Сначала подключите Робокассу</span>
+            )}
+          </Descriptions.Item>
+        </Descriptions>
+      </Card>
+    </>
   );
 }
 
@@ -709,29 +861,106 @@ function PaymentsTab() {
 
 function ProfileTab() {
   const profile = useAuth((s) => s.profile);
+  const { data: profileSettings, isLoading } = useProfileSettings();
+  const mutation = useUpdateProfileSettings();
+  const [form] = Form.useForm();
+  const { message: messageApi } = App.useApp();
 
-  if (!profile) {
-    return <Spin />;
-  }
+  useEffect(() => {
+    if (profileSettings) {
+      form.setFieldsValue({
+        name: profileSettings.name,
+        username: profileSettings.username ?? "",
+        specialization: profileSettings.specialization ?? "",
+        city: profileSettings.city ?? "",
+        instagram_url: profileSettings.instagram_url ?? "",
+      });
+    }
+  }, [profileSettings, form]);
+
+  const onFinish = useCallback(
+    async (values: Record<string, unknown>) => {
+      try {
+        await mutation.mutateAsync({
+          name: values.name as string,
+          username: (values.username as string) || null,
+          specialization: (values.specialization as string) || null,
+          city: (values.city as string) || null,
+          instagram_url: (values.instagram_url as string) || null,
+        });
+        messageApi.success("Профиль сохранён");
+      } catch (e: unknown) {
+        const detail = (e as { message?: string })?.message ?? "";
+        if (detail.includes("409") || detail.toLowerCase().includes("already taken")) {
+          messageApi.error("Это имя пользователя уже занято");
+        } else {
+          messageApi.error("Ошибка сохранения");
+        }
+      }
+    },
+    [mutation, messageApi],
+  );
+
+  if (isLoading || !profile) return <Spin />;
 
   return (
-    <Card title="Профиль">
-      <Descriptions bordered column={1}>
-        <Descriptions.Item label="Имя">{profile.name}</Descriptions.Item>
-        <Descriptions.Item label="Email">
-          {profile.email || "Не указан"}
-        </Descriptions.Item>
-        <Descriptions.Item label="Телефон">
-          {profile.phone || "Не указан"}
-        </Descriptions.Item>
-        <Descriptions.Item label="Название бизнеса">
-          {profile.business_name || "Не указано"}
-        </Descriptions.Item>
-        <Descriptions.Item label="Часовой пояс">
-          {profile.timezone}
-        </Descriptions.Item>
-      </Descriptions>
-    </Card>
+    <>
+      <Card title="Публичный профиль" size="small" style={{ marginBottom: 24 }}>
+        <Form form={form} layout="vertical" onFinish={onFinish}>
+          <Form.Item
+            name="name"
+            label="Имя"
+            rules={[{ required: true, message: "Введите имя" }]}
+          >
+            <Input placeholder="Ваше имя" />
+          </Form.Item>
+          <Form.Item
+            name="username"
+            label="Имя пользователя (для ссылки)"
+            tooltip="Латиница, цифры, подчёркивания. Будет использовано в ссылке: moiokoshki.ru/m/ваше_имя"
+            rules={[
+              {
+                pattern: /^[a-zA-Z0-9_]{3,30}$/,
+                message: "3-30 символов: латиница, цифры, подчёркивания",
+              },
+            ]}
+          >
+            <Input
+              placeholder="your_username"
+              addonBefore="moiokoshki.ru/m/"
+            />
+          </Form.Item>
+          <Form.Item name="specialization" label="Специализация">
+            <Input placeholder="Например: маникюр, наращивание ресниц" />
+          </Form.Item>
+          <Form.Item name="city" label="Город">
+            <Input placeholder="Москва" />
+          </Form.Item>
+          <Form.Item name="instagram_url" label="Instagram">
+            <Input placeholder="https://instagram.com/username" />
+          </Form.Item>
+          <Button type="primary" htmlType="submit" loading={mutation.isPending}>
+            Сохранить
+          </Button>
+        </Form>
+      </Card>
+      <Card title="Аккаунт" size="small">
+        <Descriptions bordered column={1} size="small">
+          <Descriptions.Item label="Email">
+            {profile.email || "Не указан"}
+          </Descriptions.Item>
+          <Descriptions.Item label="Телефон">
+            {profile.phone || "Не указан"}
+          </Descriptions.Item>
+          <Descriptions.Item label="Название бизнеса">
+            {profile.business_name || "Не указано"}
+          </Descriptions.Item>
+          <Descriptions.Item label="Часовой пояс">
+            {profile.timezone}
+          </Descriptions.Item>
+        </Descriptions>
+      </Card>
+    </>
   );
 }
 
@@ -881,11 +1110,15 @@ function PortfolioTab() {
 // =============================================
 
 export function SettingsPage() {
+  const [activeTab, setActiveTab] = useState("my-page");
+
   return (
     <Tabs
+      activeKey={activeTab}
+      onChange={setActiveTab}
       tabPosition="left"
       items={[
-        { key: "my-page", label: "Моя страница", children: <MyPageTab /> },
+        { key: "my-page", label: "Моя страница", children: <MyPageTab onSwitchTab={setActiveTab} /> },
         { key: "schedule", label: "Расписание", children: <ScheduleTab /> },
         { key: "notifications", label: "Уведомления", children: <NotificationsTab /> },
         { key: "payments", label: "Платежи", children: <PaymentsTab /> },

@@ -33,7 +33,12 @@ router = Router(name="start")
 
 @router.message(CommandStart(deep_link=False))
 async def start_no_link(message: Message, db: AsyncSession) -> None:
-    """Master /start -- register new account or show welcome back."""
+    """Handle /start with no args.
+
+    If the user is already a registered master, show the management panel.
+    Otherwise, show a welcome message with an option to register as a master.
+    Does NOT auto-register — prevents clients from accidentally becoming masters.
+    """
     tg_user_id = str(message.from_user.id)
 
     # Check if master already registered
@@ -53,35 +58,32 @@ async def start_no_link(message: Message, db: AsyncSession) -> None:
             reply_markup=keyboard,
         )
     else:
-        # Create new master
-        name = message.from_user.full_name or "Master"
-        master = Master(
-            name=name,
-            tg_user_id=tg_user_id,
+        # NOT registered — show welcome with explicit registration button.
+        # Do NOT auto-create a Master record for every user who opens the bot.
+        keyboard = InlineKeyboardMarkup(
+            inline_keyboard=[
+                [
+                    InlineKeyboardButton(
+                        text="\U0001f485 \u0417\u0430\u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0438\u0440\u043e\u0432\u0430\u0442\u044c\u0441\u044f \u043a\u0430\u043a \u043c\u0430\u0441\u0442\u0435\u0440",
+                        callback_data="register_master",
+                    ),
+                ],
+            ]
         )
-        db.add(master)
-        await db.flush()
-
-        keyboard = _panel_keyboard()
         await message.answer(
             "<b>\u0414\u043e\u0431\u0440\u043e "
             "\u043f\u043e\u0436\u0430\u043b\u043e\u0432\u0430\u0442\u044c "
-            "\u0432 \u041c\u0430\u0441\u0442\u0435\u0440-CRM!</b>\n\n"
-            "\u0412\u0430\u0448 \u0430\u043a\u043a\u0430\u0443\u043d\u0442 "
-            "\u0441\u043e\u0437\u0434\u0430\u043d.\n\n"
-            "\u041d\u0430\u0441\u0442\u0440\u043e\u0439\u0442\u0435 "
-            "\u0443\u0441\u043b\u0443\u0433\u0438 \u0438 "
-            "\u0440\u0430\u0441\u043f\u0438\u0441\u0430\u043d\u0438\u0435, "
-            "\u0447\u0442\u043e\u0431\u044b \u043a\u043b\u0438\u0435\u043d\u0442\u044b "
-            "\u043c\u043e\u0433\u043b\u0438 "
-            "\u0437\u0430\u043f\u0438\u0441\u044b\u0432\u0430\u0442\u044c\u0441\u044f.",
+            "\u0432 \u041c\u043e\u0438\u041e\u043a\u043e\u0448\u043a\u0438!</b>\n\n"
+            "\u0415\u0441\u043b\u0438 \u0432\u044b \u043c\u0430\u0441\u0442\u0435\u0440 "
+            "\u0438 \u0445\u043e\u0442\u0438\u0442\u0435 \u043f\u0440\u0438\u043d\u0438\u043c\u0430\u0442\u044c "
+            "\u043e\u043d\u043b\u0430\u0439\u043d-\u0437\u0430\u043f\u0438\u0441\u044c, "
+            "\u043d\u0430\u0436\u043c\u0438\u0442\u0435 \u043a\u043d\u043e\u043f\u043a\u0443 \u043d\u0438\u0436\u0435.\n\n"
+            "\u0415\u0441\u043b\u0438 \u0432\u044b \u043a\u043b\u0438\u0435\u043d\u0442, "
+            "\u043f\u043e\u043f\u0440\u043e\u0441\u0438\u0442\u0435 "
+            "\u0441\u0441\u044b\u043b\u043a\u0443 \u0434\u043b\u044f \u0437\u0430\u043f\u0438\u0441\u0438 "
+            "\u0443 \u0432\u0430\u0448\u0435\u0433\u043e \u043c\u0430\u0441\u0442\u0435\u0440\u0430.",
             parse_mode="HTML",
             reply_markup=keyboard,
-        )
-        logger.info(
-            "New master registered via TG: %s (tg_user_id=%s)",
-            master.id,
-            tg_user_id,
         )
 
 
