@@ -35,4 +35,14 @@
 **Goal:** Публичная страница мастера, кабинет клиента, платежи в админке, авточеки, портфолио, отзывы, аналитика
 
 **Design spec:** docs/superpowers/specs/2026-03-20-v2-master-crm-design.md
-**Planned phases:** 9-16
+**Phases:** 9-17
+**Stats:** 9 phases, 22 plans
+
+## Current Milestone
+
+### v2.1 — Bugfix & Stabilization (started 2026-03-21)
+
+**Goal:** Фиксы 27 багов найденных на проде. QR deeplink, role detection, bot registration, client auth, analytics, error handling.
+
+**Design spec:** docs/superpowers/specs/2026-03-21-v2-bugfix-spec.md
+**Planned phases:** 18-20

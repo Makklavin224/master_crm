@@ -1,36 +1,36 @@
 ---
 gsd_state_version: 1.0
-milestone: v2.0
-milestone_name: Feature Expansion
-status: completed
-stopped_at: Completed 17-02-PLAN.md
-last_updated: "2026-03-21T09:31:41.126Z"
-last_activity: 2026-03-21 -- Completed 17-02 Mini-App Role Detection + Web Platforms Tab
+milestone: v2.1
+milestone_name: Bugfix & Stabilization
+status: in_progress
+stopped_at: Defining requirements for v2.1
+last_updated: "2026-03-21T12:00:00.000Z"
+last_activity: 2026-03-21 -- Milestone v2.1 started (27 bugs, 7 modules)
 progress:
-  total_phases: 9
-  completed_phases: 9
-  total_plans: 22
-  completed_plans: 22
-  percent: 100
+  total_phases: 3
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-20)
+See: .planning/PROJECT.md (updated 2026-03-21)
 
 **Core value:** Master taps "Complete" -- client gets SBP payment link -- tax receipt auto-generates. 3 steps instead of 9.
-**Current focus:** v2.0 Feature Expansion -- COMPLETE
+**Current focus:** v2.1 Bugfix & Stabilization -- fixing 27 production issues
 
 ## Current Position
 
-Phase: 17 of 17 (Cross-Platform Auth & Role Detection) -- COMPLETE
-Plan: 2 of 2 -- ALL COMPLETE
-Status: v2.0 Feature Expansion milestone complete
-Last activity: 2026-03-21 -- Completed 17-02 Mini-App Role Detection + Web Platforms Tab
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements for v2.1
+Last activity: 2026-03-21 -- Milestone v2.1 started
 
-Progress: [██████████] 100%
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 

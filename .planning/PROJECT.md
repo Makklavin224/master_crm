@@ -29,21 +29,20 @@
 - [ ] Мастер может управлять через мини-апп в мессенджере (мобильный доступ)
 - [ ] Идентификация клиента по номеру телефона (MAX даёт автоматически, TG/VK при первой записи)
 
-## Current Milestone: v2.0 Feature Expansion
+## Current Milestone: v2.1 Bugfix & Stabilization
 
-**Goal:** Расширение до полноценной платформы — публичная страница мастера с портфолио, кабинет клиента, платежи в админке, авточеки для самозанятых, отзывы, аналитика
+**Goal:** Фиксы 27 багов на проде — QR deeplink, role detection, bot registration, client auth, analytics, error handling
 
-**Target features:**
-- Публичная страница мастера (moiokoshki.ru/m/{username}) с портфолио и отзывами
-- Flow записи через веб-браузер (без мессенджера)
-- Кабинет клиента (история визитов, перезапись, отмена)
-- Приём оплаты в веб-админке (завершение визита + выбор метода)
-- Авточеки для наличных/перевод через Robokassa ReceiptAttach
-- Портфолио мастера (галерея работ)
-- Система отзывов (автосбор через бот + модерация)
-- Аналитика (доход, загруженность, retention, топ услуг)
+**Target fixes:**
+- QR-код кодирует TG deeplink (не просто URL)
+- Role detection без race condition, с persistence
+- Bot registration flow работает end-to-end
+- Client cabinet auth через cookie + Bearer fallback
+- Analytics page устойчива к пустым данным
+- Booking flow валидирует masterId
+- Error handling + timeouts на всех API клиентах
 
-**Design spec:** docs/superpowers/specs/2026-03-20-v2-master-crm-design.md
+**Design spec:** docs/superpowers/specs/2026-03-21-v2-bugfix-spec.md
 
 ### Out of Scope
 
@@ -119,4 +118,4 @@
 20K мастеров x 150₽ avg = 3M₽/мес (подписки) + 1.5% от 50M₽ оборота = 750K₽/мес → ~3.75M₽/мес к концу года 1
 
 ---
-*Last updated: 2026-03-20 after v2.0 milestone start*
+*Last updated: 2026-03-21 after v2.1 milestone start*
