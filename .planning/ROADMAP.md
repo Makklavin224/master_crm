@@ -252,7 +252,7 @@ Plans:
 
 Plans:
 - [x] 12-01-PLAN.md -- Backend amount_override + payment_method filter + total_revenue, CompleteVisitModal + BookingDrawer integration
-- [ ] 12-02-PLAN.md -- PaymentsPage enhancements (method filter, backend revenue, CSV export) + Calendar ruble icon
+- [x] 12-02-PLAN.md -- PaymentsPage enhancements (method filter, backend revenue, CSV export) + Calendar ruble icon
 
 ### Phase 13: Auto Receipts
 **Goal**: Masters who are self-employed (samozan) can bind their INN and automatically generate tax receipts for any payment method (cash, card, SBP) via Robokassa ReceiptAttach
@@ -293,7 +293,11 @@ Plans:
   2. Dashboard displays a revenue line chart by day, a new-vs-repeat clients donut chart, utilization rate, average check, retention rate (% returning within 60 days), and cancellation/no-show rates
   3. Reports tab shows a top services table (service, count, revenue, % of total) and a daily breakdown table (date, bookings, revenue, utilization)
   4. Master can export both reports to CSV
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 16-01-PLAN.md -- Backend analytics service + Pydantic schemas + 4 API endpoints (summary, revenue-chart, top-services, daily)
+- [ ] 16-02-PLAN.md -- Frontend AnalyticsPage (dashboard + reports tabs, recharts, CSV export) + sidebar/routing integration
 
 ## Progress
 
@@ -315,8 +319,8 @@ Note: Phases 12-13 and 10-14 have independent dependency chains. Execution follo
 | 9. Backend Foundation | v2.0 | 2/2 | Complete | 2026-03-21 |
 | 10. Public Master Page | v2.0 | 4/4 | Complete | 2026-03-21 |
 | 11. Client Cabinet | v2.0 | 3/3 | Complete | 2026-03-21 |
-| 12. Admin Payments | 2/2 | Complete    | 2026-03-21 | - |
+| 12. Admin Payments | v2.0 | 2/2 | Complete | 2026-03-21 |
 | 13. Auto Receipts | v2.0 | 0/? | Not started | - |
 | 14. Portfolio | v2.0 | 0/? | Not started | - |
 | 15. Reviews | v2.0 | 0/? | Not started | - |
-| 16. Analytics | v2.0 | 0/? | Not started | - |
+| 16. Analytics | v2.0 | 0/2 | Planned | - |
