@@ -110,3 +110,46 @@ class RobokassaDisconnect(BaseModel):
     """Confirmation model for disconnecting Robokassa (empty body)."""
 
     pass
+
+
+# --- Profile settings ---
+
+RESERVED_USERNAMES = {"admin", "api", "app", "my", "webhook", "m", "static"}
+
+
+class ProfileSettings(BaseModel):
+    """Read-only view of master's public profile."""
+
+    name: str
+    username: str | None = None
+    specialization: str | None = None
+    city: str | None = None
+    avatar_path: str | None = None
+    instagram_url: str | None = None
+
+    model_config = {"from_attributes": True}
+
+
+class ProfileSettingsUpdate(BaseModel):
+    """Update master's public profile (partial update)."""
+
+    name: str | None = None
+    username: str | None = None
+    specialization: str | None = None
+    city: str | None = None
+    instagram_url: str | None = None
+
+    @field_validator("username")
+    @classmethod
+    def validate_username(cls, v: str | None) -> str | None:
+        if v is None:
+            return v
+        import re
+
+        if not re.match(r"^[a-z0-9_]{3,30}$", v):
+            raise ValueError(
+                "Username must be 3-30 characters, only lowercase latin letters, digits, and underscore"
+            )
+        if v in RESERVED_USERNAMES:
+            raise ValueError(f"Username '{v}' is reserved")
+        return v

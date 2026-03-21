@@ -1,8 +1,8 @@
-"""Master settings GET/PUT endpoints + payment settings."""
+"""Master settings GET/PUT endpoints + payment settings + profile settings."""
 
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Response
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.dependencies import get_current_master, get_db_with_rls
@@ -14,10 +14,68 @@ from app.schemas.settings import (
     NotificationSettingsUpdate,
     PaymentSettings,
     PaymentSettingsUpdate,
+    ProfileSettings,
+    ProfileSettingsUpdate,
     RobokassaSetup,
 )
 
 router = APIRouter()
+
+
+# --- Profile settings ---
+
+
+@router.get("/profile", response_model=ProfileSettings)
+async def get_profile_settings(
+    master: Annotated[Master, Depends(get_current_master)],
+):
+    """Read master's public profile settings."""
+    return ProfileSettings(
+        name=master.name,
+        username=master.username,
+        specialization=master.specialization,
+        city=master.city,
+        avatar_path=master.avatar_path,
+        instagram_url=master.instagram_url,
+    )
+
+
+@router.put("/profile", response_model=ProfileSettings)
+async def update_profile_settings(
+    data: ProfileSettingsUpdate,
+    master: Annotated[Master, Depends(get_current_master)],
+    db: Annotated[AsyncSession, Depends(get_db_with_rls)],
+):
+    """Update master's public profile settings (partial update).
+
+    Username uniqueness is enforced by DB unique constraint.
+    Returns 409 if username is already taken.
+    """
+    from sqlalchemy.exc import IntegrityError
+
+    update_data = data.model_dump(exclude_unset=True)
+    for field, value in update_data.items():
+        setattr(master, field, value)
+
+    try:
+        await db.flush()
+    except IntegrityError:
+        await db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Username is already taken",
+        )
+
+    await db.refresh(master)
+
+    return ProfileSettings(
+        name=master.name,
+        username=master.username,
+        specialization=master.specialization,
+        city=master.city,
+        avatar_path=master.avatar_path,
+        instagram_url=master.instagram_url,
+    )
 
 
 # --- Booking settings ---

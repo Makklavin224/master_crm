@@ -105,6 +105,8 @@ async def _ensure_test_db():
             "schedule_exceptions",
             "master_clients",
             "scheduled_reminders",
+            "portfolio_photos",
+            "reviews",
         ]
         for table in rls_tables:
             await conn.execute(
@@ -178,6 +180,7 @@ async def master_factory(db_session):
         email: str | None = None,
         name: str = "Test Master",
         password: str = "testpass123",
+        username: str | None = None,
     ) -> Master:
         if email is None:
             email = f"test-{uuid.uuid4().hex[:8]}@example.com"
@@ -185,6 +188,7 @@ async def master_factory(db_session):
             email=email,
             hashed_password=hash_password(password),
             name=name,
+            username=username,
         )
         db_session.add(master)
         await db_session.flush()
