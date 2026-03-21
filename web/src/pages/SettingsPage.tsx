@@ -41,7 +41,6 @@ import {
   useUpdatePhoto,
   useReorderPhotos,
   type ScheduleDayEntry,
-  type PortfolioPhoto,
 } from "../api/settings";
 import { useServices } from "../api/services";
 import { QRCodeSVG } from "qrcode.react";

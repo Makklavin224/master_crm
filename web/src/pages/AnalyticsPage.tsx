@@ -131,8 +131,8 @@ function DashboardTab({ dateRange }: { dateRange: { date_from: string; date_to: 
                 <XAxis dataKey="date" tickFormatter={formatDateTick} />
                 <YAxis tickFormatter={(v) => formatRubles(v)} />
                 <Tooltip
-                  formatter={(value: number) => [`${formatRubles(value)} ₽`, "Доход"]}
-                  labelFormatter={(label: string) => dayjs(label).format("DD.MM.YYYY")}
+                  formatter={(value: unknown) => [`${formatRubles(Number(value))} ₽`, "Доход"]}
+                  labelFormatter={(label: unknown) => dayjs(String(label)).format("DD.MM.YYYY")}
                 />
                 <Line
                   type="monotone"
